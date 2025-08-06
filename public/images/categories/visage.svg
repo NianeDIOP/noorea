@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="100%" height="100%" fill="#f8f0e5"/>
+  <circle cx="100" cy="70" r="40" fill="#d4b395"/>
+  <path d="M60,140 C60,110 140,110 140,140" stroke="#d4b395" stroke-width="5" fill="none"/>
+  <text x="100" y="180" font-family="Arial" font-size="14" text-anchor="middle" fill="#333333">Soins du visage</text>
+</svg>

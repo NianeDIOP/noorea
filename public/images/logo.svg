@@ -1,0 +1,22 @@
+<!-- Logo SVG pour Noorea -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="200" height="200">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <linearGradient id="emeraldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2ecc71" />
+      <stop offset="100%" stop-color="#1D6F58" />
+    </linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="#F8F5F1" stroke="#D4AF37" stroke-width="5" />
+  <path d="M256 120 c-70 0 -126 56 -126 126 c0 70 56 126 126 126 c70 0 126 -56 126 -126 c0 -70 -56 -126 -126 -126 z" fill="none" stroke="url(#goldGradient)" stroke-width="8" />
+  <path d="M256 150 c-53 0 -96 43 -96 96 c0 53 43 96 96 96 c53 0 96 -43 96 -96 c0 -53 -43 -96 -96 -96 z" fill="none" stroke="url(#emeraldGradient)" stroke-width="6" />
+  <circle cx="256" cy="256" r="40" fill="url(#goldGradient)" />
+  <path d="M200 100 L256 30 L312 100 Z" fill="url(#emeraldGradient)" />
+  <path d="M200 412 L256 482 L312 412 Z" fill="url(#emeraldGradient)" />
+  <path d="M100 200 L30 256 L100 312 Z" fill="url(#goldGradient)" />
+  <path d="M412 200 L482 256 L412 312 Z" fill="url(#goldGradient)" />
+  <text x="256" y="260" font-family="'Playfair Display', serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#2C3E50">N</text>
+</svg>
