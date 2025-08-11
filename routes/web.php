@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Inclure les routes admin
 require __DIR__.'/admin.php';
@@ -58,3 +59,36 @@ Route::get('/beaute-du-monde', function () {
 Route::get('/recherche', function () {
     return view('search.results');
 })->name('search');
+
+// Route temporaire pour forcer la déconnexion
+Route::get('/force-logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/')->with('success', 'Vous avez été déconnecté.');
+});
+
+// Authentification utilisateurs (publique)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
+    
+    Route::get('/register', function () {
+        return view('auth.register');
+    })->name('register');
+    
+    Route::get('/mot-de-passe-oublie', function () {
+        return view('auth.forgot-password');
+    })->name('password.request');
+});
+
+// Routes protégées utilisateurs
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
+});
