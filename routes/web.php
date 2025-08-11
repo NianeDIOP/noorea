@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Inclure les routes admin
+require __DIR__.'/admin.php';
+
 // Page d'accueil
 Route::get('/', function () {
     return view('welcome');

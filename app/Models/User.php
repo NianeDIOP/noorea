@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'is_active',
+        'phone',
+        'address',
+        'city',
+        'last_login_at',
     ];
 
     /**
@@ -43,6 +49,43 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
+    }
+
+    // Relations
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    // Scopes
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'admin');
+    }
+
+    public function scopeCustomers($query)
+    {
+        return $query->where('role', 'customer');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    // Accessors
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function getRoleBadgeAttribute(): string
+    {
+        return $this->role === 'admin' 
+            ? 'bg-purple-100 text-purple-800' 
+            : 'bg-blue-100 text-blue-800';
     }
 }
