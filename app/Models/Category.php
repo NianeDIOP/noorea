@@ -28,6 +28,11 @@ class Category extends Model
         'sort_order' => 'integer',
     ];
 
+    protected $attributes = [
+        'is_active' => true,
+        'sort_order' => 0,
+    ];
+
     // Relations
     public function products(): HasMany
     {

@@ -38,37 +38,30 @@ class CatalogSeeder extends Seeder
             [
                 'name' => 'Soins du visage',
                 'slug' => 'soins-visage',
-                'description' => 'Nettoyants, sérums, crèmes et masques pour tous types de peau',
-                'image' => 'categories/soins-visage.jpg',
+                'description' => 'Nettoyants, sérums, crèmes et masques pour tous types de peau africaine',
+                'image' => '/images/categories/soins-visage.jpg',
                 'sort_order' => 1,
             ],
             [
                 'name' => 'Maquillage',
                 'slug' => 'maquillage',
-                'description' => 'Teint, yeux, lèvres - Une gamme complète pour sublimer votre beauté',
-                'image' => 'categories/maquillage.jpg',
+                'description' => 'Teint, yeux, lèvres - Une gamme complète pour sublimer la beauté africaine',
+                'image' => '/images/categories/maquillage.jpg',
                 'sort_order' => 2,
             ],
             [
                 'name' => 'Parfums',
                 'slug' => 'parfums',
-                'description' => 'Fragrances exotiques et collections exclusives',
-                'image' => 'categories/parfums.jpg',
+                'description' => 'Fragrances exotiques et collections exclusives inspirées d\'Afrique',
+                'image' => '/images/categories/parfums.jpg',
                 'sort_order' => 3,
             ],
             [
                 'name' => 'Soins capillaires',
                 'slug' => 'soins-capillaires',
                 'description' => 'Produits spécialement conçus pour cheveux crépus, frisés et bouclés',
-                'image' => 'categories/soins-capillaires.jpg',
+                'image' => '/images/categories/soins-capillaires.jpg',
                 'sort_order' => 4,
-            ],
-            [
-                'name' => 'Bien-être',
-                'slug' => 'bien-etre',
-                'description' => 'Bougies, huiles de massage et compléments beauté',
-                'image' => 'categories/bien-etre.jpg',
-                'sort_order' => 5,
             ],
         ];
 
@@ -83,47 +76,38 @@ class CatalogSeeder extends Seeder
             [
                 'name' => 'Karité du Sénégal',
                 'slug' => 'karite-senegal',
-                'description' => 'Marque sénégalaise spécialisée dans les produits à base de karité naturel',
-                'logo' => 'brands/karite-senegal.jpg',
+                'description' => 'Marque sénégalaise spécialisée dans les soins naturels au karité pur du Sénégal',
+                'logo' => 'https://images.unsplash.com/photo-1556228578-dd6fb11379dd?w=300&h=300&fit=crop&auto=format&bg=ffffff&pad=40',
                 'country' => 'Sénégal',
-                'is_featured' => true,
-            ],
-            [
-                'name' => 'Baobab Beauty',
-                'slug' => 'baobab-beauty',
-                'description' => 'Cosmétiques africains aux extraits de baobab',
-                'logo' => 'brands/baobab-beauty.jpg',
-                'country' => 'Burkina Faso',
+                'website' => 'https://karite-senegal.com',
                 'is_featured' => true,
             ],
             [
                 'name' => 'Fenty Beauty',
                 'slug' => 'fenty-beauty',
-                'description' => 'Marque inclusive de Rihanna avec une large gamme de teintes',
-                'logo' => 'brands/fenty-beauty.jpg',
+                'description' => 'Marque inclusive de Rihanna avec une large gamme de teintes pour toutes les carnations',
+                'logo' => 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=300&fit=crop&auto=format&bg=ffffff&pad=40',
                 'country' => 'États-Unis',
+                'website' => 'https://fentybeauty.com',
                 'is_featured' => true,
-            ],
-            [
-                'name' => 'The Ordinary',
-                'slug' => 'the-ordinary',
-                'description' => 'Soins de la peau scientifiques et abordables',
-                'logo' => 'brands/the-ordinary.jpg',
-                'country' => 'Canada',
-            ],
-            [
-                'name' => 'Innisfree',
-                'slug' => 'innisfree',
-                'description' => 'K-Beauty naturelle de l\'île de Jeju',
-                'logo' => 'brands/innisfree.jpg',
-                'country' => 'Corée du Sud',
             ],
             [
                 'name' => 'Maison Margiela',
                 'slug' => 'maison-margiela',
-                'description' => 'Parfums de luxe français',
-                'logo' => 'brands/maison-margiela.jpg',
+                'description' => 'Parfums de luxe français aux fragrances uniques et sophistiquées',
+                'logo' => 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=300&h=300&fit=crop&auto=format&bg=ffffff&pad=40',
                 'country' => 'France',
+                'website' => 'https://maisonmargiela.com',
+                'is_featured' => true,
+            ],
+            [
+                'name' => 'SheaMoisture',
+                'slug' => 'shea-moisture',
+                'description' => 'Soins capillaires naturels pour cheveux texturés avec des ingrédients africains',
+                'logo' => 'https://images.unsplash.com/photo-1596704017254-9759879b0456?w=300&h=300&fit=crop&auto=format&bg=ffffff&pad=40',
+                'country' => 'États-Unis',
+                'website' => 'https://sheamoisture.com',
+                'is_featured' => true,
             ],
         ];
 
@@ -135,118 +119,141 @@ class CatalogSeeder extends Seeder
     private function createProducts()
     {
         $products = [
-            // Soins du visage
+            // Soins du visage - Karité du Sénégal
             [
-                'name' => 'Crème Hydratante au Karité',
+                'name' => 'Crème Hydratante au Karité Pur',
                 'short_description' => 'Hydratation intense 24h avec du karité pur du Sénégal',
-                'description' => 'Cette crème onctueuse au karité naturel du Sénégal offre une hydratation profonde et durable. Enrichie en vitamines A et E, elle nourrit et protège votre peau tout en lui redonnant souplesse et éclat.',
+                'description' => 'Cette crème onctueuse au karité naturel du Sénégal offre une hydratation profonde et durable. Enrichie en vitamines A et E, elle nourrit et protège votre peau tout en lui redonnant souplesse et éclat naturel.',
                 'price' => 26200,
                 'sale_price' => 23580,
                 'sku' => 'NOO-KAR-CRE-001',
                 'stock_quantity' => 45,
-                'category_id' => 1,
-                'brand_id' => 1,
+                'status' => 'active',
+                'category_id' => 1, // Soins du visage
+                'brand_id' => 1,    // Karité du Sénégal
                 'is_featured' => true,
                 'views' => 1250,
-                'images' => ['products/creme-karite-1.jpg', 'products/creme-karite-2.jpg'],
+                'images' => [
+                    'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&h=600&fit=crop&auto=format&bg=F7EAD5',
+                    'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'
+                ],
             ],
             [
-                'name' => 'Sérum Éclat Vitamine C',
-                'short_description' => 'Sérum concentré pour un teint lumineux et uniforme',
-                'description' => 'Un sérum puissant à la vitamine C stabilisée qui illumine le teint et réduit les taches pigmentaires. Formulé avec des antioxydants naturels pour protéger la peau des agressions extérieures.',
-                'price' => 29500,
-                'sku' => 'NOO-VIT-SER-002',
-                'stock_quantity' => 32,
-                'category_id' => 1,
-                'brand_id' => 4,
-                'is_featured' => true,
-                'views' => 987,
-                'images' => ['products/serum-vitc-1.jpg', 'products/serum-vitc-2.jpg'],
-            ],
-            // Maquillage
-            [
-                'name' => 'Fond de Teint Inclusif - Teinte Caramel',
-                'short_description' => 'Couvrance modulable, fini naturel, 16h de tenue',
-                'description' => 'Un fond de teint révolutionnaire disponible en 50 teintes pour célébrer toutes les beautés. Sa formule légère s\'adapte parfaitement à votre carnation pour un teint naturel et éclatant.',
-                'price' => 34900,
-                'sku' => 'NOO-FEN-FDT-003',
+                'name' => 'Sérum Réparateur Karité & Baobab',
+                'short_description' => 'Sérum anti-âge aux actifs naturels africains',
+                'description' => 'Un sérum concentré qui combine les vertus réparatrices du karité et les propriétés anti-oxydantes du baobab. Idéal pour régénérer la peau mature et prévenir les signes de l\'âge.',
+                'price' => 32500,
+                'sku' => 'NOO-KAR-SER-002',
                 'stock_quantity' => 28,
-                'category_id' => 2,
-                'brand_id' => 3,
+                'status' => 'active',
+                'category_id' => 1, // Soins du visage
+                'brand_id' => 1,    // Karité du Sénégal
+                'is_featured' => false,
+                'views' => 687,
+                'images' => ['https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'],
+            ],
+
+            // Maquillage - Fenty Beauty
+            [
+                'name' => 'Fond de Teint Pro Filt\'r - Teinte 330',
+                'short_description' => 'Couvrance modulable, fini mat naturel, 24h de tenue',
+                'description' => 'Le fond de teint iconique de Fenty Beauty dans une teinte parfaite pour les carnations caramel. Sa formule longue tenue offre une couvrance modulable du naturel à l\'opaque, avec un fini mat sublime.',
+                'price' => 39900,
+                'sku' => 'NOO-FEN-FDT-003',
+                'stock_quantity' => 35,
+                'status' => 'active',
+                'category_id' => 2, // Maquillage
+                'brand_id' => 2,    // Fenty Beauty
                 'is_featured' => true,
                 'views' => 2150,
-                'images' => ['products/fdt-fenty-1.jpg', 'products/fdt-fenty-2.jpg'],
+                'images' => [
+                    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=600&fit=crop&auto=format&bg=F7EAD5',
+                    'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'
+                ],
             ],
             [
-                'name' => 'Rouge à Lèvres Mat - Baobab',
-                'short_description' => 'Couleur intense, confort longue durée',
-                'description' => 'Un rouge à lèvres mat aux pigments intenses et à la texture crémeuse. Enrichi en huile de baobab pour nourrir vos lèvres tout en offrant une couleur vibrante qui tient toute la journée.',
-                'price' => 18700,
-                'sku' => 'NOO-BAO-RAL-004',
-                'stock_quantity' => 67,
-                'category_id' => 2,
-                'brand_id' => 2,
-                'views' => 756,
-                'images' => ['products/ral-baobab-1.jpg'],
+                'name' => 'Rouge à Lèvres Stunna Lip Paint - Uncensored',
+                'short_description' => 'Rouge liquide longue tenue, couleur intense',
+                'description' => 'Un rouge à lèvres liquide ultra-pigmenté qui offre une couleur vibrante et une tenue exceptionnelle. Sa formule confortable ne dessèche pas les lèvres et résiste aux repas.',
+                'price' => 24900,
+                'sku' => 'NOO-FEN-RAL-004',
+                'stock_quantity' => 52,
+                'status' => 'active',
+                'category_id' => 2, // Maquillage
+                'brand_id' => 2,    // Fenty Beauty
+                'is_featured' => false,
+                'views' => 1456,
+                'images' => ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'],
             ],
-            // Parfums
+
+            // Parfums - Maison Margiela
             [
-                'name' => 'Eau de Parfum Fleur de Vanille',
-                'short_description' => 'Fragrance gourmande aux notes de vanille de Madagascar',
-                'description' => 'Une composition olfactive envoûtante qui mélange la douceur de la vanille de Madagascar aux notes florales d\'ylang-ylang. Un parfum sensuel et réconfortant qui vous accompagne toute la journée.',
-                'price' => 49200,
+                'name' => 'REPLICA Beach Walk',
+                'short_description' => 'Eau de Toilette aux notes solaires et marines',
+                'description' => 'Une fragrance qui évoque une promenade sur la plage au coucher du soleil. Notes de bergamote, ylang-ylang, noix de coco, et musc blanc pour une évasion olfactive unique.',
+                'price' => 89500,
+                'sale_price' => 76000,
                 'sku' => 'NOO-MAR-EDP-005',
-                'stock_quantity' => 15,
-                'category_id' => 3,
-                'brand_id' => 6,
+                'stock_quantity' => 18,
+                'status' => 'active',
+                'category_id' => 3, // Parfums
+                'brand_id' => 3,    // Maison Margiela
                 'is_featured' => true,
-                'views' => 634,
-                'images' => ['products/edp-vanille-1.jpg', 'products/edp-vanille-2.jpg'],
-            ],
-            // Soins capillaires
-            [
-                'name' => 'Huile Capillaire Argan & Karité',
-                'short_description' => 'Nutrition intense pour cheveux secs et abîmés',
-                'description' => 'Cette huile précieuse combine les bienfaits de l\'argan du Maroc et du karité du Sénégal pour nourrir en profondeur vos cheveux. Idéale pour les cheveux crépus, frisés et bouclés.',
-                'price' => 23600,
-                'sale_price' => 18950,
-                'sku' => 'NOO-KAR-HUI-006',
-                'stock_quantity' => 3,
-                'category_id' => 4,
-                'brand_id' => 1,
-                'views' => 892,
-                'images' => ['products/huile-cheveux-1.jpg'],
-            ],
-            // Autres produits
-            [
-                'name' => 'Masque Hydratant Green Tea',
-                'short_description' => 'Masque apaisant au thé vert de Jeju',
-                'description' => 'Un masque en tissu gorgé d\'extraits de thé vert bio qui hydrate, apaise et purifie votre peau en 15 minutes. Parfait pour les peaux fatiguées et stressées.',
-                'price' => 3500,
-                'sku' => 'NOO-INN-MAS-007',
-                'stock_quantity' => 120,
-                'category_id' => 1,
-                'brand_id' => 5,
-                'views' => 445,
-                'images' => ['products/masque-innisfree-1.jpg'],
+                'views' => 934,
+                'images' => [
+                    'https://images.unsplash.com/photo-1541643600914-78b084683601?w=600&h=600&fit=crop&auto=format&bg=F7EAD5',
+                    'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'
+                ],
             ],
             [
-                'name' => 'Bougie Parfumée Cèdre du Sénégal',
-                'short_description' => 'Ambiance zen aux notes boisées africaines',
-                'description' => 'Une bougie artisanale aux notes chaudes de cèdre du Sénégal et d\'encens. Fabriquée à la main avec de la cire de soja naturelle pour 45h de diffusion parfumée.',
-                'price' => 15800,
-                'sku' => 'NOO-WEL-BOU-008',
-                'stock_quantity' => 25,
-                'category_id' => 5,
-                'brand_id' => 1,
-                'views' => 234,
-                'images' => ['products/bougie-cedre-1.jpg'],
+                'name' => 'REPLICA Lazy Sunday Morning',
+                'short_description' => 'Fragrance cocooning aux notes poudrées',
+                'description' => 'L\'essence d\'un dimanche matin paisible capturée dans un flacon. Un mélange délicat de musc blanc, iris, et aldéhydes qui évoque la douceur des draps propres et le calme du dimanche.',
+                'price' => 89500,
+                'sku' => 'NOO-MAR-EDP-006',
+                'stock_quantity' => 22,
+                'status' => 'active',
+                'category_id' => 3, // Parfums
+                'brand_id' => 3,    // Maison Margiela
+                'is_featured' => false,
+                'views' => 678,
+                'images' => ['https://images.unsplash.com/photo-1615634260167-c8cdede054de?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'],
+            ],
+
+            // Soins capillaires - SheaMoisture
+            [
+                'name' => 'Masque Réparateur Karité & Manuka',
+                'short_description' => 'Masque intense pour cheveux très secs et abîmés',
+                'description' => 'Un masque nourrissant qui répare et fortifie les cheveux crépus, bouclés et frisés. Enrichi en beurre de karité brut et miel de Manuka pour une hydratation profonde et durable.',
+                'price' => 18500,
+                'sku' => 'NOO-SHE-MAS-007',
+                'stock_quantity' => 67,
+                'status' => 'active',
+                'category_id' => 4, // Soins capillaires
+                'brand_id' => 4,    // SheaMoisture
+                'is_featured' => true,
+                'views' => 1123,
+                'images' => ['https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'],
+            ],
+            [
+                'name' => 'Huile Capillaire Coco & Hibiscus',
+                'short_description' => 'Huile légère pour brillance et protection',
+                'description' => 'Une huile capillaire légère qui nourrit sans alourdir. L\'huile de coco et l\'extrait d\'hibiscus apportent brillance, souplesse et protection contre les agressions extérieures.',
+                'price' => 21800,
+                'sku' => 'NOO-SHE-HUI-008',
+                'stock_quantity' => 41,
+                'status' => 'active',
+                'category_id' => 4, // Soins capillaires
+                'brand_id' => 4,    // SheaMoisture
+                'is_featured' => false,
+                'views' => 789,
+                'images' => ['https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=600&h=600&fit=crop&auto=format&bg=F7EAD5'],
             ],
         ];
 
         foreach ($products as $productData) {
             $productData['slug'] = Str::slug($productData['name']);
-            $productData['meta_title'] = $productData['name'] . ' - Noorea';
+            $productData['meta_title'] = $productData['name'] . ' - Noorea Beauty';
             $productData['meta_description'] = $productData['short_description'];
             
             Product::create($productData);

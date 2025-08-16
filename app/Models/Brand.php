@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 class Brand extends Model
 {
@@ -48,7 +49,17 @@ class Brand extends Model
     // Accessors
     public function getLogoUrlAttribute(): ?string
     {
-        return $this->logo ? asset('storage/brands/' . $this->logo) : null;
+        if (!$this->logo) {
+            return null;
+        }
+
+        // Si c'est déjà une URL complète, on la retourne telle quelle
+        if (filter_var($this->logo, FILTER_VALIDATE_URL)) {
+            return $this->logo;
+        }
+
+        // Sinon, c'est un fichier local
+        return Storage::url($this->logo);
     }
 
     public function getIsLocalAttribute(): bool

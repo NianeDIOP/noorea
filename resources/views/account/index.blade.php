@@ -24,7 +24,7 @@
                 <div class="bg-white rounded-lg shadow-md p-4">
                     <h2 class="font-semibold text-gray-900 mb-4">Navigation</h2>
                     <nav class="space-y-2">
-                        <a href="{{ route('account') }}" class="flex items-center space-x-3 px-3 py-2 bg-noorea-gold text-white rounded-lg">
+                        <a href="{{ route('account.dashboard') }}" class="flex items-center space-x-3 px-3 py-2 bg-noorea-gold text-white rounded-lg">
                             <i class="fas fa-user"></i>
                             <span>Profil</span>
                         </a>

@@ -1,65 +1,159 @@
 @extends('layouts.app')
 
+@php
+    $seo_title = "Noorea - Boutique de cosmétiques et parfums multiculturels premium au Sénégal";
+    $seo_description = "Découvrez Noorea, votre destination beauté multiculturelle à Dakar. Cosmétiques authentiques, parfums d'exception et soins naturels issus des traditions du monde entier. Livraison gratuite dès 50 000 FCFA.";
+    $seo_keywords = "cosmétiques Sénégal, parfums Dakar, beauté multiculturelle, maquillage africain, soins naturels, Noorea boutique, cosmétiques authentiques, parfumerie Dakar, produits beauté Sénégal";
+    $og_title = "Noorea - L'expérience beauté multiculturelle au Sénégal";
+    $og_description = "Révélez votre lumière avec Noorea. Découvrez notre sélection exclusive de cosmétiques et parfums authentiques issus des traditions beauté du monde entier.";
+    $og_image = asset('images/hero/hero1.jpg');
+@endphp
+
+@push('head')
+<!-- Meta tags et polices d'origine -->
+@endpush
+
 @section('navbar')
-<header class="absolute top-0 left-0 w-full z-50">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex items-center justify-between bg-transparent backdrop-blur-none px-4 py-3">
-            <!-- Logo Premium -->
-            <a href="{{ route('home') }}" class="flex items-center group navbar-logo">
-                <div class="relative">
-                    <!-- Logo principal -->
-                    <div class="relative p-2 transition-all duration-300 rounded-xl">
-                        <img src="{{ asset('images/logo.png') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto transition-all duration-300">
-                    </div>
-                    <!-- Particules décoratives -->
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-noorea-gold rounded-full animate-pulse opacity-30"></div>
-                    <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-noorea-gold rounded-full animate-pulse opacity-20" style="animation-delay: 0.5s;"></div>
+<!-- Navbar Supérieur -->
+<header class="absolute top-0 left-0 w-full z-50 transition-all duration-300">
+    <!-- Barre supérieure avec logo, recherche et icônes -->
+    <div class="backdrop-blur-sm bg-white/5 border-b border-white/10">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo à gauche -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-14 md:h-16 w-auto">
+                    </a>
                 </div>
-            </a>
-            <!-- Navigation principale - desktop -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
-            </nav>
-            <!-- Actions utilisateur -->
-            <div class="flex items-center space-x-5">
-                <!-- Recherche -->
-                <button type="button" class="navbar-icon text-lg" aria-label="Rechercher">
-                    <i class="fas fa-search"></i>
-                </button>
-                <!-- Compte utilisateur -->
-                <a href="{{ route('account') }}" class="navbar-icon text-lg" aria-label="Mon compte">
-                    <i class="fas fa-user"></i>
-                </a>
-                <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="navbar-icon text-lg" aria-label="Ma wishlist">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <!-- Panier -->
-                <a href="{{ route('cart') }}" class="navbar-icon text-lg relative" aria-label="Mon panier">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="absolute -top-2 -right-2 bg-noorea-rose text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg opacity-80">0</span>
-                </a>
-                <!-- Menu mobile toggle -->
-                <button type="button" class="navbar-mobile-icon md:hidden text-lg" id="mobile-menu-button" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+                
+                <!-- Barre de recherche centrale -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher des produits, marques, catégories..." 
+                            class="w-full px-5 py-3 pl-12 pr-14 bg-white border-2 border-white/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold focus:border-noorea-gold transition-all duration-300 shadow-xl text-gray-800 placeholder-gray-500 font-medium"
+                        >
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-600 text-xl"></i>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-noorea-gold hover:bg-yellow-600 text-white p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Icônes à droite -->
+                <div class="flex items-center space-x-4">
+                    <!-- Compte utilisateur / Connexion -->
+                    @auth
+                        <!-- Utilisateur connecté -->
+                        <div class="relative group">
+                            <a href="{{ route('account.dashboard') }}" class="navbar-icon-top" title="Mon compte">
+                                <i class="fas fa-user text-xl"></i>
+                            </a>
+                            <!-- Menu déroulant -->
+                            <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                <div class="py-2">
+                                    <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                        <i class="fas fa-user mr-2"></i>Mon compte
+                                    </a>
+                                    <a href="{{ route('wishlist') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                        <i class="fas fa-heart mr-2"></i>Ma wishlist
+                                    </a>
+                                    <hr class="my-1">
+                                    <form method="POST" action="{{ route('logout') }}" class="block">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Wishlist -->
+                        <a href="{{ route('wishlist') }}" class="navbar-icon-top relative" title="Ma wishlist">
+                            <i class="fas fa-heart text-xl"></i>
+                            <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                        </a>
+                    @else
+                        <!-- Utilisateur non connecté -->
+                        <a href="{{ route('login') }}" class="navbar-icon-top" title="Se connecter">
+                            <i class="fas fa-sign-in-alt text-xl"></i>
+                        </a>
+                        
+                        <a href="{{ route('register') }}" class="navbar-icon-top" title="S'inscrire">
+                            <i class="fas fa-user-plus text-xl"></i>
+                        </a>
+                    @endauth
+                    
+                    <!-- Panier -->
+                    <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
+                    </button>
+                    
+                    <!-- Menu mobile toggle -->
+                    <button type="button" class="navbar-icon-top md:hidden" id="mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <!-- Menu mobile -->
-        <div class="md:hidden hidden bg-black/80 backdrop-blur-md rounded-lg mt-4 border border-noorea-gold/30" id="mobile-menu">
-            <nav class="flex flex-col space-y-4 p-6">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
+    </div>
+    
+    <!-- Barre de navigation inférieure -->
+    <div class="backdrop-blur-sm border-t border-noorea-gold/20" style="background-color: #F7EAD5;">
+        <div class="container mx-auto px-4">
+            <!-- Navigation principale - desktop -->
+            <nav class="hidden md:flex items-center justify-center py-3">
+                <div class="flex space-x-8">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-th-large mr-2"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-crown mr-2"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-globe mr-2"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>À propos
+                    </a>
+                </div>
             </nav>
+            
+            <!-- Menu mobile -->
+            <div class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-home mr-3 w-5"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-th-large mr-3 w-5"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-crown mr-3 w-5"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-3 w-5"></i>À propos
+                    </a>
+                </nav>
+            </div>
         </div>
     </div>
 </header>
@@ -67,139 +161,214 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative h-screen overflow-hidden bg-gradient-to-br from-noorea-dark via-noorea-cream to-noorea-gold/30 pt-0">
-    <!-- Arrière-plans multiples avec effets -->
+<section class="relative h-screen overflow-hidden pt-0">
+    <!-- Image hero unique en arrière-plan -->
     <div class="absolute inset-0 z-0">
-        <!-- Arrière-plan principal -->
-        <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')] bg-cover bg-center bg-no-repeat opacity-40 hero-bg-1"></div>
+        <img src="{{ asset('images/hero/hero1.jpg') }}" alt="Noorea Beauty - L'élégance multiculturelle" 
+             class="w-full h-full object-cover object-center" 
+             style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
         
-        <!-- Arrière-plan secondaire en mouvement -->
-        <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')] bg-cover bg-right bg-no-repeat opacity-25 hero-bg-2"></div>
-        
-        <!-- Arrière-plan tertiaire -->
-        <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop')] bg-cover bg-left bg-no-repeat opacity-20 hero-bg-3"></div>
-        
-        <!-- Overlay gradient pour la lisibilité -->
-        <div class="absolute inset-0 bg-gradient-to-r from-noorea-dark/60 via-transparent to-noorea-gold/40"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/70 via-transparent to-transparent"></div>
-    </div>
-    
-    <!-- Images cosmétiques flottantes avec plus d'effets -->
-    <div class="absolute inset-0 z-20 overflow-hidden">
-        <!-- Groupe 1 - Produits de maquillage -->
-        <div class="absolute top-16 right-8 md:right-16 hero-float-1 opacity-85">
-            <img src="https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg?auto=compress&cs=tinysrgb&w=400&h=500&fit=crop" 
-                 alt="Rouge à lèvres premium" class="w-40 h-50 md:w-56 md:h-70 object-cover rounded-2xl shadow-2xl border-2 border-noorea-gold/30">
-        </div>
-        
-        <!-- Groupe 2 - Parfums luxueux -->
-        <div class="absolute bottom-24 left-8 md:left-16 hero-float-2 opacity-80">
-            <img src="https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=350&h=450&fit=crop" 
-                 alt="Parfum de luxe" class="w-32 h-42 md:w-44 md:h-58 object-cover rounded-2xl shadow-2xl border-2 border-noorea-emerald/30">
-        </div>
-        
-        <!-- Groupe 3 - Palettes colorées -->
-        <div class="absolute top-32 left-1/5 hero-float-3 opacity-75">
-            <img src="https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=450&h=350&fit=crop" 
-                 alt="Palette maquillage multiculturelle" class="w-44 h-32 md:w-60 md:h-44 object-cover rounded-2xl shadow-2xl border-2 border-noorea-rose/30">
-        </div>
-        
-        <!-- Groupe 4 - Soins visage -->
-        <div class="absolute bottom-16 right-1/5 hero-float-4 opacity-70">
-            <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop" 
-                 alt="Crème visage naturelle" class="w-28 h-28 md:w-40 md:h-40 object-cover rounded-full shadow-2xl border-4 border-noorea-cream/50">
-        </div>
-        
-        <!-- Groupe 5 - Fonds de teint -->
-        <div class="absolute top-1/2 right-1/4 hero-float-5 opacity-65">
-            <img src="https://images.pexels.com/photos/3622517/pexels-photo-3622517.jpeg?auto=compress&cs=tinysrgb&w=300&h=400&fit=crop" 
-                 alt="Fond de teint inclusif" class="w-24 h-32 md:w-32 md:h-44 object-cover rounded-xl shadow-2xl border-2 border-noorea-gold/40">
-        </div>
-        
-        <!-- Groupe 6 - Accessoires beauté -->
-        <div class="absolute top-20 left-1/3 hero-float-6 opacity-60">
-            <img src="https://images.pexels.com/photos/4465659/pexels-photo-4465659.jpeg?auto=compress&cs=tinysrgb&w=250&h=300&fit=crop" 
-                 alt="Pinceaux maquillage" class="w-20 h-24 md:w-28 md:h-36 object-cover rounded-xl shadow-xl border border-noorea-emerald/40">
-        </div>
-        
-        <!-- Groupe 7 - Vernis et couleurs -->
-        <div class="absolute bottom-1/3 left-1/6 hero-float-7 opacity-55">
-            <img src="https://images.pexels.com/photos/3992206/pexels-photo-3992206.jpeg?auto=compress&cs=tinysrgb&w=200&h=250&fit=crop" 
-                 alt="Vernis à ongles" class="w-16 h-20 md:w-24 md:h-30 object-cover rounded-lg shadow-xl border border-noorea-rose/40">
-        </div>
+        <!-- Overlay léger pour la lisibilité du texte -->
+        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10"></div>
     </div>
     
     <!-- Contenu principal centré -->
     <div class="relative z-30 flex items-center justify-center h-full pt-20 md:pt-24">
         <div class="text-center max-w-4xl mx-auto px-6 md:px-12">
             <!-- Logo/Nom NOOREA -->
-            <div class="mb-8 hero-brand-animation">
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-4">
-                    <span class="noorea-logo-text bg-gradient-to-r from-noorea-gold via-yellow-400 to-noorea-gold bg-clip-text text-transparent drop-shadow-2xl">
+            <div class="mb-8">
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-serif font-bold mb-4">
+                    <span class="bg-gradient-to-r from-noorea-gold via-yellow-400 to-noorea-gold bg-clip-text text-transparent drop-shadow-2xl">
                         NOOREA
                     </span>
                 </h1>
                 <!-- Ligne décorative -->
-                <div class="w-24 md:w-32 h-1 bg-gradient-to-r from-transparent via-noorea-gold to-transparent mx-auto mb-6"></div>
+                <div class="w-20 md:w-28 h-1 bg-gradient-to-r from-transparent via-noorea-gold to-transparent mx-auto mb-6"></div>
             </div>
             
             <!-- Message principal -->
-            <div class="hero-content-animation">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-6 leading-tight text-center">
+            <div>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white mb-8 leading-tight text-center drop-shadow-lg">
                     Découvrez la beauté 
                     <span class="text-noorea-gold bg-gradient-to-r from-noorea-gold to-yellow-300 bg-clip-text text-transparent">
                         multiculturelle
                     </span>
                 </h2>
-                <p class="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-4xl mx-auto text-center">
-                    Une collection exclusive de cosmétiques et parfums premium, célébrant la diversité et l'authenticité 
-                    des traditions de beauté du monde entier.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                    <a href="{{ route('products') }}" class="btn-primary text-lg px-10 py-5 transform transition-all duration-300 hover:scale-110 hover:shadow-2xl bg-gradient-to-r from-noorea-gold to-yellow-500 hover:from-yellow-500 hover:to-noorea-gold">
-                        <i class="fas fa-crown mr-3"></i>
+                
+                <div class="flex justify-center">
+                    <a href="{{ route('products') }}" class="text-base md:text-lg px-8 py-4 bg-noorea-gold hover:bg-yellow-600 text-noorea-dark font-medium transition-all duration-300 shadow-xl rounded-lg">
+                        <i class="fas fa-crown mr-2"></i>
                         Découvrir la collection
-                    </a>
-                    <a href="{{ route('categories') }}" class="btn-secondary text-lg px-10 py-5 transform transition-all duration-300 hover:scale-110 hover:shadow-2xl border-2 border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-noorea-dark">
-                        <i class="fas fa-palette mr-3"></i>
-                        Explorer les univers
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Particules et effets visuels avancés -->
-    <div class="absolute inset-0 z-10 pointer-events-none">
-        <!-- Particules dorées principales -->
-        <div class="hero-particle hero-particle-1"></div>
-        <div class="hero-particle hero-particle-2"></div>
-        <div class="hero-particle hero-particle-3"></div>
-        <div class="hero-particle hero-particle-4"></div>
-        <div class="hero-particle hero-particle-5"></div>
-        <div class="hero-particle hero-particle-6"></div>
-        <div class="hero-particle hero-particle-7"></div>
-        <div class="hero-particle hero-particle-8"></div>
-        
-        <!-- Cercles lumineux flottants -->
-        <div class="hero-light-circle hero-light-1"></div>
-        <div class="hero-light-circle hero-light-2"></div>
-        <div class="hero-light-circle hero-light-3"></div>
-        <div class="hero-light-circle hero-light-4"></div>
-        
-        <!-- Étoiles scintillantes -->
-        <div class="hero-star hero-star-1"><i class="fas fa-star"></i></div>
-        <div class="hero-star hero-star-2"><i class="fas fa-star"></i></div>
-        <div class="hero-star hero-star-3"><i class="fas fa-star"></i></div>
-        <div class="hero-star hero-star-4"><i class="fas fa-star"></i></div>
-        <div class="hero-star hero-star-5"><i class="fas fa-star"></i></div>
-        
-        <!-- Lignes de lumière -->
-        <div class="hero-light-beam hero-beam-1"></div>
-        <div class="hero-light-beam hero-beam-2"></div>
-        <div class="hero-light-beam hero-beam-3"></div>
-    </div>
 </section>
+
+<!-- Styles et Script pour le carousel -->
+<style>
+.hero-slide {
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+.hero-slide.active {
+    opacity: 1;
+}
+.hero-indicator.active {
+    background-color: #d4af37 !important;
+    transform: scale(1.2);
+}
+
+/* Styles pour les indicateurs du carousel */
+.hero-indicator.active {
+    background-color: #d4af37 !important;
+    transform: scale(1.2);
+}
+
+/* Optimisation de la netteté des images hero */
+.hero-slide img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0) scale(1.0, 1.0);
+    -moz-transform: translateZ(0) scale(1.0, 1.0);
+    -ms-transform: translateZ(0) scale(1.0, 1.0);
+    -o-transform: translateZ(0) scale(1.0, 1.0);
+    transform: translateZ(0) scale(1.0, 1.0);
+    filter: contrast(1.1) saturate(1.1);
+}
+
+/* Styles pour la navbar supérieure */
+.navbar-icon-top {
+    color: #ffffff;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.navbar-icon-top:hover {
+    color: #d4af37;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Styles pour la navbar inférieure */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+
+/* Styles pour le header */
+header {
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion du menu mobile
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+            
+            // Changer l'icône du bouton
+            const icon = mobileMenuButton.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars text-xl';
+            } else {
+                icon.className = 'fas fa-times text-xl';
+            }
+        });
+
+        // Fermer le menu mobile quand on clique sur un lien
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
+            });
+        });
+
+        // Fermer le menu mobile quand on clique en dehors
+        document.addEventListener('click', function(event) {
+            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
+            }
+        });
+    }
+
+    // Effet de scroll pour la navbar
+    let lastScrollTop = 0;
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const header = document.querySelector('header');
+        
+        if (scrollTop > 100) {
+            header.style.background = 'transparent';
+            header.style.backdropFilter = 'blur(12px)';
+            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+        } else {
+            header.style.background = 'transparent';
+            header.style.backdropFilter = 'blur(8px)';
+            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.10)';
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+});
+</script>
 
 <!-- Bannière USP -->
 <section class="bg-noorea-dark text-white py-8 relative overflow-hidden">
@@ -238,417 +407,561 @@
 </section>
 
 <!-- Catégories Phares -->
-<section class="py-16 bg-white relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full bg-pattern opacity-5 z-0"></div>
+<section class="py-20 bg-gradient-to-br from-noorea-cream/20 via-white to-noorea-cream/10 relative overflow-hidden">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-10 left-10 w-20 h-20 bg-noorea-gold/10 rounded-full blur-xl"></div>
+    <div class="absolute bottom-20 right-20 w-32 h-32 bg-noorea-emerald/10 rounded-full blur-xl"></div>
+    
     <div class="container mx-auto px-4 relative z-10">
-        <h2 class="text-3xl font-serif font-semibold text-center mb-12 text-noorea-dark relative inline-block mx-auto">
-            Nos catégories phares
-            <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-noorea-gold"></span>
-        </h2>
+        <!-- En-tête de section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                Nos Catégories Phares
+            </h2>
+            <div class="flex items-center justify-center mb-6">
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+                <i class="fas fa-th-large text-noorea-gold text-lg mx-4"></i>
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+            </div>
+            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+                Découvrez notre sélection de produits de beauté authentiques par catégorie
+            </p>
+        </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <a href="#" class="category-card bg-noorea-cream/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-60 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Soins du visage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                </div>
-                <div class="p-4 text-center">
-                    <h3 class="text-xl font-medium text-noorea-dark">Soins du visage</h3>
-                </div>
+        <!-- Grille des catégories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            @foreach($categories as $category)
+            <a href="{{ route('categories') }}?category={{ $category->slug }}" class="group">
+                <article class="bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                    <div class="relative h-56 overflow-hidden">
+                        @if($category->image)
+                            @if(filter_var($category->image, FILTER_VALIDATE_URL))
+                                {{-- URL externe --}}
+                                <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @else
+                                {{-- Fichier local --}}
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @endif
+                        @else
+                            {{-- Image par défaut --}}
+                            <div class="w-full h-full bg-gradient-to-br from-noorea-cream to-noorea-gold flex items-center justify-center">
+                                <i class="fas fa-spa text-4xl text-white/70"></i>
+                            </div>
+                        @endif
+                        
+                        {{-- Overlay moderne --}}
+                        <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    
+                    <!-- Contenu de la carte -->
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-semibold text-noorea-dark mb-4 group-hover:text-noorea-gold transition-colors duration-300">
+                            {{ $category->name }}
+                        </h3>
+                        
+                        <!-- Lien découvrir -->
+                        <div class="inline-flex items-center text-noorea-gold font-medium text-sm group-hover:text-noorea-emerald transition-colors duration-300">
+                            Découvrir
+                            <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </div>
+                    </div>
+                </article>
             </a>
-            
-            <a href="#" class="category-card bg-noorea-cream/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-60 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/2113855/pexels-photo-2113855.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Maquillage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                </div>
-                <div class="p-4 text-center">
-                    <h3 class="text-xl font-medium text-noorea-dark">Maquillage</h3>
-                </div>
-            </a>
-            
-            <a href="#" class="category-card bg-noorea-cream/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-60 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Parfums" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                </div>
-                <div class="p-4 text-center">
-                    <h3 class="text-xl font-medium text-noorea-dark">Parfums</h3>
-                </div>
-            </a>
-            
-            <a href="#" class="category-card bg-noorea-cream/30 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-60 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Soins des cheveux" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                </div>
-                <div class="p-4 text-center">
-                    <h3 class="text-xl font-medium text-noorea-dark">Soins des cheveux</h3>
-                </div>
+            @endforeach
+        </div>
+        
+        <!-- Bouton voir toutes les catégories -->
+        <div class="text-center mt-12">
+            <a href="{{ route('categories') }}" class="inline-flex items-center text-noorea-gold font-medium text-sm hover:text-noorea-emerald transition-colors duration-300">
+                Voir toutes les catégories
+                <i class="fas fa-arrow-right ml-2 transform translate-x-0 hover:translate-x-2 transition-transform duration-300"></i>
             </a>
         </div>
     </div>
 </section>
 
-<!-- Produits Tendance -->
-<section class="py-16 bg-gradient-to-b from-noorea-cream/20 to-white relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1596704017254-9759879b0456?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')] bg-fixed bg-no-repeat bg-cover opacity-5"></div>
+<!-- Section Nos Coups de Cœur -->
+<section class="py-20 relative overflow-hidden" style="background-color: #F7EAD5;">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-20 right-10 w-24 h-24 bg-noorea-rose-gold/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 left-20 w-32 h-32 bg-noorea-gold/10 rounded-full blur-2xl"></div>
+    
     <div class="container mx-auto px-4 relative z-10">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-serif font-semibold text-noorea-dark inline-block relative">
-                Produits tendance
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-noorea-gold"></span>
+        <!-- En-tête de section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                Nos Coups de <span class="text-noorea-rose-gold font-medium">Cœur</span>
             </h2>
-            <p class="text-gray-600 mt-4">Découvrez nos produits les plus populaires</p>
+            <div class="flex items-center justify-center mb-6">
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+                <i class="fas fa-heart text-noorea-rose-gold text-lg mx-4"></i>
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+            </div>
+            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+                Découvrez notre sélection exclusive de produits chouchous, plébiscités par nos clientes
+            </p>
+        </div>
+
+        <!-- Grille des produits coups de cœur -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            @foreach($featuredProducts as $product)
+            <article class="bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="group block">
+                    <div class="relative h-64 overflow-hidden">
+                        @if($product->main_image)
+                            @if(filter_var($product->main_image, FILTER_VALIDATE_URL))
+                                {{-- URL externe --}}
+                                <img src="{{ $product->main_image }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @else
+                                {{-- Fichier local --}}
+                                <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                            @endif
+                        @else
+                            {{-- Image par défaut --}}
+                            <div class="w-full h-full bg-gradient-to-br from-noorea-cream to-noorea-rose-gold flex items-center justify-center">
+                                <i class="fas fa-heart text-4xl text-white/70"></i>
+                            </div>
+                        @endif
+                        
+                        <!-- Badge catégorie -->
+                        @if($product->category)
+                        <div class="absolute top-3 left-3 bg-noorea-gold text-white px-3 py-1 rounded-full text-xs font-medium flex items-center">
+                            <i class="fas fa-tag mr-1"></i>
+                            {{ $product->category->name }}
+                        </div>
+                        @endif
+                        
+                        {{-- Overlay moderne --}}
+                        <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    
+                    <!-- Contenu de la carte (cliquable) -->
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight text-center">
+                            {{ $product->name }}
+                        </h3>
+                        
+                        <!-- Prix -->
+                        <div class="text-center mb-4">
+                            <div class="text-noorea-gold font-bold text-xl">
+                                {{ number_format($product->price, 0, ',', ' ') }} FCFA
+                            </div>
+                        </div>
+                        
+                        <!-- Lien découvrir -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center text-noorea-rose-gold font-medium text-sm group-hover:text-noorea-gold transition-colors duration-300">
+                                Voir le produit
+                                <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </article>
+            @endforeach
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Produit 1 -->
-            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="relative">
-                    <span class="absolute top-2 right-2 bg-noorea-gold text-white text-xs px-2 py-1 rounded z-10">Nouveau</span>
-                    <a href="{{ route('products.show', 1) }}" class="block">
-                        <img src="https://images.pexels.com/photos/5938567/pexels-photo-5938567.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Crème hydratante" class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-white/90 text-noorea-dark px-4 py-2 rounded-full font-medium shadow-lg">
-                                <i class="fas fa-eye mr-2"></i>Voir détails
-                            </span>
-                        </div>
-                    </a>
-                    <button class="absolute bottom-2 right-2 bg-white text-noorea-dark p-2 rounded-full shadow hover:bg-noorea-gold hover:text-white transition-colors transform transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <h3 class="text-lg font-medium text-noorea-dark">Crème hydratante visage</h3>
-                    <p class="text-sm text-gray-500 mb-2">Hydratation intense</p>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-noorea-dark font-bold">26 200 CFA</span>
-                        <div class="flex text-noorea-gold">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <!-- Boutons d'action élégants -->
-                    <div class="flex gap-2">
-                        <a href="{{ route('products.show', 1) }}" 
-                           class="flex-1 bg-noorea-gold hover:bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 text-center">
-                            Voir détails
-                        </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20suis%20intéressé(e)%20par%20la%20Crème%20hydratante%20visage%20à%2026%20200%20CFA.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
-                           target="_blank"
-                           class="bg-noorea-dark hover:bg-gray-800 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center justify-center" 
-                           title="Contacter via WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 2 -->
-            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="relative">
-                    <a href="{{ route('products.show', 2) }}" class="block">
-                        <img src="https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Sérum visage" class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-white/90 text-noorea-dark px-4 py-2 rounded-full font-medium shadow-lg">
-                                <i class="fas fa-eye mr-2"></i>Voir détails
-                            </span>
-                        </div>
-                    </a>
-                    <button class="absolute bottom-2 right-2 bg-white text-noorea-dark p-2 rounded-full shadow hover:bg-noorea-gold hover:text-white transition-colors transform transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <h3 class="text-lg font-medium text-noorea-dark">Sérum éclat</h3>
-                    <p class="text-sm text-gray-500 mb-2">Vitamine C</p>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-noorea-dark font-bold">29 500 CFA</span>
-                        <div class="flex text-noorea-gold">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <!-- Boutons d'action élégants -->
-                    <div class="flex gap-2">
-                        <a href="{{ route('products.show', 2) }}" 
-                           class="flex-1 bg-noorea-gold hover:bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 text-center">
-                            Voir détails
-                        </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20suis%20intéressé(e)%20par%20le%20Sérum%20éclat%20à%2029%20500%20CFA.%20Pouvez-vous%20me%20donner%20plus%20d'informations%20%3F" 
-                           target="_blank"
-                           class="bg-noorea-dark hover:bg-gray-800 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center justify-center" 
-                           title="Contacter via WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 3 -->
-            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="relative">
-                    <span class="absolute top-2 right-2 bg-noorea-emerald text-white text-xs px-2 py-1 rounded z-10">Promo -20%</span>
-                    <a href="{{ route('products.show', 3) }}" class="block">
-                        <img src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Huile capillaire" class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-white/90 text-noorea-dark px-4 py-2 rounded-full font-medium shadow-lg">
-                                <i class="fas fa-eye mr-2"></i>Voir détails
-                            </span>
-                        </div>
-                    </a>
-                    <button class="absolute bottom-2 right-2 bg-white text-noorea-dark p-2 rounded-full shadow hover:bg-noorea-gold hover:text-white transition-colors transform transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <h3 class="text-lg font-medium text-noorea-dark">Huile capillaire</h3>
-                    <p class="text-sm text-gray-500 mb-2">Argan et Karité</p>
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <span class="text-noorea-dark font-bold">18 950 CFA</span>
-                            <span class="text-gray-500 line-through text-sm ml-2">23 600 CFA</span>
-                        </div>
-                        <div class="flex text-noorea-gold">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <!-- Boutons d'action élégants -->
-                    <div class="flex gap-2">
-                        <a href="{{ route('products.show', 3) }}" 
-                           class="flex-1 bg-noorea-gold hover:bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 text-center">
-                            Voir détails
-                        </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20suis%20intéressé(e)%20par%20l'Huile%20capillaire%20en%20PROMO%20à%2018%20950%20CFA%20(au%20lieu%20de%2023%20600%20CFA).%20Cette%20offre%20est-elle%20toujours%20disponible%20%3F" 
-                           target="_blank"
-                           class="bg-noorea-dark hover:bg-gray-800 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center justify-center" 
-                           title="Contacter via WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 4 -->
-            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="relative">
-                    <a href="{{ route('products.show', 4) }}" class="block">
-                        <img src="https://images.pexels.com/photos/1190829/pexels-photo-1190829.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Parfum floral" class="w-full h-60 object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span class="bg-white/90 text-noorea-dark px-4 py-2 rounded-full font-medium shadow-lg">
-                                <i class="fas fa-eye mr-2"></i>Voir détails
-                            </span>
-                        </div>
-                    </a>
-                    <button class="absolute bottom-2 right-2 bg-white text-noorea-dark p-2 rounded-full shadow hover:bg-noorea-gold hover:text-white transition-colors transform transition-transform duration-300 group-hover:translate-y-[-5px]">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="p-4">
-                    <h3 class="text-lg font-medium text-noorea-dark">Eau de parfum</h3>
-                    <p class="text-sm text-gray-500 mb-2">Fleur de vanille</p>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-noorea-dark font-bold">49 200 CFA</span>
-                        <div class="flex text-noorea-gold">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <!-- Boutons d'action élégants -->
-                    <div class="flex gap-2">
-                        <a href="{{ route('products.show', 4) }}" 
-                           class="flex-1 bg-noorea-gold hover:bg-yellow-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 text-center">
-                            Voir détails
-                        </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20suis%20intéressé(e)%20par%20l'Eau%20de%20parfum%20Fleur%20de%20vanille%20à%2049%20200%20CFA.%20Puis-je%20avoir%20des%20détails%20sur%20ce%20parfum%20%3F" 
-                           target="_blank"
-                           class="bg-noorea-dark hover:bg-gray-800 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors duration-300 flex items-center justify-center" 
-                           title="Contacter via WhatsApp">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="text-center mt-10">
-            <a href="{{ route('products') }}" class="inline-block bg-gradient-to-r from-noorea-gold to-yellow-500 hover:from-yellow-500 hover:to-noorea-gold text-noorea-dark font-semibold py-4 px-8 rounded-xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 border border-yellow-400/30">
-                <i class="fas fa-shopping-bag mr-2"></i>
+        <!-- Bouton voir tous les produits -->
+        <div class="text-center mt-12">
+            <a href="{{ route('products') }}" class="inline-flex items-center text-noorea-rose-gold font-medium text-sm hover:text-noorea-gold transition-colors duration-300">
                 Voir tous les produits
-                <i class="fas fa-arrow-right ml-2"></i>
+                <i class="fas fa-arrow-right ml-2 transform translate-x-0 hover:translate-x-2 transition-transform duration-300"></i>
             </a>
         </div>
     </div>
 </section>
+                        
+                        {{-- Nom du produit sur l'image --}}
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <h3 class="text-base font-bold text-noorea-dark drop-shadow-2xl leading-tight">
+    </div>
+</section>
+
+<!-- Section Nos Marques -->
+<section class="py-16 relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2067&q=80'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <!-- Overlay sombre et flou -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- En-tête de section -->
+        <div class="mb-12 text-center">
+            <h2 class="text-4xl font-serif font-light text-noorea-gold mb-2 tracking-wide">
+                Nos Partenaires d'Excellence
+            </h2>
+            <div class="flex items-center justify-center mt-3">
+                <div class="h-px bg-noorea-gold/30 w-16"></div>
+                <i class="fas fa-crown text-noorea-gold text-lg mx-4"></i>
+                <div class="h-px bg-noorea-gold/30 w-16"></div>
+            </div>
+        </div>
+
+        <!-- Carousel des marques -->
+        <div class="relative max-w-2xl mx-auto">
+            <!-- Container du carousel -->
+            <div class="brands-carousel-container overflow-hidden relative h-96">
+                @foreach($brands as $index => $brand)
+                    <div class="brand-slide absolute inset-0 opacity-0 transition-opacity duration-500 {{ $index === 0 ? 'opacity-100' : '' }}" data-slide="{{ $index }}">
+                        <div class="flex items-center justify-center h-full px-8">
+                            <div class="group cursor-pointer w-full max-w-lg">
+                                <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl hover:border-noorea-gold/30 transition-all duration-300 hover:scale-105 h-80">
+                                    <div class="text-center h-full flex items-center justify-center">
+                                        @if($brand->logo)
+                                            @if(Str::startsWith($brand->logo, ['http://', 'https://']))
+                                                {{-- Logo avec URL complète --}}
+                                                <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                                            @else
+                                                {{-- Logo avec chemin relatif --}}
+                                                <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                                            @endif
+                                        @else
+                                            {{-- Icône par défaut --}}
+                                            <div class="w-full h-64 bg-gradient-to-br from-noorea-gold to-yellow-400 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-crown text-white text-8xl"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            
+            <!-- Flèches de navigation -->
+            <button class="brands-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-noorea-dark p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10">
+                <i class="fas fa-chevron-left text-lg"></i>
+            </button>
+            <button class="brands-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-noorea-dark p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10">
+                <i class="fas fa-chevron-right text-lg"></i>
+            </button>
+            
+            <!-- Indicateurs -->
+            <div class="flex justify-center mt-8 space-x-2">
+                @foreach($brands as $index => $brand)
+                    <button class="brands-indicator w-3 h-3 rounded-full {{ $index === 0 ? 'bg-noorea-gold' : 'bg-white/50' }} transition-all duration-300" data-slide="{{ $index }}"></button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Script pour le carousel des marques -->
+<script>
+// Script isolé pour le carousel des marques
+(function() {
+    'use strict';
+    
+    // Attendre que tout soit chargé
+    window.addEventListener('load', function() {
+        console.log('Initialisation du carousel des marques...');
+        
+        const slides = document.querySelectorAll('.brand-slide');
+        const indicators = document.querySelectorAll('.brands-indicator');
+        const prevBtn = document.querySelector('.brands-prev');
+        const nextBtn = document.querySelector('.brands-next');
+        
+        if (slides.length === 0) {
+            console.log('Aucun slide trouvé');
+            return;
+        }
+        
+        console.log('Nombre de slides trouvés:', slides.length);
+        console.log('Bouton précédent trouvé:', !!prevBtn);
+        console.log('Bouton suivant trouvé:', !!nextBtn);
+        
+        let currentIndex = 0;
+        let intervalId = null;
+        
+        function showSlide(index) {
+            console.log('Affichage du slide', index);
+            
+            // Cacher tous les slides
+            slides.forEach(function(slide, i) {
+                if (i === index) {
+                    slide.style.opacity = '1';
+                    slide.style.zIndex = '2';
+                } else {
+                    slide.style.opacity = '0';
+                    slide.style.zIndex = '1';
+                }
+            });
+            
+            // Mettre à jour les indicateurs
+            indicators.forEach(function(indicator, i) {
+                if (i === index) {
+                    indicator.classList.remove('bg-white/50');
+                    indicator.classList.add('bg-noorea-gold');
+                } else {
+                    indicator.classList.remove('bg-noorea-gold');
+                    indicator.classList.add('bg-white/50');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            showSlide(currentIndex);
+        }
+        
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            showSlide(currentIndex);
+        }
+        
+        function startAutoplay() {
+            console.log('Démarrage du défilement automatique');
+            intervalId = setInterval(function() {
+                console.log('Défilement automatique - passage au slide suivant');
+                nextSlide();
+            }, 3000);
+        }
+        
+        function stopAutoplay() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+                console.log('Arrêt du défilement automatique');
+            }
+        }
+        
+        // Event listeners pour les boutons
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Clic sur bouton suivant');
+                nextSlide();
+                stopAutoplay();
+                setTimeout(function() {
+                    startAutoplay();
+                }, 5000);
+            });
+        }
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Clic sur bouton précédent');
+                prevSlide();
+                stopAutoplay();
+                setTimeout(function() {
+                    startAutoplay();
+                }, 5000);
+            });
+        }
+        
+        // Event listeners pour les indicateurs
+        indicators.forEach(function(indicator, index) {
+            indicator.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Clic sur indicateur', index);
+                currentIndex = index;
+                showSlide(currentIndex);
+                stopAutoplay();
+                setTimeout(function() {
+                    startAutoplay();
+                }, 5000);
+            });
+        });
+        
+        // Pause au survol
+        const container = document.querySelector('.brands-carousel-container');
+        if (container) {
+            container.addEventListener('mouseenter', function() {
+                stopAutoplay();
+            });
+            container.addEventListener('mouseleave', function() {
+                startAutoplay();
+            });
+        }
+        
+        // Initialisation
+        showSlide(0);
+        
+        // Démarrer le défilement automatique après 1 seconde
+        setTimeout(function() {
+            if (slides.length > 1) {
+                startAutoplay();
+            }
+        }, 1000);
+        
+        console.log('Carousel des marques initialisé avec succès');
+    });
+})();
+</script>
+    </div>
+</section>
+
+<!-- Le mini-panier est maintenant géré par le composant global -->
+
 <!-- Bannière promotionnelle -->
-<section class="py-20 text-white relative overflow-hidden newsletter-shine">
-    <!-- Image de fond floue -->
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1200&q=80')] bg-no-repeat bg-cover bg-fixed filter blur-sm"></div>
+<section class="py-16 text-white relative overflow-hidden">
+    <!-- Fond simplifié -->
+    <div class="absolute inset-0 bg-gradient-to-br from-noorea-dark to-noorea-emerald"></div>
     
-    <!-- Overlay avec gradient dynamique -->
-    <div class="absolute inset-0 bg-gradient-to-br from-noorea-dark/85 via-noorea-emerald/75 to-noorea-dark/85"></div>
-    
-    <!-- Particules flottantes -->
-    <div class="particles">
-        <div class="particle" style="left: 10%; animation-delay: 0s; width: 4px; height: 4px;"></div>
-        <div class="particle" style="left: 20%; animation-delay: 1s; width: 2px; height: 2px;"></div>
-        <div class="particle" style="left: 30%; animation-delay: 2s; width: 3px; height: 3px;"></div>
-        <div class="particle" style="left: 40%; animation-delay: 3s; width: 2px; height: 2px;"></div>
-        <div class="particle" style="left: 50%; animation-delay: 4s; width: 4px; height: 4px;"></div>
-        <div class="particle" style="left: 60%; animation-delay: 5s; width: 3px; height: 3px;"></div>
-        <div class="particle" style="left: 70%; animation-delay: 1.5s; width: 2px; height: 2px;"></div>
-        <div class="particle" style="left: 80%; animation-delay: 2.5s; width: 4px; height: 4px;"></div>
-        <div class="particle" style="left: 90%; animation-delay: 3.5s; width: 3px; height: 3px;"></div>
+    <!-- Motifs subtils -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-20 left-20 w-32 h-32 border border-white rounded-full"></div>
+        <div class="absolute bottom-20 right-20 w-24 h-24 border border-white rounded-full"></div>
     </div>
     
-    <!-- Icônes flottantes animées -->
-    <div class="absolute inset-0 overflow-hidden">
-        <!-- Icône cœur - animation flottante -->
-        <div class="absolute top-20 left-10 text-noorea-gold/40 text-4xl animate-float">
-            <i class="fas fa-heart"></i>
-        </div>
-        
-        <!-- Icône étoile - animation de dérive -->
-        <div class="absolute top-32 right-20 text-noorea-cream/50 text-3xl animate-drift">
-            <i class="fas fa-star"></i>
-        </div>
-        
-        <!-- Icône feuille - rotation lente -->
-        <div class="absolute bottom-32 left-16 text-noorea-gold/35 text-5xl animate-rotate-slow">
-            <i class="fas fa-leaf"></i>
-        </div>
-        
-        <!-- Icône spa - flottement inverse -->
-        <div class="absolute top-48 left-1/4 text-noorea-cream/40 text-2xl animate-float-reverse">
-            <i class="fas fa-spa"></i>
-        </div>
-        
-        <!-- Icône fleur - pulsation brillante -->
-        <div class="absolute bottom-20 right-16 text-noorea-gold/45 text-3xl animate-pulse-glow">
-            <i class="fas fa-seedling"></i>
-        </div>
-        
-        <!-- Icône magie - scintillement -->
-        <div class="absolute top-16 right-1/3 text-noorea-cream/35 text-4xl animate-sparkle">
-            <i class="fas fa-magic"></i>
-        </div>
-        
-        <!-- Icône gemme - animation flottante -->
-        <div class="absolute bottom-40 left-1/3 text-noorea-gold/30 text-2xl animate-float">
-            <i class="fas fa-gem"></i>
-        </div>
-        
-        <!-- Icône papillon - dérive -->
-        <div class="absolute top-60 right-10 text-noorea-cream/40 text-3xl animate-drift">
-            <i class="fas fa-dove"></i>
-        </div>
-    </div>
-    
-    <div class="container mx-auto px-4 py-16 relative z-10">
-        <div class="max-w-xl mx-auto text-center">
-            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-8 border border-white/20">
-                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4 animate-fadeIn text-shadow-lg">
-                    10% de réduction sur votre première commande
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-lg mx-auto text-center">
+            <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                <!-- Titre principal -->
+                <h2 class="text-3xl font-serif font-bold mb-3">
+                    <span class="text-noorea-gold text-4xl">10%</span> de réduction<br>
+                    sur votre première commande
                 </h2>
-                <p class="text-lg mb-8 animate-fadeIn delay-100 text-noorea-cream">
+                
+                <!-- Description -->
+                <p class="text-base mb-6 text-white/90">
                     Inscrivez-vous à notre newsletter et recevez un code promo exclusif
                 </p>
                 
-                <form class="flex flex-col md:flex-row gap-4 justify-center animate-fadeIn delay-200">
+                <!-- Formulaire simplifié -->
+                <form class="space-y-4">
                     <input 
                         type="email" 
                         placeholder="Votre adresse email" 
-                        class="px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-noorea-gold text-noorea-dark w-full md:w-auto backdrop-blur-sm bg-white/90 border border-white/30 placeholder-gray-500"
+                        class="w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-noorea-gold text-noorea-dark bg-white placeholder-gray-500"
                     >
+                    
                     <button 
                         type="submit" 
-                        class="bg-gradient-to-r from-noorea-gold to-noorea-rose-gold text-noorea-dark font-semibold px-6 py-3 rounded-md transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-noorea-gold/50"
+                        class="w-full bg-noorea-gold hover:bg-noorea-rose-gold text-noorea-dark font-semibold px-6 py-3 rounded-lg transition-colors duration-300"
                     >
-                        S'inscrire
+                        Obtenir mon code promo
                     </button>
                 </form>
+                
+                <!-- Note de confidentialité -->
+                <p class="text-white/70 text-xs mt-4">
+                    Vos données sont protégées. Désabonnement possible à tout moment.
+                </p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Témoignages -->
-<section class="py-16 bg-white relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1576426863848-c21f53c60b19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')] bg-fixed bg-no-repeat bg-cover opacity-5"></div>
+<section class="py-20 bg-gradient-to-br from-noorea-cream/20 via-white to-noorea-cream/10 relative overflow-hidden">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-10 left-10 w-20 h-20 bg-noorea-gold/10 rounded-full blur-xl"></div>
+    <div class="absolute bottom-20 right-20 w-32 h-32 bg-noorea-rose-gold/10 rounded-full blur-xl"></div>
+    
     <div class="container mx-auto px-4 relative z-10">
-        <h2 class="text-3xl font-serif font-semibold text-center mb-12 text-noorea-dark relative inline-block mx-auto">
-            Ce que nos clients disent
-            <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-noorea-gold"></span>
-        </h2>
+        <!-- En-tête de section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                Témoignages de nos Clientes
+            </h2>
+            <div class="flex items-center justify-center mb-6">
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+                <i class="fas fa-heart text-noorea-gold text-lg mx-4"></i>
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+            </div>
+            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+                Découvrez les expériences authentiques de celles qui nous font confiance
+            </p>
+        </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Grille des témoignages -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             <!-- Témoignage 1 -->
-            <div class="bg-gradient-to-br from-noorea-cream/50 to-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px]">
-                <div class="flex text-noorea-gold mb-4">
+            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                <!-- Citation -->
+                <div class="text-noorea-gold/30 text-4xl mb-4">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                
+                <!-- Étoiles -->
+                <div class="flex text-noorea-gold mb-6 text-lg">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p class="text-gray-700 mb-4 italic">"J'utilise la crème hydratante depuis un mois et ma peau n'a jamais été aussi douce. Les ingrédients naturels font vraiment la différence!"</p>
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sophie M." class="w-10 h-10 rounded-full mr-4">
+                
+                <!-- Texte du témoignage -->
+                <p class="text-noorea-dark/80 mb-6 text-lg leading-relaxed font-light">
+                    J'utilise la crème hydratante depuis un mois et ma peau n'a jamais été aussi douce. Les ingrédients naturels font vraiment la différence!
+                </p>
+                
+                <!-- Profil client -->
+                <div class="flex items-center pt-4 border-t border-noorea-gold/10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-gold to-noorea-rose-gold flex items-center justify-center text-white font-semibold mr-4">
+                        S
+                    </div>
                     <div>
-                        <h4 class="font-medium text-noorea-dark">Sophie M.</h4>
-                        <p class="text-xs text-gray-500">Cliente fidèle</p>
+                        <h4 class="font-semibold text-noorea-dark">Sophie Martin</h4>
+                        <p class="text-sm text-noorea-dark/60">Cliente fidèle</p>
                     </div>
                 </div>
             </div>
             
             <!-- Témoignage 2 -->
-            <div class="bg-gradient-to-br from-noorea-cream/50 to-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-5px]">
-                <div class="flex text-noorea-gold mb-4">
+            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                <!-- Citation -->
+                <div class="text-noorea-gold/30 text-4xl mb-4">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                
+                <!-- Étoiles -->
+                <div class="flex text-noorea-gold mb-6 text-lg">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                 </div>
-                <p class="text-gray-700 mb-4 italic">"Le sérum éclat a complètement transformé mon teint. Je reçois des compliments tous les jours! Et l'odeur est divine."</p>
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Marc T." class="w-10 h-10 rounded-full mr-4">
+                
+                <!-- Texte du témoignage -->
+                <p class="text-noorea-dark/80 mb-6 text-lg leading-relaxed font-light">
+                    Le sérum éclat a complètement transformé mon teint. Je reçois des compliments tous les jours! L'odeur est divine.
+                </p>
+                
+                <!-- Profil client -->
+                <div class="flex items-center pt-4 border-t border-noorea-gold/10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-emerald to-noorea-gold flex items-center justify-center text-white font-semibold mr-4">
+                        A
+                    </div>
                     <div>
-                        <h4 class="font-medium text-noorea-dark">Marc T.</h4>
-                        <p class="text-xs text-gray-500">Client depuis 2024</p>
+                        <h4 class="font-semibold text-noorea-dark">Aminata Diallo</h4>
+                        <p class="text-sm text-noorea-dark/60">Cliente depuis 2024</p>
                     </div>
                 </div>
             </div>
             
             <!-- Témoignage 3 -->
-            <div class="bg-gradient-to-br from-noorea-cream/50 to-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-5px]">
-                <div class="flex text-noorea-gold mb-4">
+            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                <!-- Citation -->
+                <div class="text-noorea-gold/30 text-4xl mb-4">
+                    <i class="fas fa-quote-left"></i>
+                </div>
+                
+                <!-- Étoiles -->
+                <div class="flex text-noorea-gold mb-6 text-lg">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star-half-alt"></i>
                 </div>
-                <p class="text-gray-700 mb-4 italic">"L'huile capillaire est un miracle pour mes cheveux bouclés. Ils sont maintenant brillants et bien hydratés sans être alourdis."</p>
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Amina K." class="w-10 h-10 rounded-full mr-4">
+                
+                <!-- Texte du témoignage -->
+                <p class="text-noorea-dark/80 mb-6 text-lg leading-relaxed font-light">
+                    L'huile capillaire est un miracle pour mes cheveux bouclés. Ils sont maintenant brillants et bien hydratés sans être alourdis.
+                </p>
+                
+                <!-- Profil client -->
+                <div class="flex items-center pt-4 border-t border-noorea-gold/10">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-rose-gold to-noorea-emerald flex items-center justify-center text-white font-semibold mr-4">
+                        F
+                    </div>
                     <div>
-                        <h4 class="font-medium text-noorea-dark">Amina K.</h4>
-                        <p class="text-xs text-gray-500">Cliente satisfaite</p>
+                        <h4 class="font-semibold text-noorea-dark">Fatou Keita</h4>
+                        <p class="text-sm text-noorea-dark/60">Cliente satisfaite</p>
                     </div>
                 </div>
             </div>
@@ -657,62 +970,145 @@
 </section>
 
 <!-- Blog beauté -->
-<section class="py-16 bg-gradient-to-b from-white to-noorea-cream/30 relative overflow-hidden">
-    <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1596704017254-9759879b0456?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')] bg-fixed bg-no-repeat bg-cover opacity-5"></div>
+<section class="py-20 bg-gradient-to-br from-white via-noorea-cream/5 to-white relative overflow-hidden">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-20 right-10 w-24 h-24 bg-noorea-gold/5 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 left-20 w-32 h-32 bg-noorea-emerald/5 rounded-full blur-2xl"></div>
+    
     <div class="container mx-auto px-4 relative z-10">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-serif font-semibold text-noorea-dark inline-block relative">
-                Beauté du monde
-                <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-noorea-gold"></span>
+        <!-- En-tête de section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                Magazine Beauté
             </h2>
-            <p class="text-gray-600 mt-4">Explorez nos derniers articles sur la beauté</p>
+            <div class="flex items-center justify-center mb-6">
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+                <i class="fas fa-feather-alt text-noorea-gold text-lg mx-4"></i>
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
+            </div>
+            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+                Explorez nos conseils beauté, rituels ancestraux et tendances actuelles
+            </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Grille des articles -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             <!-- Article 1 -->
-            <a href="#" class="blog-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="https://images.pexels.com/photos/3762876/pexels-photo-3762876.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" alt="Rituels de beauté" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-200 transition-opacity duration-300"></div>
+            <article class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/5">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.pexels.com/photos/3762876/pexels-photo-3762876.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" 
+                         alt="Rituels de beauté" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <!-- Badge catégorie -->
+                    <div class="absolute top-4 left-4 bg-noorea-gold text-white px-3 py-1 rounded-full text-xs font-medium">
+                        Rituels
+                    </div>
                 </div>
+                
                 <div class="p-6">
-                    <div class="text-xs text-noorea-gold mb-2">12 juillet 2025</div>
-                    <h3 class="text-xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">5 rituels de beauté africains à adopter</h3>
-                    <p class="text-gray-600 text-sm mb-4">Découvrez les secrets de beauté transmis de génération en génération en Afrique...</p>
-                    <span class="text-noorea-gold text-sm font-medium inline-flex items-center">
-                        Lire la suite 
+                    <!-- Date -->
+                    <div class="flex items-center text-noorea-gold/80 text-sm mb-3">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        12 juillet 2025
+                    </div>
+                    
+                    <!-- Titre -->
+                    <h3 class="text-xl font-semibold text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight">
+                        5 rituels de beauté africains à adopter
+                    </h3>
+                    
+                    <!-- Extrait -->
+                    <p class="text-noorea-dark/70 text-sm mb-4 leading-relaxed">
+                        Découvrez les secrets de beauté transmis de génération en génération en Afrique, pour une peau éclatante et des cheveux sublimes...
+                    </p>
+                    
+                    <!-- Lien de lecture -->
+                    <a href="#" class="inline-flex items-center text-noorea-gold font-medium text-sm hover:text-noorea-emerald transition-colors duration-300">
+                        Lire l'article
                         <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
+                    </a>
                 </div>
-            </a>
+            </article>
             
             <!-- Article 2 -->
-            <a href="#" class="blog-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" alt="Soins naturels" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-200 transition-opacity duration-300"></div>
+            <article class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/5">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" 
+                         alt="Soins naturels" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <!-- Badge catégorie -->
+                    <div class="absolute top-4 left-4 bg-noorea-emerald text-white px-3 py-1 rounded-full text-xs font-medium">
+                        Soins
+                    </div>
                 </div>
+                
                 <div class="p-6">
-                    <div class="text-xs text-noorea-gold mb-2">5 juillet 2025</div>
-                    <h3 class="text-xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Les bienfaits du karité pour la peau et les cheveux</h3>
-                    <p class="text-gray-600 text-sm mb-4">Ce beurre précieux est un véritable trésor de beauté aux multiples vertus...</p>
-                    <span class="text-noorea-gold text-sm font-medium inline-flex items-center">
-                        Lire la suite 
+                    <!-- Date -->
+                    <div class="flex items-center text-noorea-gold/80 text-sm mb-3">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        5 juillet 2025
+                    </div>
+                    
+                    <!-- Titre -->
+                    <h3 class="text-xl font-semibold text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight">
+                        Les bienfaits du karité pour la peau et les cheveux
+                    </h3>
+                    
+                    <!-- Extrait -->
+                    <p class="text-noorea-dark/70 text-sm mb-4 leading-relaxed">
+                        Ce beurre précieux est un véritable trésor de beauté aux multiples vertus, découvrez comment l'intégrer à votre routine...
+                    </p>
+                    
+                    <!-- Lien de lecture -->
+                    <a href="#" class="inline-flex items-center text-noorea-gold font-medium text-sm hover:text-noorea-emerald transition-colors duration-300">
+                        Lire l'article
                         <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
+                    </a>
                 </div>
-            </a>
+            </article>
             
             <!-- Article 3 -->
-            <a href="#" class="blog-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-48 overflow-hidden relative">
-                    <img src="https://images.pexels.com/photos/2113855/pexels-photo-2113855.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" alt="Maquillage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-200 transition-opacity duration-300"></div>
+            <article class="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/5">
+                <div class="relative h-64 overflow-hidden">
+                    <img src="https://images.pexels.com/photos/2113855/pexels-photo-2113855.jpeg?auto=compress&cs=tinysrgb&w=600&h=300&fit=crop" 
+                         alt="Maquillage" 
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <!-- Badge catégorie -->
+                    <div class="absolute top-4 left-4 bg-noorea-rose-gold text-white px-3 py-1 rounded-full text-xs font-medium">
+                        Maquillage
+                    </div>
                 </div>
+                
                 <div class="p-6">
-                    <div class="text-xs text-noorea-gold mb-2">1 juillet 2025</div>
-                    <h3 class="text-xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Comment créer un maquillage lumineux pour l'été</h3>
-                    <p class="text-gray-600 text-sm mb-4">Nos conseils pour un teint éclatant et une mise en beauté qui résiste à la chaleur...</p>
+                    <!-- Date -->
+                    <div class="flex items-center text-noorea-gold/80 text-sm mb-3">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        1 juillet 2025
+                    </div>
+                    
+                    <!-- Titre -->
+                    <h3 class="text-xl font-semibold text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight">
+                        Comment créer un maquillage lumineux pour l'été
+                    </h3>
+                    
+                    <!-- Extrait -->
+                    <p class="text-noorea-dark/70 text-sm mb-4 leading-relaxed">
+                        Nos conseils pour un teint éclatant et une mise en beauté qui résiste à la chaleur et sublime votre peau naturelle...
+                    </p>
+                    
+                    <!-- Lien de lecture -->
+                    <a href="#" class="inline-flex items-center text-noorea-gold font-medium text-sm hover:text-noorea-emerald transition-colors duration-300">
+                        Lire l'article
+                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
+                    </a>
+                </div>
+            </article>
                     <span class="text-noorea-gold text-sm font-medium inline-flex items-center">
                         Lire la suite 
                         <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>

@@ -3,12 +3,63 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Noorea - Boutique de cosmétiques et parfums multiculturels premium au Sénégal">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <title>{{ isset($title) ? $title . ' | ' : '' }}Noorea - L'expérience beauté multiculturelle</title>
+    <!-- SEO Meta Tags -->
+    <title>{{ isset($seo_title) ? $seo_title : (isset($title) ? $title . ' | Noorea - L\'expérience beauté multiculturelle' : 'Noorea - Boutique de cosmétiques et parfums multiculturels premium au Sénégal') }}</title>
+    <meta name="description" content="{{ isset($seo_description) ? $seo_description : 'Noorea - Boutique de cosmétiques et parfums multiculturels premium au Sénégal. Découvrez notre sélection de produits de beauté authentiques issus des traditions du monde entier.' }}">
+    <meta name="keywords" content="{{ isset($seo_keywords) ? $seo_keywords : 'cosmétiques, parfums, beauté multiculturelle, Sénégal, soins naturels, produits de beauté, maquillage, parfumerie, Dakar, beauté africaine' }}">
+    <meta name="author" content="Noorea">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ isset($canonical_url) ? $canonical_url : url()->current() }}">
     
-    <!-- Favicon -->
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ isset($og_title) ? $og_title : (isset($title) ? $title . ' | Noorea' : 'Noorea - L\'expérience beauté multiculturelle') }}">
+    <meta property="og:description" content="{{ isset($og_description) ? $og_description : 'Découvrez Noorea, votre boutique de cosmétiques et parfums multiculturels premium au Sénégal.' }}">
+    <meta property="og:image" content="{{ isset($og_image) ? $og_image : asset('images/logo.jpg') }}">
+    <meta property="og:locale" content="fr_SN">
+    <meta property="og:site_name" content="Noorea">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="{{ isset($twitter_title) ? $twitter_title : (isset($title) ? $title . ' | Noorea' : 'Noorea - L\'expérience beauté multiculturelle') }}">
+    <meta property="twitter:description" content="{{ isset($twitter_description) ? $twitter_description : 'Découvrez Noorea, votre boutique de cosmétiques et parfums multiculturels premium au Sénégal.' }}">
+    <meta property="twitter:image" content="{{ isset($twitter_image) ? $twitter_image : asset('images/logo.jpg') }}">
+    
+    <!-- Schema.org for Local Business -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Store",
+        "name": "Noorea",
+        "description": "Boutique de cosmétiques et parfums multiculturels premium au Sénégal",
+        "url": "{{ config('app.url') }}",
+        "logo": "{{ asset('images/logo.jpg') }}",
+        "address": {
+            "@@type": "PostalAddress",
+            "addressCountry": "SN",
+            "addressLocality": "Dakar"
+        },
+        "contactPoint": {
+            "@@type": "ContactPoint",
+            "contactType": "customer service",
+            "availableLanguage": ["French", "Wolof"]
+        },
+        "currenciesAccepted": "XOF",
+        "paymentAccepted": ["Cash", "Credit Card", "Orange Money", "Wave"],
+        "priceRange": "$$"
+    }
+    </script>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon.png') }}?v={{ time() }}" type="image/png">
+    <link rel="icon" href="{{ asset('favicon-192x192.png') }}?v={{ time() }}" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v={{ time() }}" sizes="180x180">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,12 +67,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    @vite(['resources/css/app.css', 'resources/css/noorea.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/noorea.css', 'resources/js/app.js', 'resources/js/cart.js'])
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     @stack('styles')
+    
+    <!-- Google Analytics (décommentez et ajoutez votre ID en production) -->
+    <!--
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    -->
+    
+    <!-- Google Search Console (décommentez et ajoutez votre code de vérification en production) -->
+    <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /> -->
+    
+    @stack('head')
 </head>
 <body class="antialiased">
     @yield('navbar')
@@ -136,16 +203,19 @@
             </form>
         </div>
     </div>
+    
+    <!-- Composant du mini-panier -->
+    @include('components.mini-cart')
 
     <!-- Scripts -->
     <script>
         // Toggle menu mobile
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
         
         // Contrôle modal de recherche
-        document.querySelector('[aria-label="Rechercher"]').addEventListener('click', function() {
+        document.querySelector('[aria-label="Rechercher"]')?.addEventListener('click', function() {
             document.getElementById('search-modal').classList.remove('hidden');
         });
         
@@ -158,6 +228,28 @@
             if (e.target === this) {
                 this.classList.add('hidden');
             }
+        });
+        
+        // Assurer que le bouton du mini-panier fonctionne dès le chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // S'assurer que le bouton du mini-panier fonctionne, même avant que cart.js soit entièrement chargé
+            const navbarCartButton = document.getElementById('navbar-cart-button');
+            if (navbarCartButton) {
+                navbarCartButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Bouton panier navbar cliqué via script global');
+                    
+                    // Le module cart.js se charge de tout maintenant
+                    if (typeof window.toggleMiniCart === 'function') {
+                        window.toggleMiniCart();
+                    } else {
+                        console.warn('Module cart.js non encore chargé');
+                    }
+                });
+            }
+            
+            // Le module cart.js gère maintenant tous les écouteurs du mini-panier
         });
     </script>
 

@@ -1,0 +1,48 @@
+/* Navigation Links avec couleurs Noorea */
+.nav-link-gold {
+    color: #374151;
+    font-weight: 500;
+    font-size: 1.125rem; /* 18px au lieu de 16px */
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav-link-gold:hover {
+    color: #D4AF37;
+    transform: translateY(-1px);
+}
+
+.nav-link-gold i {
+    color: #D4AF37;
+    transition: color 0.3s ease;
+    margin-right: 0.5rem;
+    font-size: 1.125rem; /* 18px pour les icônes aussi */
+}
+
+.nav-link-gold:hover i {
+    color: #EAB308;
+}
+
+.active-gold {
+    color: #D4AF37 !important;
+    font-weight: 600;
+}
+
+.active-gold i {
+    color: #D4AF37 !important;
+}
+
+/* Effet de soulignement pour les liens actifs */
+.active-gold::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #D4AF37, #E0BFB8);
+    border-radius: 1px;
+}

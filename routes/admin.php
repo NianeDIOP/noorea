@@ -38,8 +38,8 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'admin'])->group(func
     
     // Gestion des produits
     Route::resource('products', ProductController::class);
-    Route::post('/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');
     Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+    Route::post('/products/{product}/update-status', [ProductController::class, 'updateStatus'])->name('products.update-status');
     Route::delete('/products/{product}/image/{index}', [ProductController::class, 'deleteImage'])->name('products.delete-image');
     
     // Gestion des catégories
@@ -52,7 +52,7 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'admin'])->group(func
     Route::post('/brands/{brand}/toggle-featured', [BrandController::class, 'toggleFeatured'])->name('brands.toggle-featured');
     
     // Gestion des commandes
-    Route::resource('orders', OrderController::class)->except(['create', 'store']);
+    Route::resource('orders', OrderController::class);
     Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::post('/orders/{order}/add-note', [OrderController::class, 'addNote'])->name('orders.add-note');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');

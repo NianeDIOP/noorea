@@ -32,7 +32,7 @@
                     <i class="fas fa-search"></i>
                 </button>
                 <!-- Compte utilisateur -->
-                <a href="{{ route('account') }}" class="navbar-icon text-lg" aria-label="Mon compte">
+                <a href="{{ route('account.dashboard') }}" class="navbar-icon text-lg" aria-label="Mon compte">
                     <i class="fas fa-user"></i>
                 </a>
                 <!-- Wishlist -->

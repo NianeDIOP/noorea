@@ -1,667 +1,741 @@
 @extends('layouts.app')
 
+@if(isset($seoMeta))
+@php
+    extract($seoMeta);
+@endphp
+@endif
+
+@section('title', $product->name)
+
+@if(isset($productSchema))
+@push('head')
+<script type="application/ld+json">
+{!! json_encode($productSchema) !!}
+</script>
+@endpush
+@endif
+
 @section('navbar')
-<header class="absolute top-0 left-0 w-full z-50">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex items-center justify-between bg-transparent backdrop-blur-none px-4 py-3">
-            <!-- Logo Premium -->
-            <a href="{{ route('home') }}" class="flex items-center group">
-                <div class="relative">
-                    <!-- Logo principal -->
-                    <div class="relative p-2 group-hover:scale-110 transition-all duration-300 rounded-xl">
-                        <img src="{{ asset('images/logo.png') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto drop-shadow-sm transition-all duration-300">
-                    </div>
-                    <!-- Particules décoratives -->
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-noorea-gold rounded-full animate-pulse opacity-80"></div>
-                    <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-noorea-gold rounded-full animate-pulse opacity-70" style="animation-delay: 0.5s;"></div>
+<!-- Navbar Supérieur -->
+<header class="absolute top-0 left-0 w-full z-50 backdrop-blur-md transition-all duration-300">
+    <!-- Barre supérieure avec logo, recherche et icônes -->
+    <div class="backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo à gauche -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-14 md:h-16 w-auto">
+                    </a>
                 </div>
-            </a>
-            <!-- Navigation principale - desktop -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
-            </nav>
-            <!-- Actions utilisateur -->
-            <div class="flex items-center space-x-5">
-                <!-- Recherche -->
-                <button type="button" class="navbar-icon text-lg" aria-label="Rechercher">
-                    <i class="fas fa-search"></i>
-                </button>
-                <!-- Compte utilisateur -->
-                <a href="{{ route('account') }}" class="navbar-icon text-lg" aria-label="Mon compte">
-                    <i class="fas fa-user"></i>
-                </a>
-                <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="navbar-icon text-lg" aria-label="Ma wishlist">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <!-- Panier -->
-                <a href="{{ route('cart') }}" class="navbar-icon text-lg relative" aria-label="Mon panier">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="absolute -top-2 -right-2 bg-noorea-rose text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
-                </a>
-                <!-- Menu mobile toggle -->
-                <button type="button" class="text-white drop-shadow-lg md:hidden transition-all duration-300 text-lg hover:scale-110" id="mobile-menu-button" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+                
+                <!-- Barre de recherche centrale -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher des produits, marques, catégories..." 
+                            class="w-full px-5 py-3 pl-12 pr-14 bg-white border-2 border-white/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold focus:border-noorea-gold transition-all duration-300 shadow-xl text-gray-800 placeholder-gray-500 font-medium"
+                        >
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-600 text-xl"></i>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-noorea-gold hover:bg-yellow-600 text-white p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Icônes à droite -->
+                <div class="flex items-center space-x-4">
+                    <!-- Compte utilisateur -->
+                    <a href="{{ route('account.dashboard') }}" class="navbar-icon-top" title="Mon compte">
+                        <i class="fas fa-user text-xl"></i>
+                    </a>
+                    
+                    <!-- Wishlist -->
+                    <a href="{{ route('wishlist') }}" class="navbar-icon-top relative" title="Ma wishlist">
+                        <i class="fas fa-heart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                    </a>
+                    
+                    <!-- Panier -->
+                    <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
+                    </button>
+                    
+                    <!-- Menu mobile toggle -->
+                    <button type="button" class="navbar-icon-top md:hidden" id="mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <!-- Menu mobile -->
-        <div class="md:hidden hidden bg-black/80 backdrop-blur-md rounded-lg mt-4 border border-noorea-gold/30" id="mobile-menu">
-            <nav class="flex flex-col space-y-4 p-6">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
+    </div>
+    
+    <!-- Barre de navigation inférieure -->
+    <div class="backdrop-blur-sm border-t border-noorea-gold/20" style="background-color: #F7EAD5;">
+        <div class="container mx-auto px-4">
+            <!-- Navigation principale - desktop -->
+            <nav class="hidden md:flex items-center justify-center py-3">
+                <div class="flex space-x-8">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-th-large mr-2"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-crown mr-2"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-globe mr-2"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>À propos
+                    </a>
+                </div>
             </nav>
+            
+            <!-- Menu mobile -->
+            <div class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-home mr-3 w-5"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-th-large mr-3 w-5"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-crown mr-3 w-5"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-3 w-5"></i>À propos
+                    </a>
+                </nav>
+            </div>
         </div>
     </div>
 </header>
 @endsection
 
 @section('content')
-<!-- Hero Section - Mini banner produit -->
-<section class="relative h-80 overflow-hidden bg-gradient-to-br from-noorea-dark via-noorea-cream to-noorea-gold/30 pt-24 md:pt-28">
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1920&h=400&fit=crop')] bg-cover bg-center opacity-20"></div>
-    <div class="absolute inset-0 bg-gradient-to-r from-noorea-dark/70 to-transparent"></div>
+<!-- Hero Banner avec image du produit et fil d'ariane en bas -->
+<section class="relative h-64 md:h-96 overflow-hidden pt-0 mt-16 bg-gray-100">
+    <!-- Image du produit en arrière-plan -->
+    @if($product->main_image)
+        @php
+            $imageUrl = Str::startsWith($product->main_image, ['http://', 'https://']) 
+                ? $product->main_image 
+                : asset('storage/' . $product->main_image);
+        @endphp
+        
+        <div class="w-full h-full relative">
+            <img src="{{ $imageUrl }}" 
+                 alt="{{ $product->name }}" 
+                 class="w-full h-full object-cover object-center"
+                 style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"
+                 onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';">
+            
+            <!-- Overlay léger pour la lisibilité -->
+            <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+    @else
+        <div class="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <i class="fas fa-image text-gray-400 text-6xl"></i>
+        </div>
+    @endif
     
-    <div class="relative z-30 flex items-center h-full">
-        <div class="container mx-auto px-4">
-            <div class="max-w-2xl">
-                <nav class="text-noorea-gold mb-4 text-sm">
-                    <a href="{{ route('home') }}" class="hover:text-yellow-300">Accueil</a>
-                    <span class="mx-2">/</span>
-                    <a href="{{ route('products') }}" class="hover:text-yellow-300">Boutique</a>
-                    <span class="mx-2">/</span>
-                    <span class="text-white">Crème Hydratante Premium</span>
-                </nav>
-                <h1 class="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
-                    Détail Produit
-                </h1>
-                <p class="text-xl text-gray-200">
-                    Découvrez tous les détails de nos produits premium
-                </p>
-            </div>
+    <!-- Fil d'ariane en bas du hero -->
+    <div class="absolute bottom-0 left-0 right-0 py-3 bg-black/30 backdrop-blur-sm">
+        <div class="container mx-auto px-6">
+            <nav class="flex text-sm text-white">
+                <a href="{{ route('home') }}" class="hover:text-noorea-gold transition-colors">Accueil</a>
+                <span class="mx-2 text-white/70">/</span>
+                <a href="{{ route('products') }}" class="hover:text-noorea-gold transition-colors">Boutique</a>
+                <span class="mx-2 text-white/70">/</span>
+                <a href="{{ route('categories.show', $product->category->slug) }}" class="hover:text-noorea-gold transition-colors">{{ $product->category->name }}</a>
+                <span class="mx-2 text-white/70">/</span>
+                <span class="text-noorea-gold font-medium">{{ $product->name }}</span>
+            </nav>
         </div>
     </div>
 </section>
 
-<!-- Contenu principal produit -->
-<div class="bg-noorea-cream/30 py-16">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-            <!-- Galerie d'images -->
-            <div class="space-y-4">
-                <!-- Image principale -->
-                <div class="relative overflow-hidden rounded-2xl shadow-2xl bg-white p-4">
-                    <img id="main-image" src="https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=600&h=600&fit=crop" 
-                         alt="Crème Hydratante Premium" class="w-full h-96 object-cover rounded-xl">
-                    
-                    <!-- Badge promotion -->
-                    <div class="absolute top-6 left-6 bg-noorea-rose text-white px-3 py-1 rounded-full text-sm font-medium">
-                        -15%
-                    </div>
-                    
-                    <!-- Badge nouveau -->
-                    <div class="absolute top-6 right-6 bg-noorea-emerald text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Nouveau
-                    </div>
+<!-- Section Détails du Produit -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Colonne de gauche: Image et galerie -->
+            <div class="flex flex-col items-center">
+                <!-- Image secondaire du produit (plus petite) -->
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg border border-gray-100 w-full max-w-sm">
+                    @if($product->main_image)
+                        @php
+                            $imageUrl = Str::startsWith($product->main_image, ['http://', 'https://']) 
+                                ? $product->main_image 
+                                : asset('storage/' . $product->main_image);
+                        @endphp
+                        <div class="aspect-square">
+                            <img id="main-product-image" src="{{ $imageUrl }}" 
+                                 alt="{{ $product->name }}" 
+                                 class="w-full h-full object-contain"
+                                 onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';">
+                        </div>
+                    @else
+                        <div class="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-4xl"></i>
+                        </div>
+                    @endif
                 </div>
                 
-                <!-- Miniatures -->
-                <div class="grid grid-cols-4 gap-3">
-                    <img src="https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" 
-                         alt="Vue 1" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-200 transition-opacity border-2 border-transparent hover:border-noorea-gold thumbnail-image">
-                    <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" 
-                         alt="Vue 2" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-200 transition-opacity border-2 border-transparent hover:border-noorea-gold thumbnail-image">
-                    <img src="https://images.pexels.com/photos/3622517/pexels-photo-3622517.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" 
-                         alt="Vue 3" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-200 transition-opacity border-2 border-transparent hover:border-noorea-gold thumbnail-image">
-                    <img src="https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" 
-                         alt="Vue 4" class="w-full h-20 object-cover rounded-lg cursor-pointer opacity-60 hover:opacity-200 transition-opacity border-2 border-transparent hover:border-noorea-gold thumbnail-image">
+                @if($product->images && count($product->images) > 1)
+                <!-- Galerie d'images (miniatures) -->
+                <div class="grid grid-cols-6 gap-2 w-full max-w-sm">
+                    @foreach($product->images as $index => $image)
+                    <div class="aspect-square overflow-hidden rounded-lg border-2 hover:border-noorea-gold cursor-pointer transition-all hover:shadow-lg {{ $index === 0 ? 'border-noorea-gold' : 'border-gray-200' }}">
+                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover thumbnail-image">
+                    </div>
+                    @endforeach
                 </div>
+                @endif
             </div>
             
-            <!-- Informations produit -->
-            <div class="space-y-6">
-                <div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-sm font-medium text-noorea-emerald bg-noorea-emerald/10 px-2 py-1 rounded-full">Soins du visage</span>
-                        <span class="text-sm text-gray-500">•</span>
-                        <span class="text-sm font-medium text-noorea-gold bg-noorea-gold/10 px-2 py-1 rounded-full">Noorea Premium</span>
-                    </div>
-                    <h1 class="text-3xl md:text-4xl font-serif font-bold text-noorea-dark mb-4">
-                        Crème Hydratante Premium aux Extraits de Karité
-                    </h1>
-                    
-                    <!-- Étoiles et avis -->
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="flex items-center">
-                            <div class="flex text-noorea-gold">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                            <span class="ml-2 text-sm text-gray-600">(4.8)</span>
+            <!-- Colonne de droite: Informations produit -->
+            <div>
+                <!-- En-tête du produit -->
+                <div class="mb-6">
+                    <h1 class="text-3xl font-bold text-noorea-dark mb-4">{{ $product->name }}</h1>
+                    <div class="flex items-center mb-4">
+                        <div class="flex items-center mr-4">
+                            <i class="fas fa-crown text-noorea-gold mr-2"></i>
+                            <span class="text-gray-600">{{ $product->brand->name }}</span>
                         </div>
-                        <span class="text-sm text-gray-500">•</span>
-                        <span class="text-sm text-gray-600">127 avis</span>
-                        <span class="text-sm text-gray-500">•</span>
-                        <span class="text-sm text-noorea-emerald font-medium">En stock</span>
+                        <div class="flex items-center">
+                            <i class="fas fa-th-large text-noorea-gold mr-2"></i>
+                            <span class="text-gray-600">{{ $product->category->name }}</span>
+                        </div>
                     </div>
-                    
-                    <p class="text-gray-700 leading-relaxed">
-                        Une crème hydratante luxueuse formulée avec du beurre de karité pur du Burkina Faso et des huiles précieuses d'argan du Maroc. 
-                        Cette formule unique nourrit intensément votre peau tout en respectant sa beauté naturelle.
-                    </p>
                 </div>
                 
                 <!-- Prix -->
-                <div class="border-t border-b border-gray-200 py-6">
-                    <div class="flex items-baseline gap-4">
-                        <span class="text-3xl font-bold text-noorea-dark">22 900 CFA</span>
-                        <span class="text-xl text-gray-400 line-through">26 900 CFA</span>
-                        <span class="bg-noorea-rose text-white px-2 py-1 rounded text-sm font-medium">-15%</span>
-                    </div>
-                    <p class="text-sm text-gray-600 mt-2">Prix TTC • Livraison gratuite dès 30 000 CFA</p>
-                </div>
-                
-                <!-- Options produit -->
-                <div class="space-y-4">
-                    <!-- Taille -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Taille</label>
-                        <div class="flex gap-3">
-                            <button class="border-2 border-noorea-gold bg-noorea-gold/10 text-noorea-dark px-4 py-2 rounded-lg font-medium">50ml</button>
-                            <button class="border border-gray-300 hover:border-noorea-gold text-gray-700 px-4 py-2 rounded-lg">100ml (+6 500 CFA)</button>
-                            <button class="border border-gray-300 hover:border-noorea-gold text-gray-700 px-4 py-2 rounded-lg">200ml (+11 800 CFA)</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Quantité -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantité</label>
-                        <div class="flex items-center gap-3">
-                            <button class="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">-</button>
-                            <span class="w-12 text-center">1</span>
-                            <button class="w-10 h-10 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50">+</button>
-                        </div>
+                <div class="mb-6">
+                    <div class="flex items-baseline">
+                        <span class="text-3xl font-bold text-noorea-gold">
+                            {{ number_format($product->price, 0, ',', ' ') }} FCFA
+                        </span>
+                        @if($product->is_on_sale)
+                        <span class="ml-3 text-xl text-gray-500 line-through">
+                            {{ number_format($product->sale_price, 0, ',', ' ') }} FCFA
+                        </span>
+                        @endif
                     </div>
                 </div>
                 
-                <!-- Boutons d'action -->
-                <div class="space-y-4 pt-6">
-                    <!-- Bouton WhatsApp principal -->
-                    <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20suis%20intéressé(e)%20par%20la%20Crème%20hydratante%20visage%20Karité%20%26%20Argan%20à%2022%20900%20CFA%20(en%20promotion%20-15%25).%20Pouvez-vous%20me%20donner%20plus%20d'informations%20sur%20ce%20produit%20et%20les%20modalités%20de%20commande%20%3F" 
-                       target="_blank"
-                       class="w-full bg-green-500 hover:bg-green-600 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg flex items-center justify-center gap-3">
-                        <i class="fab fa-whatsapp text-xl"></i>
-                        Commander via WhatsApp
-                    </a>
+                <!-- Description courte -->
+                @if($product->short_description)
+                <div class="mb-6 text-gray-600 leading-relaxed">
+                    <p>{{ $product->short_description }}</p>
+                </div>
+                @endif
+                
+                <!-- Actions -->
+                <div class="mb-8 flex flex-col space-y-4">
+                    <!-- Quantité et calcul du total -->
+                    <div class="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-gray-700 font-medium">Quantité:</span>
+                            <div class="flex items-center border border-gray-300 rounded-lg bg-white">
+                                <button class="px-4 py-2 text-gray-600 hover:text-noorea-gold transition-colors" onclick="decrementQuantity()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" id="quantity" class="w-12 text-center border-0 focus:ring-0" value="1" min="1" max="{{ $product->stock_quantity }}" onchange="updateTotal()">
+                                <button class="px-4 py-2 text-gray-600 hover:text-noorea-gold transition-colors" onclick="incrementQuantity()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700 font-medium">Total:</span>
+                            <span id="total-price" class="text-2xl font-bold text-noorea-gold">{{ number_format($product->price, 0, ',', ' ') }} FCFA</span>
+                        </div>
+                    </div>
                     
-                    <div class="grid grid-cols-2 gap-4">
-                        <a href="tel:+221775551234" 
-                           class="border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2">
-                            <i class="fas fa-phone"></i>
-                            Appeler
+                    <!-- Boutons d'action -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button 
+                            class="add-to-cart-btn bg-noorea-gold hover:bg-yellow-600 text-white px-6 py-3 rounded-lg transition-all transform hover:scale-105 flex items-center flex-1"
+                            data-product-id="{{ $product->id }}"
+                            data-product-name="{{ $product->name }}"
+                            data-product-price="{{ $product->price }}"
+                            data-product-image="{{ Str::startsWith($product->main_image, ['http://', 'https://']) ? $product->main_image : asset('storage/' . $product->main_image) }}"
+                            onclick="event.stopPropagation();">
+                            <i class="fas fa-shopping-bag mr-2"></i>
+                            Ajouter au panier
+                        </button>
+                        
+                        <a href="https://wa.me/221777777777?text=Bonjour, je suis intéressé(e) par le produit : {{ $product->name }} à {{ number_format($product->price, 0, ',', ' ') }} FCFA" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition-all transform hover:scale-105 flex items-center">
+                            <i class="fab fa-whatsapp mr-2"></i>
+                            WhatsApp
                         </a>
-                        <button class="border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-xl font-medium transition-all duration-300">
+                    </div>
+                    
+                    <!-- Autres actions -->
+                    <div class="flex items-center space-x-4">
+                        <button class="flex items-center text-gray-600 hover:text-noorea-gold transition-colors">
                             <i class="fas fa-heart mr-2"></i>
-                            Favoris
+                            Ajouter aux favoris
+                        </button>
+                        <button class="flex items-center text-gray-600 hover:text-noorea-gold transition-colors">
+                            <i class="fas fa-share-alt mr-2"></i>
+                            Partager
                         </button>
                     </div>
-                    
-                    <!-- Bouton partage avec message WhatsApp -->
-                    <button onclick="shareProduct()" class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 py-3 rounded-xl font-medium transition-all duration-300">
-                        <i class="fas fa-share-alt mr-2"></i>
-                        Partager ce produit
-                    </button>
                 </div>
                 
-                <!-- Script de partage -->
-                <script>
-                function shareProduct() {
-                    const productName = "Crème hydratante visage Karité & Argan";
-                    const productPrice = "22 900 CFA";
-                    const productUrl = window.location.href;
-                    const message = `Découvrez ce produit Noorea : ${productName} à ${productPrice} ! ${productUrl}`;
-                    
-                    if (navigator.share) {
-                        navigator.share({
-                            title: productName,
-                            text: message,
-                            url: productUrl
-                        });
-                    } else {
-                        // Fallback vers WhatsApp
-                        const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                        window.open(whatsappUrl, '_blank');
-                    }
-                }
-                </script>
-                
-                <!-- Informations de livraison -->
-                <div class="bg-noorea-cream/50 rounded-xl p-4 space-y-3">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-truck text-noorea-emerald"></i>
-                        <span class="text-sm text-gray-700">Livraison gratuite dès 30 000 CFA (Standard 3-5 jours)</span>
+                <!-- Disponibilité et Livraison -->
+                <div class="space-y-3 border-t border-gray-200 pt-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                        <span class="text-gray-700">En stock ({{ $product->stock_quantity }} disponible)</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i class="fab fa-whatsapp text-green-500"></i>
-                        <span class="text-sm text-gray-700">Commande rapide via WhatsApp</span>
+                    <div class="flex items-center">
+                        <i class="fas fa-truck text-noorea-gold mr-3"></i>
+                        <span class="text-gray-700">Livraison disponible à Dakar et en région</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-phone text-noorea-gold"></i>
-                        <span class="text-sm text-gray-700">Conseil personnalisé par téléphone</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-shield-alt text-noorea-emerald"></i>
-                        <span class="text-sm text-gray-700">Produits 100% authentiques</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Onglets d'informations -->
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="border-b border-gray-200">
-                <nav class="flex">
-                    <button class="px-6 py-4 text-sm font-medium border-b-2 border-noorea-gold text-noorea-gold bg-noorea-gold/5 tab-button active" data-tab="description">
-                        Description
-                    </button>
-                    <button class="px-6 py-4 text-sm font-medium text-gray-700 hover:text-noorea-gold tab-button" data-tab="ingredients">
-                        Ingrédients
-                    </button>
-                    <button class="px-6 py-4 text-sm font-medium text-gray-700 hover:text-noorea-gold tab-button" data-tab="reviews">
-                        Avis (127)
-                    </button>
-                    <button class="px-6 py-4 text-sm font-medium text-gray-700 hover:text-noorea-gold tab-button" data-tab="usage">
-                        Utilisation
-                    </button>
-                </nav>
-            </div>
-            
-            <!-- Contenu des onglets -->
-            <div class="p-8">
-                <!-- Description -->
-                <div id="tab-description" class="tab-content">
-                    <h3 class="text-xl font-semibold text-noorea-dark mb-4">Description détaillée</h3>
-                    <div class="prose max-w-none text-gray-700">
-                        <p class="mb-4">
-                            Notre Crème Hydratante Premium est le fruit d'une collaboration exclusive avec les coopératives de femmes du Burkina Faso et du Maroc. 
-                            Cette formule unique combine les bienfaits ancestraux du beurre de karité pur avec les propriétés régénérantes de l'huile d'argan.
-                        </p>
-                        <p class="mb-4">
-                            Enrichie en vitamines E et A, cette crème offre une hydratation profonde et durable, tout en protégeant votre peau des agressions extérieures. 
-                            Sa texture onctueuse pénètre rapidement sans laisser de film gras.
-                        </p>
-                        <h4 class="font-semibold text-noorea-dark mb-2">Bienfaits :</h4>
-                        <ul class="list-disc list-inside space-y-1 mb-4">
-                            <li>Hydratation intense 24h</li>
-                            <li>Apaise les peaux sensibles</li>
-                            <li>Améliore l'élasticité de la peau</li>
-                            <li>Protection antioxydante naturelle</li>
-                            <li>Convient à tous types de peaux</li>
-                        </ul>
+                    <div class="flex items-center">
+                        <i class="fas fa-undo text-noorea-gold mr-3"></i>
+                        <span class="text-gray-700">Retour gratuit sous 7 jours</span>
                     </div>
                 </div>
                 
-                <!-- Ingrédients -->
-                <div id="tab-ingredients" class="tab-content hidden">
-                    <h3 class="text-xl font-semibold text-noorea-dark mb-4">Composition INCI</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="font-semibold text-noorea-emerald mb-3">Ingrédients actifs</h4>
-                            <ul class="space-y-2 text-gray-700">
-                                <li><strong>Butyrospermum Parkii Butter</strong> - Beurre de karité (30%)</li>
-                                <li><strong>Argania Spinosa Kernel Oil</strong> - Huile d'argan (15%)</li>
-                                <li><strong>Tocopherol</strong> - Vitamine E (2%)</li>
-                                <li><strong>Retinyl Palmitate</strong> - Vitamine A (1%)</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-noorea-emerald mb-3">Base hydratante</h4>
-                            <ul class="space-y-2 text-gray-700">
-                                <li><strong>Aqua</strong> - Eau purifiée</li>
-                                <li><strong>Glycerin</strong> - Glycérine végétale</li>
-                                <li><strong>Cetearyl Alcohol</strong> - Alcool émulsifiant</li>
-                                <li><strong>Phenoxyethanol</strong> - Conservateur naturel</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="mt-6 p-4 bg-noorea-emerald/10 rounded-lg">
-                        <p class="text-sm text-gray-700">
-                            <i class="fas fa-leaf text-noorea-emerald mr-2"></i>
-                            97% d'ingrédients d'origine naturelle • Sans parabènes • Sans sulfates • Commerce équitable
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Avis -->
-                <div id="tab-reviews" class="tab-content hidden">
-                    <h3 class="text-xl font-semibold text-noorea-dark mb-6">Avis clients</h3>
-                    
-                    <!-- Résumé des notes -->
-                    <div class="bg-noorea-cream/30 rounded-xl p-6 mb-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="text-center">
-                                <div class="text-4xl font-bold text-noorea-dark mb-2">4.8/5</div>
-                                <div class="flex justify-center text-noorea-gold text-lg mb-2">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                                <p class="text-gray-600">Basé sur 127 avis</p>
-                            </div>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm w-8">5★</span>
-                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-noorea-gold h-2 rounded-full w-[85%]"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-600">85%</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm w-8">4★</span>
-                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-noorea-gold h-2 rounded-full w-[12%]"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-600">12%</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm w-8">3★</span>
-                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-noorea-gold h-2 rounded-full w-[2%]"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-600">2%</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm w-8">2★</span>
-                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-gray-300 h-2 rounded-full w-[1%]"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-600">1%</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-sm w-8">1★</span>
-                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div class="bg-gray-300 h-2 rounded-full w-[0%]"></div>
-                                    </div>
-                                    <span class="text-sm text-gray-600">0%</span>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Onglets pour Caractéristiques et Description -->
+                <div class="mt-8">
+                    <!-- Navigation des onglets -->
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px">
+                            <button id="tab-caracteristiques" class="tab-button active-tab flex-1 py-4 px-1 text-center border-b-2 border-noorea-gold font-medium text-noorea-gold">
+                                <i class="fas fa-list-ul mr-2"></i>Caractéristiques
+                            </button>
+                            <button id="tab-description" class="tab-button flex-1 py-4 px-1 text-center border-b-2 border-transparent font-medium text-gray-500 hover:text-noorea-gold hover:border-noorea-gold/30">
+                                <i class="fas fa-align-left mr-2"></i>Description détaillée
+                            </button>
+                        </nav>
                     </div>
                     
-                    <!-- Avis individuels -->
-                    <div class="space-y-6">
-                        <div class="border-b border-gray-200 pb-6">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-noorea-gold/20 rounded-full flex items-center justify-center">
-                                    <span class="font-semibold text-noorea-dark">A</span>
+                    <!-- Contenu des onglets -->
+                    <div class="bg-white rounded-b-xl shadow-sm">
+                        <!-- Contenu: Caractéristiques -->
+                        <div id="content-caracteristiques" class="tab-content block p-6">
+                            <div class="space-y-3">
+                                @if($product->sku)
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Référence</span>
+                                    <span class="font-medium">{{ $product->sku }}</span>
                                 </div>
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-4 mb-2">
-                                        <h4 class="font-semibold text-noorea-dark">Aïssatou D.</h4>
-                                        <div class="flex text-noorea-gold text-sm">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                        </div>
-                                        <span class="text-sm text-gray-500">Il y a 3 jours</span>
-                                    </div>
-                                    <p class="text-gray-700 mb-2">
-                                        Excellente crème ! Ma peau n'a jamais été aussi douce. L'odeur est subtile et la texture parfaite. 
-                                        Je recommande vivement pour les peaux sèches.
-                                    </p>
-                                    <p class="text-sm text-gray-500">Achat vérifié • Peau : Sèche</p>
+                                @endif
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Marque</span>
+                                    <span class="font-medium">{{ $product->brand->name }}</span>
                                 </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Catégorie</span>
+                                    <span class="font-medium">{{ $product->category->name }}</span>
+                                </div>
+                                @if($product->weight)
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Poids</span>
+                                    <span class="font-medium">{{ $product->weight }} g</span>
+                                </div>
+                                @endif
+                                @if($product->dimensions)
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Dimensions</span>
+                                    <span class="font-medium">{{ $product->dimensions }}</span>
+                                </div>
+                                @endif
                             </div>
                         </div>
                         
-                        <div class="border-b border-gray-200 pb-6">
-                            <div class="flex items-start gap-4">
-                                <div class="w-12 h-12 bg-noorea-emerald/20 rounded-full flex items-center justify-center">
-                                    <span class="font-semibold text-noorea-dark">M</span>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-4 mb-2">
-                                        <h4 class="font-semibold text-noorea-dark">Mariama S.</h4>
-                                        <div class="flex text-noorea-gold text-sm">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                        <span class="text-sm text-gray-500">Il y a 1 semaine</span>
-                                    </div>
-                                    <p class="text-gray-700 mb-2">
-                                        Très bonne qualité, j'adore que ce soit des ingrédients naturels d'Afrique. 
-                                        La livraison était rapide et l'emballage soigné.
-                                    </p>
-                                    <p class="text-sm text-gray-500">Achat vérifié • Peau : Mixte</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button class="w-full border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white py-3 rounded-xl font-medium transition-all duration-300">
-                            Voir tous les avis
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Utilisation -->
-                <div id="tab-usage" class="tab-content hidden">
-                    <h3 class="text-xl font-semibold text-noorea-dark mb-6">Mode d'emploi</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <h4 class="font-semibold text-noorea-emerald mb-4">Application quotidienne</h4>
-                            <ol class="space-y-3">
-                                <li class="flex gap-3">
-                                    <span class="w-6 h-6 bg-noorea-gold text-white rounded-full flex items-center justify-center text-sm font-semibold">1</span>
-                                    <span class="text-gray-700">Nettoyez votre visage avec un nettoyant doux</span>
-                                </li>
-                                <li class="flex gap-3">
-                                    <span class="w-6 h-6 bg-noorea-gold text-white rounded-full flex items-center justify-center text-sm font-semibold">2</span>
-                                    <span class="text-gray-700">Appliquez la crème sur peau légèrement humide</span>
-                                </li>
-                                <li class="flex gap-3">
-                                    <span class="w-6 h-6 bg-noorea-gold text-white rounded-full flex items-center justify-center text-sm font-semibold">3</span>
-                                    <span class="text-gray-700">Massez délicatement par mouvements circulaires</span>
-                                </li>
-                                <li class="flex gap-3">
-                                    <span class="w-6 h-6 bg-noorea-gold text-white rounded-full flex items-center justify-center text-sm font-semibold">4</span>
-                                    <span class="text-gray-700">Laissez pénétrer 2-3 minutes avant le maquillage</span>
-                                </li>
-                            </ol>
-                        </div>
-                        
-                        <div>
-                            <h4 class="font-semibold text-noorea-emerald mb-4">Conseils d'utilisation</h4>
-                            <ul class="space-y-3 text-gray-700">
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-sun text-noorea-gold mt-1"></i>
-                                    <span>Utilisez matin et soir pour une hydratation optimale</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-snowflake text-noorea-emerald mt-1"></i>
-                                    <span>Conservez au frais pour un effet rafraîchissant</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-droplet text-noorea-gold mt-1"></i>
-                                    <span>Une noisette suffit pour l'ensemble du visage</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-heart text-noorea-rose mt-1"></i>
-                                    <span>Peut être utilisée sur le cou et le décolleté</span>
-                                </li>
-                            </ul>
-                            
-                            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                <h5 class="font-semibold text-yellow-800 mb-2">⚠️ Précautions</h5>
-                                <p class="text-sm text-yellow-700">
-                                    Évitez le contour des yeux. En cas d'irritation, cessez l'utilisation. 
-                                    Testez sur une petite zone avant la première utilisation.
-                                </p>
+                        <!-- Contenu: Description détaillée -->
+                        <div id="content-description" class="tab-content hidden p-6">
+                            <div class="prose prose-lg max-w-none text-gray-700">
+                                {!! $product->description !!}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Section produits similaires -->
-<section class="py-16 bg-white">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-serif font-bold text-noorea-dark mb-4">Produits similaires</h2>
-            <p class="text-gray-600">Découvrez d'autres produits qui pourraient vous plaire</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <!-- Produit 1 -->
-            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div class="relative overflow-hidden">
-                    <img src="https://images.pexels.com/photos/4465659/pexels-photo-4465659.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" 
-                         alt="Sérum Visage" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-3 left-3 bg-noorea-emerald text-white px-2 py-1 rounded-full text-xs">
-                        Nouveau
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-noorea-dark mb-2">Sérum Vitamine C</h3>
-                    <p class="text-sm text-gray-600 mb-3">Sérum éclaircissant à la vitamine C</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-bold text-noorea-emerald">18 950 CFA</span>
-                        <button class="bg-noorea-gold text-white px-3 py-1 rounded-lg text-sm hover:bg-noorea-gold/90">
-                            Ajouter
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 2 -->
-            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div class="relative overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3622517/pexels-photo-3622517.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" 
-                         alt="Masque Argile" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-3 left-3 bg-noorea-rose text-white px-2 py-1 rounded-full text-xs">
-                        -20%
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-noorea-dark mb-2">Masque à l'Argile</h3>
-                    <p class="text-sm text-gray-600 mb-3">Masque purifiant argile blanche</p>
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-lg font-bold text-noorea-emerald">13 050 CFA</span>
-                            <span class="text-sm text-gray-400 line-through ml-2">16 350 CFA</span>
-                        </div>
-                        <button class="bg-noorea-gold text-white px-3 py-1 rounded-lg text-sm hover:bg-noorea-gold/90">
-                            Ajouter
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 3 -->
-            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div class="relative overflow-hidden">
-                    <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" 
-                         alt="Huile Argan" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-noorea-dark mb-2">Huile d'Argan Pure</h3>
-                    <p class="text-sm text-gray-600 mb-3">Huile d'argan bio du Maroc</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-bold text-noorea-emerald">21 300 CFA</span>
-                        <button class="bg-noorea-gold text-white px-3 py-1 rounded-lg text-sm hover:bg-noorea-gold/90">
-                            Ajouter
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Produit 4 -->
-            <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300">
-                <div class="relative overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" 
-                         alt="Beurre Karité" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-semibold text-noorea-dark mb-2">Beurre de Karité Pur</h3>
-                    <p class="text-sm text-gray-600 mb-3">Beurre de karité brut du Burkina</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg font-bold text-noorea-emerald">10 450 CFA</span>
-                        <button class="bg-noorea-gold text-white px-3 py-1 rounded-lg text-sm hover:bg-noorea-gold/90">
-                            Ajouter
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </section>
 
-<script>
-// Gestion des onglets
-document.querySelectorAll('.tab-button').forEach(button => {
-    button.addEventListener('click', () => {
-        const tabId = button.getAttribute('data-tab');
+<!-- Produits similaires -->
+@if(isset($relatedProducts) && $relatedProducts->count() > 0)
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-serif font-bold mb-12 text-center text-noorea-dark">
+            <span class="inline-block border-b-2 border-noorea-gold pb-2">Vous pourriez aussi aimer</span>
+        </h2>
         
-        // Retirer la classe active de tous les boutons et contenus
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.classList.remove('active', 'border-noorea-gold', 'text-noorea-gold', 'bg-noorea-gold/5');
-            btn.classList.add('text-gray-700');
-        });
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.add('hidden');
-        });
-        
-        // Ajouter la classe active au bouton cliqué
-        button.classList.add('active', 'border-b-2', 'border-noorea-gold', 'text-noorea-gold', 'bg-noorea-gold/5');
-        button.classList.remove('text-gray-700');
-        
-        // Afficher le contenu correspondant
-        document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-    });
-});
-
-// Gestion de la galerie d'images
-document.querySelectorAll('.thumbnail-image').forEach(thumb => {
-    thumb.addEventListener('click', () => {
-        const mainImage = document.getElementById('main-image');
-        mainImage.src = thumb.src.replace('w=150&h=150', 'w=600&h=600');
-        
-        // Retirer la classe active de toutes les miniatures
-        document.querySelectorAll('.thumbnail-image').forEach(t => {
-            t.classList.remove('opacity-200', 'border-noorea-gold');
-            t.classList.add('opacity-60', 'border-transparent');
-        });
-        
-        // Ajouter la classe active à la miniature cliquée
-        thumb.classList.remove('opacity-60', 'border-transparent');
-        thumb.classList.add('opacity-200', 'border-noorea-gold');
-    });
-});
-
-// Activer la première miniature par défaut
-document.querySelector('.thumbnail-image').classList.remove('opacity-60', 'border-transparent');
-document.querySelector('.thumbnail-image').classList.add('opacity-200', 'border-noorea-gold');
-</script>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            @foreach($relatedProducts as $related)
+            <a href="{{ route('products.show', $related->slug) }}" class="group">
+                <div class="bg-gray-50 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                    <div class="h-48 overflow-hidden">
+                        @if($related->main_image)
+                        @php
+                            $relatedImageUrl = Str::startsWith($related->main_image, ['http://', 'https://']) 
+                                ? $related->main_image 
+                                : asset('storage/' . $related->main_image);
+                        @endphp
+                        <img src="{{ $relatedImageUrl }}" 
+                             alt="{{ $related->name }}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.onerror=null; this.src='{{ asset('images/logo.png') }}';">
+                        @else
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-3xl"></i>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-noorea-dark group-hover:text-noorea-gold transition-colors">{{ $related->name }}</h3>
+                        <div class="mt-2 font-medium text-noorea-gold">
+                            {{ number_format($related->price, 0, ',', ' ') }} FCFA
+                        </div>
+                    </div>
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 @endsection
+
+@push('styles')
+<style>
+/* Styles pour la navbar supérieure */
+.navbar-icon-top {
+    color: #ffffff;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.navbar-icon-top:hover {
+    color: #d4af37;
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Styles pour la navbar inférieure */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+
+/* Styles pour le header */
+header {
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+
+/* Styles pour les onglets */
+.tab-button {
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background-color: rgba(212, 175, 55, 0.05);
+}
+
+.active-tab {
+    position: relative;
+    font-weight: 600;
+}
+
+.active-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #d4af37;
+    border-radius: 2px;
+}
+
+.tab-content {
+    transition: opacity 0.3s ease;
+}
+
+/* Animation pour la flèche de défilement */
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
+}
+
+/* Style pour le défilement fluide */
+html {
+    scroll-behavior: smooth;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Effet de scroll pour la navbar
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const header = document.querySelector('header');
+        
+        if (scrollTop > 100) {
+            header.style.background = 'rgba(247, 234, 213, 0.9)';
+            header.style.backdropFilter = 'blur(12px)';
+            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+        } else {
+            header.style.background = 'transparent';
+            header.style.backdropFilter = 'blur(8px)';
+            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.10)';
+        }
+    });
+    
+    // Gestion de la galerie d'images
+    const thumbnails = document.querySelectorAll('.thumbnail-image');
+    const mainProductImage = document.getElementById('main-product-image');
+    const heroImage = document.querySelector('.h-64.md\\:h-96.overflow-hidden img');
+    
+    if (thumbnails.length > 0 && mainProductImage && heroImage) {
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Mise à jour des deux images (hero et produit)
+                mainProductImage.src = this.src;
+                heroImage.src = this.src;
+                
+                // Mise à jour des styles de sélection
+                const allContainers = document.querySelectorAll('.grid-cols-5 > div');
+                allContainers.forEach(container => {
+                    container.classList.remove('border-noorea-gold');
+                    container.classList.add('border-gray-200');
+                });
+                
+                // Sélectionner le conteneur parent du thumbnail cliqué
+                this.parentElement.classList.remove('border-gray-200');
+                this.parentElement.classList.add('border-noorea-gold');
+            });
+        });
+    }
+    
+    // Zoom sur l'image principale au survol (plus petit)
+    if (mainProductImage) {
+        const imageContainer = mainProductImage.parentElement;
+        
+        mainProductImage.addEventListener('mousemove', function(e) {
+            const { left, top, width, height } = this.getBoundingClientRect();
+            const x = (e.clientX - left) / width * 100;
+            const y = (e.clientY - top) / height * 100;
+            
+            this.style.transformOrigin = `${x}% ${y}%`;
+        });
+        
+        imageContainer.addEventListener('mouseenter', function() {
+            mainProductImage.style.transform = 'scale(1.5)';
+            mainProductImage.style.transition = 'transform 0.3s ease';
+        });
+        
+        imageContainer.addEventListener('mouseleave', function() {
+            mainProductImage.style.transform = 'scale(1)';
+        });
+    }
+    
+    // Fonctions pour gérer la quantité
+    window.incrementQuantity = function() {
+        const input = document.getElementById('quantity');
+        const max = parseInt(input.getAttribute('max') || 100);
+        let value = parseInt(input.value);
+        if (value < max) {
+            input.value = value + 1;
+            updateTotal();
+        }
+    };
+    
+    window.decrementQuantity = function() {
+        const input = document.getElementById('quantity');
+        let value = parseInt(input.value);
+        if (value > 1) {
+            input.value = value - 1;
+            updateTotal();
+        }
+    };
+    
+    // Fonction pour mettre à jour le total
+    window.updateTotal = function() {
+        const quantity = parseInt(document.getElementById('quantity').value);
+        const price = {{ $product->price }};
+        const total = price * quantity;
+        
+        // Formater le total avec espace comme séparateur de milliers
+        const formattedTotal = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        document.getElementById('total-price').textContent = formattedTotal + " FCFA";
+    };
+    
+    // Gestion des onglets
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Masquer tous les contenus d'onglets
+            tabContents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            
+            // Désactiver tous les boutons d'onglets
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active-tab', 'text-noorea-gold', 'border-noorea-gold');
+                btn.classList.add('text-gray-500', 'border-transparent');
+            });
+            
+            // Activer l'onglet cliqué
+            this.classList.add('active-tab', 'text-noorea-gold', 'border-noorea-gold');
+            this.classList.remove('text-gray-500', 'border-transparent');
+            
+            // Afficher le contenu correspondant
+            const tabId = this.id.replace('tab-', 'content-');
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('block');
+        });
+    });
+});
+</script>
+@endpush
+
+@push('styles')
+<style>
+/* Styles pour la navbar supérieure */
+.navbar-icon-top {
+    color: #ffffff;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.navbar-icon-top:hover {
+    color: #d4af37;
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* Styles pour la navbar inférieure */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+
+/* Styles pour le header */
+header {
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+</style>
+@endpush

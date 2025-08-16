@@ -7,8 +7,11 @@
     
     <title>{{ isset($title) ? $title . ' | ' : '' }}Noorea Admin - Espace d'administration</title>
     
-    <!-- Favicon -->
-    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <!-- Favicons -->
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('favicon.png') }}?v={{ time() }}" type="image/png">
+    <link rel="icon" href="{{ asset('favicon-192x192.png') }}?v={{ time() }}" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v={{ time() }}" sizes="180x180">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -274,6 +277,9 @@
         </main>
     </div>
 
+    <!-- Système de notifications -->
+    @include('admin.components.notifications')
+
     <!-- Scripts -->
     <script>
         // Menu mobile
@@ -285,16 +291,6 @@
                 mobileMenu.classList.toggle('hidden');
             });
         }
-
-        // Auto-hide alerts
-        setTimeout(() => {
-            const alerts = document.querySelectorAll('[class*="bg-green-50"], [class*="bg-red-50"]');
-            alerts.forEach(alert => {
-                alert.style.transition = 'opacity 0.5s ease-out';
-                alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
-            });
-        }, 5000);
     </script>
     
     @stack('scripts')
