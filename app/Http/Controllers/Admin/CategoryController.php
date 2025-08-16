@@ -179,6 +179,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        // Debug: Log les données reçues
+        \Log::info('Category Update Request Data:', [
+            'files' => $request->files->keys(),
+            'has_image' => $request->hasFile('image'),
+            'image_type' => $request->input('image_type'),
+            'image_url' => $request->input('image_url'),
+            'all_data' => $request->all()
+        ]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
@@ -199,15 +208,24 @@ class CategoryController extends Controller
                 $validator->errors()->add('parent_id', 'Une catégorie ne peut pas être son propre parent.');
             }
             
-            // Validation pour l'image selon le type
-            if ($request->image_type === 'upload' && !$request->hasFile('image') && !$category->image) {
-                // Seulement requis si aucune image existante et pas d'upload
-            } elseif ($request->image_type === 'url' && !$request->filled('image_url')) {
-                $validator->errors()->add('image_url', 'Veuillez saisir une URL d\'image valide.');
+            // Validation pour l'image selon le type - plus flexible
+            if ($request->image_type === 'upload') {
+                // Pour upload: soit on a un nouveau fichier, soit la catégorie a déjà une image
+                if (!$request->hasFile('image') && !$category->image) {
+                    $validator->errors()->add('image', 'Veuillez sélectionner une image ou utiliser une URL.');
+                }
+            } elseif ($request->image_type === 'url') {
+                if (!$request->filled('image_url')) {
+                    $validator->errors()->add('image_url', 'Veuillez saisir une URL d\'image valide.');
+                }
             }
         });
 
         if ($validator->fails()) {
+            \Log::error('Category Update Validation Failed:', [
+                'errors' => $validator->errors()->toArray(),
+                'input' => $request->all()
+            ]);
             return redirect()->back()
                            ->withErrors($validator)
                            ->withInput();
@@ -230,14 +248,39 @@ class CategoryController extends Controller
 
         // Gérer l'image selon le type choisi
         if ($request->image_type === 'upload' && $request->hasFile('image')) {
+            \Log::info('Processing image upload for category', [
+                'category_id' => $category->id,
+                'file_name' => $request->file('image')->getClientOriginalName(),
+                'file_size' => $request->file('image')->getSize(),
+                'mime_type' => $request->file('image')->getMimeType()
+            ]);
+            
             // Supprimer l'ancienne image si elle existe et n'est pas une URL
             if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($category->image);
+                $deleted = Storage::disk('public')->delete($category->image);
+                \Log::info('Deleted old image:', ['path' => $category->image, 'success' => $deleted]);
             }
             
-            $image = $request->file('image');
-            $path = $image->store('categories', 'public');
-            $data['image'] = $path;
+            try {
+                $image = $request->file('image');
+                $path = $image->store('categories', 'public');
+                $data['image'] = $path;
+                
+                \Log::info('Image uploaded successfully:', [
+                    'path' => $path,
+                    'full_path' => Storage::disk('public')->path($path),
+                    'url' => Storage::disk('public')->url($path)
+                ]);
+                
+            } catch (\Exception $e) {
+                \Log::error('Image upload failed:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return redirect()->back()
+                               ->withErrors(['image' => 'Erreur lors de l\'upload de l\'image: ' . $e->getMessage()])
+                               ->withInput();
+            }
         } elseif ($request->image_type === 'url' && $request->filled('image_url')) {
             // Supprimer l'ancienne image locale si elle existe et qu'on passe à une URL
             if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
@@ -254,6 +297,11 @@ class CategoryController extends Controller
         $data['is_active'] = $request->has('is_active') ? true : false;
 
         $category->update($data);
+
+        \Log::info('Category updated successfully:', [
+            'category_id' => $category->id,
+            'updated_data' => $data
+        ]);
 
         return redirect()->route('admin.categories.index')
                        ->with('success', "La catégorie \"{$category->name}\" a été mise à jour avec succès.");

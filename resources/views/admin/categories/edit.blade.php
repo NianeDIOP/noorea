@@ -267,6 +267,10 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Status dans le formulaire -->
+            <input type="hidden" name="is_active" value="0">
+            <input type="checkbox" name="is_active" value="1" id="is_active_input" class="hidden" {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}>
         </form>
     </div>
 
@@ -289,8 +293,8 @@
                         <p class="text-sm text-gray-600">Rendre cette catégorie visible</p>
                     </div>
                     <label class="admin-toggle">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}
-                               onchange="updateStatusLabel(this)">
+                        <input type="checkbox" value="1" {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}
+                               onchange="updateStatusLabel(this); syncStatusCheckbox(this)">
                         <span class="toggle-slider"></span>
                         <span class="status-label {{ old('is_active', $category->is_active ?? true) ? 'active' : 'inactive' }} ml-2" id="statusLabel">
                             {{ old('is_active', $category->is_active ?? true) ? 'Actif' : 'Inactif' }}
@@ -300,7 +304,7 @@
 
                 <!-- Boutons d'action -->
                 <div class="space-y-3">
-                    <button type="submit" form="categoryForm" class="btn-admin-primary w-full">
+                    <button type="submit" form="categoryForm" class="btn-admin-primary w-full" onclick="debugFormSubmit()">
                         <i class="fas fa-save mr-2"></i>Mettre à jour
                     </button>
                     <a href="{{ route('admin.categories.show', $category) }}" class="btn-admin-secondary w-full">
@@ -398,18 +402,26 @@
 function toggleImageType() {
     const uploadSection = document.getElementById('upload_section');
     const urlSection = document.getElementById('url_section');
+    const imageInput = document.getElementById('image');
+    const imageUrlInput = document.getElementById('image_url');
     const imageType = document.querySelector('input[name="image_type"]:checked').value;
     
     if (imageType === 'upload') {
         uploadSection.classList.remove('hidden');
         urlSection.classList.add('hidden');
-        document.getElementById('image_url').value = '';
+        imageInput.disabled = false;
+        imageUrlInput.disabled = true;
+        imageUrlInput.value = '';
         document.getElementById('url_preview').classList.add('hidden');
     } else {
         uploadSection.classList.add('hidden');
         urlSection.classList.remove('hidden');
-        document.getElementById('image').value = '';
+        imageInput.disabled = true;
+        imageUrlInput.disabled = false;
+        // Note: on ne peut pas vider un input file pour des raisons de sécurité
+        // mais on le désactive quand on n'en a pas besoin
         document.getElementById('image_preview').classList.add('hidden');
+        document.getElementById('upload_placeholder').classList.remove('hidden');
     }
 }
 
@@ -476,6 +488,45 @@ function updateStatusLabel(checkbox) {
         label.textContent = 'Inactif';
         label.className = 'status-label inactive ml-2';
     }
+}
+
+// Synchroniser le checkbox visible avec le checkbox dans le formulaire
+function syncStatusCheckbox(visibleCheckbox) {
+    const hiddenCheckbox = document.getElementById('is_active_input');
+    hiddenCheckbox.checked = visibleCheckbox.checked;
+}
+
+// Debug du formulaire
+function debugFormSubmit() {
+    const form = document.getElementById('categoryForm');
+    const formData = new FormData(form);
+    
+    console.log('=== DEBUG FORM SUBMISSION ===');
+    console.log('Form action:', form.action);
+    console.log('Form method:', form.method);
+    console.log('Form enctype:', form.enctype);
+    
+    console.log('FormData contents:');
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ':', value);
+    }
+    
+    const imageInput = document.getElementById('image');
+    console.log('Image input:', {
+        hasFiles: imageInput.files.length > 0,
+        fileCount: imageInput.files.length,
+        firstFile: imageInput.files[0] ? {
+            name: imageInput.files[0].name,
+            size: imageInput.files[0].size,
+            type: imageInput.files[0].type
+        } : null
+    });
+    
+    const imageType = document.querySelector('input[name="image_type"]:checked');
+    console.log('Image type:', imageType ? imageType.value : 'none selected');
+    
+    // Permettre la soumission
+    return true;
 }
 </script>
 @endpush
