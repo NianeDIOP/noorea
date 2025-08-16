@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Traits\HandlesImageUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
+    use HandlesImageUploads;
     /**
      * Display a listing of the resource.
      */
@@ -65,18 +67,20 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false);
+        
+        $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:brands,name',
             'slug' => 'nullable|string|max:255|unique:brands,slug',
             'description' => 'nullable|string|max:1000',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048',
             'country' => 'nullable|string|max:100',
             'website' => 'nullable|url|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
-        ]);
+        ], $imageRules));
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -99,16 +103,27 @@ class BrandController extends Controller
             }
         }
 
-        // Gérer l'upload du logo
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $path = $logo->store('brands', 'public');
-            $data['logo'] = $path;
+        // Gérer le logo avec le trait
+        try {
+            $data['logo'] = $this->handleImageUpload(
+                $request, 
+                'logo', 
+                'logo_url', 
+                'logo_type', 
+                'brands'
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->withErrors(['logo' => $e->getMessage()])
+                           ->withInput();
         }
 
         // Gérer les checkboxes
         $data['is_active'] = $request->has('is_active') ? true : false;
         $data['is_featured'] = $request->has('is_featured') ? true : false;
+
+        // Nettoyer les champs non nécessaires
+        unset($data['logo_type'], $data['logo_url']);
 
         $brand = Brand::create($data);
 
@@ -148,18 +163,20 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $validator = Validator::make($request->all(), [
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false, $brand->logo);
+        
+        $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'slug' => 'nullable|string|max:255|unique:brands,slug,' . $brand->id,
             'description' => 'nullable|string|max:1000',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048',
             'country' => 'nullable|string|max:100',
             'website' => 'nullable|url|max:255',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
-        ]);
+        ], $imageRules));
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -182,21 +199,28 @@ class BrandController extends Controller
             }
         }
 
-        // Gérer l'upload du logo
-        if ($request->hasFile('logo')) {
-            // Supprimer l'ancien logo si il existe et n'est pas une URL
-            if ($brand->logo && !filter_var($brand->logo, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($brand->logo);
-            }
-            
-            $logo = $request->file('logo');
-            $path = $logo->store('brands', 'public');
-            $data['logo'] = $path;
+        // Gérer le logo avec le trait
+        try {
+            $data['logo'] = $this->handleImageUpload(
+                $request, 
+                'logo', 
+                'logo_url', 
+                'logo_type', 
+                'brands', 
+                $brand->logo
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->withErrors(['logo' => $e->getMessage()])
+                           ->withInput();
         }
 
         // Gérer les checkboxes
         $data['is_active'] = $request->has('is_active') ? true : false;
         $data['is_featured'] = $request->has('is_featured') ? true : false;
+
+        // Nettoyer les champs non nécessaires
+        unset($data['logo_type'], $data['logo_url']);
 
         $brand->update($data);
 

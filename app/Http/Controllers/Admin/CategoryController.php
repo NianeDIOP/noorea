@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Traits\HandlesImageUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    use HandlesImageUploads;
     /**
      * Display a listing of the resource.
      */
@@ -70,28 +72,19 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url', 'image_type', true);
+        
+        $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image_url' => 'nullable|url|max:255',
-            'image_type' => 'required|in:upload,url',
             'parent_id' => 'nullable|exists:categories,id',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
-        ]);
-
-        // Validation personnalisée pour l'image
-        $validator->after(function ($validator) use ($request) {
-            if ($request->image_type === 'upload' && !$request->hasFile('image')) {
-                $validator->errors()->add('image', 'Veuillez sélectionner une image à télécharger.');
-            } elseif ($request->image_type === 'url' && !$request->filled('image_url')) {
-                $validator->errors()->add('image_url', 'Veuillez saisir une URL d\'image valide.');
-            }
-        });
+        ], $imageRules));
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -114,13 +107,19 @@ class CategoryController extends Controller
             }
         }
 
-        // Gérer l'image selon le type choisi
-        if ($request->image_type === 'upload' && $request->hasFile('image')) {
-            $image = $request->file('image');
-            $path = $image->store('categories', 'public');
-            $data['image'] = $path;
-        } elseif ($request->image_type === 'url' && $request->filled('image_url')) {
-            $data['image'] = $request->image_url;
+        // Gérer l'image avec le trait
+        try {
+            $data['image'] = $this->handleImageUpload(
+                $request, 
+                'image', 
+                'image_url', 
+                'image_type', 
+                'categories'
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->withErrors(['image' => $e->getMessage()])
+                           ->withInput();
         }
 
         // Nettoyer les champs non nécessaires
@@ -188,36 +187,24 @@ class CategoryController extends Controller
             'all_data' => $request->all()
         ]);
 
-        $validator = Validator::make($request->all(), [
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url', 'image_type', false, $category->image);
+        
+        $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
             'description' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image_url' => 'nullable|url|max:255',
-            'image_type' => 'required|in:upload,url',
             'parent_id' => 'nullable|exists:categories,id',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
-        ]);
+        ], $imageRules));
 
         // Validation personnalisée pour empêcher la catégorie d'être son propre parent
         $validator->after(function ($validator) use ($request, $category) {
             if ($request->parent_id == $category->id) {
                 $validator->errors()->add('parent_id', 'Une catégorie ne peut pas être son propre parent.');
-            }
-            
-            // Validation pour l'image selon le type - plus flexible
-            if ($request->image_type === 'upload') {
-                // Pour upload: soit on a un nouveau fichier, soit la catégorie a déjà une image
-                if (!$request->hasFile('image') && !$category->image) {
-                    $validator->errors()->add('image', 'Veuillez sélectionner une image ou utiliser une URL.');
-                }
-            } elseif ($request->image_type === 'url') {
-                if (!$request->filled('image_url')) {
-                    $validator->errors()->add('image_url', 'Veuillez saisir une URL d\'image valide.');
-                }
             }
         });
 
@@ -246,48 +233,20 @@ class CategoryController extends Controller
             }
         }
 
-        // Gérer l'image selon le type choisi
-        if ($request->image_type === 'upload' && $request->hasFile('image')) {
-            \Log::info('Processing image upload for category', [
-                'category_id' => $category->id,
-                'file_name' => $request->file('image')->getClientOriginalName(),
-                'file_size' => $request->file('image')->getSize(),
-                'mime_type' => $request->file('image')->getMimeType()
-            ]);
-            
-            // Supprimer l'ancienne image si elle existe et n'est pas une URL
-            if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
-                $deleted = Storage::disk('public')->delete($category->image);
-                \Log::info('Deleted old image:', ['path' => $category->image, 'success' => $deleted]);
-            }
-            
-            try {
-                $image = $request->file('image');
-                $path = $image->store('categories', 'public');
-                $data['image'] = $path;
-                
-                \Log::info('Image uploaded successfully:', [
-                    'path' => $path,
-                    'full_path' => Storage::disk('public')->path($path),
-                    'url' => Storage::disk('public')->url($path)
-                ]);
-                
-            } catch (\Exception $e) {
-                \Log::error('Image upload failed:', [
-                    'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
-                ]);
-                return redirect()->back()
-                               ->withErrors(['image' => 'Erreur lors de l\'upload de l\'image: ' . $e->getMessage()])
-                               ->withInput();
-            }
-        } elseif ($request->image_type === 'url' && $request->filled('image_url')) {
-            // Supprimer l'ancienne image locale si elle existe et qu'on passe à une URL
-            if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($category->image);
-            }
-            
-            $data['image'] = $request->image_url;
+        // Gérer l'image avec le trait
+        try {
+            $data['image'] = $this->handleImageUpload(
+                $request, 
+                'image', 
+                'image_url', 
+                'image_type', 
+                'categories', 
+                $category->image
+            );
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->withErrors(['image' => $e->getMessage()])
+                           ->withInput();
         }
 
         // Nettoyer les champs non nécessaires

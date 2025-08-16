@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Traits\HandlesImageUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
+    use HandlesImageUploads;
     /**
      * Display a listing of the resource.
      */
@@ -92,7 +94,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url_input', 'image_type', false);
+        
+        $validated = $request->validate(array_merge([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:500',
@@ -106,11 +111,9 @@ class ProductController extends Controller
             'brand_id' => 'required|exists:brands,id',
             'status' => ['required', Rule::in(['draft', 'active', 'inactive'])],
             'is_featured' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image_url_input' => 'nullable|url',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-        ]);
+        ], $imageRules));
 
         // Génération du slug
         $validated['slug'] = Str::slug($validated['name']);
@@ -122,18 +125,29 @@ class ProductController extends Controller
             $counter++;
         }
 
-        // Gestion de l'image
+        // Gestion de l'image avec le trait
         $images = [];
-
-        // Si une image est uploadée
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $images[] = Storage::url($path);
-        }
-
-        // Si une URL d'image est fournie
-        if ($request->filled('image_url_input')) {
-            $images[] = $request->image_url_input;
+        try {
+            $imagePath = $this->handleImageUpload(
+                $request, 
+                'image', 
+                'image_url_input', 
+                'image_type', 
+                'products'
+            );
+            
+            if ($imagePath) {
+                // Pour les produits, on stocke l'URL complète dans le tableau images
+                if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+                    $images[] = $imagePath; // URL externe
+                } else {
+                    $images[] = Storage::disk('public')->url($imagePath); // URL locale
+                }
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()
+                           ->withErrors(['image' => $e->getMessage()])
+                           ->withInput();
         }
 
         $validated['images'] = $images;
@@ -142,7 +156,7 @@ class ProductController extends Controller
         $validated['is_featured'] = $request->has('is_featured');
 
         // Supprimer les champs temporaires
-        unset($validated['image_url_input']);
+        unset($validated['image_type'], $validated['image_url_input']);
 
         $product = Product::create($validated);
 
@@ -177,7 +191,10 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
+        // Validation avec règles d'images
+        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url_input', 'image_type', false, !empty($product->images));
+        
+        $validated = $request->validate(array_merge([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'short_description' => 'nullable|string|max:500',
@@ -191,11 +208,9 @@ class ProductController extends Controller
             'brand_id' => 'required|exists:brands,id',
             'status' => ['required', Rule::in(['draft', 'active', 'inactive'])],
             'is_featured' => 'boolean',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image_url_input' => 'nullable|url',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-        ]);
+        ], $imageRules));
 
         // Mise à jour du slug si le nom a changé
         if ($validated['name'] !== $product->name) {
@@ -211,25 +226,55 @@ class ProductController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // Gestion des images
+        // Gestion des images avec le trait
         $images = $product->images ?? [];
-
-        // Si une nouvelle image est uploadée
-        if ($request->hasFile('image')) {
-            // Supprimer les anciennes images locales
-            foreach ($images as $image) {
-                if (!filter_var($image, FILTER_VALIDATE_URL) && Storage::disk('public')->exists(str_replace('/storage/', '', $image))) {
-                    Storage::disk('public')->delete(str_replace('/storage/', '', $image));
+        
+        // Si on veut changer l'image
+        if ($request->filled('image_type')) {
+            try {
+                // Pour les produits, on utilise le premier chemin d'image existant comme référence
+                $currentImagePath = null;
+                if (!empty($images)) {
+                    $firstImage = $images[0];
+                    if (!filter_var($firstImage, FILTER_VALIDATE_URL)) {
+                        // C'est une URL locale, extraire le chemin
+                        $currentImagePath = str_replace('/storage/', '', $firstImage);
+                    }
                 }
+                
+                $newImagePath = $this->handleImageUpload(
+                    $request, 
+                    'image', 
+                    'image_url_input', 
+                    'image_type', 
+                    'products',
+                    $currentImagePath
+                );
+                
+                if ($newImagePath) {
+                    // Supprimer les anciennes images locales si on a une nouvelle image
+                    if ($request->hasFile('image') || $request->filled('image_url_input')) {
+                        foreach ($images as $image) {
+                            if (!filter_var($image, FILTER_VALIDATE_URL)) {
+                                $oldPath = str_replace('/storage/', '', $image);
+                                $this->deleteImage($oldPath);
+                            }
+                        }
+                    }
+                    
+                    // Définir la nouvelle image
+                    if (filter_var($newImagePath, FILTER_VALIDATE_URL)) {
+                        $images = [$newImagePath]; // URL externe
+                    } else {
+                        $images = [Storage::disk('public')->url($newImagePath)]; // URL locale
+                    }
+                }
+                
+            } catch (\Exception $e) {
+                return redirect()->back()
+                               ->withErrors(['image' => $e->getMessage()])
+                               ->withInput();
             }
-            
-            $path = $request->file('image')->store('products', 'public');
-            $images = [Storage::url($path)];
-        }
-
-        // Si une URL d'image est fournie
-        if ($request->filled('image_url_input')) {
-            $images = [$request->image_url_input];
         }
 
         $validated['images'] = $images;
@@ -238,7 +283,7 @@ class ProductController extends Controller
         $validated['is_featured'] = $request->has('is_featured');
 
         // Supprimer les champs temporaires
-        unset($validated['image_url_input']);
+        unset($validated['image_type'], $validated['image_url_input']);
 
         $product->update($validated);
 
