@@ -21,3 +21,29 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# === FICHIERS DE DEBUG ET TEST À IGNORER ===
+debug_*.html
+diagnostic*.php
+diagnostic*.html
+test_*.html
+test_*.php
+migrate_*.php
+sync_*.php
+update_*.php
+fix_*.php
+/public/diagnostic.html
+/public/test*.html
+
+# === CACHE LARAVEL VOLUMINEUX ===
+/storage/framework/views/*.php
+/storage/framework/cache/data/*
+/storage/logs/*.log
+
+# === FICHIERS TEMPORAIRES ===
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
