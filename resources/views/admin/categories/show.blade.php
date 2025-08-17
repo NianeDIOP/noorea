@@ -46,7 +46,7 @@
                 @if(filter_var($category->image, FILTER_VALIDATE_URL))
                     <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                 @else
-                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                 @endif
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400">

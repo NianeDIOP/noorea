@@ -209,11 +209,6 @@
 
     <!-- Scripts -->
     <script>
-        // Toggle menu mobile
-        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
-        });
-        
         // Contrôle modal de recherche
         document.querySelector('[aria-label="Rechercher"]')?.addEventListener('click', function() {
             document.getElementById('search-modal').classList.remove('hidden');
@@ -232,6 +227,93 @@
         
         // Assurer que le bouton du mini-panier fonctionne dès le chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
+            // NAVBAR MOBILE - Gestion du menu hamburger
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Simple toggle avec hidden class
+                    if (mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.remove('hidden');
+                        mobileMenuButton.querySelector('i').className = 'fas fa-times text-xl';
+                    } else {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
+                    }
+                });
+
+                // Fermer le menu mobile quand on clique sur un lien
+                const mobileLinks = mobileMenu.querySelectorAll('a, button');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
+                    });
+                });
+
+                // Fermer le menu mobile quand on clique en dehors
+                document.addEventListener('click', function(event) {
+                    if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
+                    }
+                });
+            }
+
+            // RECHERCHE MOBILE - Gestion de la barre de recherche
+            const mobileSearchButton = document.getElementById('mobile-search-button');
+            const mobileSearchBar = document.getElementById('mobile-search-bar');
+            const closeMobileSearch = document.getElementById('close-mobile-search');
+            const mobileSearchInput = document.getElementById('mobile-search-input');
+            
+            if (mobileSearchButton && mobileSearchBar && closeMobileSearch && mobileSearchInput) {
+                // Ouvrir la recherche mobile
+                mobileSearchButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    mobileSearchBar.classList.add('show');
+                    setTimeout(() => mobileSearchInput.focus(), 300);
+                });
+                
+                // Fermer la recherche mobile
+                closeMobileSearch.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    mobileSearchBar.classList.remove('show');
+                });
+                
+                // Fermer avec Escape
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && mobileSearchBar.classList.contains('show')) {
+                        mobileSearchBar.classList.remove('show');
+                    }
+                });
+            }
+
+            // SCROLL HEADER - Effet de transparence
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const header = document.querySelector('header');
+                
+                if (header) {
+                    if (scrollTop > 100) {
+                        header.style.background = 'transparent';
+                        header.style.backdropFilter = 'blur(12px)';
+                        header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
+                    } else {
+                        header.style.background = 'transparent';
+                        header.style.backdropFilter = 'blur(8px)';
+                        header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.10)';
+                    }
+                }
+                lastScrollTop = scrollTop;
+            });
+            
             // S'assurer que le bouton du mini-panier fonctionne, même avant que cart.js soit entièrement chargé
             const navbarCartButton = document.getElementById('navbar-cart-button');
             if (navbarCartButton) {

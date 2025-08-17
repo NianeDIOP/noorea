@@ -27,8 +27,8 @@
                     </a>
                 </div>
                 
-                <!-- Barre de recherche centrale -->
-                <div class="flex-1 max-w-2xl mx-8">
+                <!-- Barre de recherche centrale - Desktop uniquement -->
+                <div class="desktop-search flex-1 max-w-2xl mx-8">
                     <div class="relative">
                         <input 
                             type="search" 
@@ -46,57 +46,64 @@
                 
                 <!-- Icônes à droite -->
                 <div class="flex items-center space-x-4">
-                    <!-- Compte utilisateur / Connexion -->
-                    <?php if(auth()->guard()->check()): ?>
-                        <!-- Utilisateur connecté -->
-                        <div class="relative group">
-                            <a href="<?php echo e(route('account.dashboard')); ?>" class="navbar-icon-top" title="Mon compte">
-                                <i class="fas fa-user text-xl"></i>
-                            </a>
-                            <!-- Menu déroulant -->
-                            <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                                <div class="py-2">
-                                    <a href="<?php echo e(route('account.dashboard')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                        <i class="fas fa-user mr-2"></i>Mon compte
-                                    </a>
-                                    <a href="<?php echo e(route('wishlist')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                        <i class="fas fa-heart mr-2"></i>Ma wishlist
-                                    </a>
-                                    <hr class="my-1">
-                                    <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
-                                        <?php echo csrf_field(); ?>
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
-                                            <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
-                                        </button>
-                                    </form>
+                    <!-- Recherche mobile uniquement - MASQUÉE sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-search-button" title="Rechercher">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Compte utilisateur / Connexion - Desktop uniquement -->
+                    <div class="desktop-auth items-center space-x-4">
+                        <?php if(auth()->guard()->check()): ?>
+                            <!-- Utilisateur connecté -->
+                            <div class="relative group">
+                                <a href="<?php echo e(route('account.dashboard')); ?>" class="navbar-icon-top" title="Mon compte">
+                                    <i class="fas fa-user text-xl"></i>
+                                </a>
+                                <!-- Menu déroulant -->
+                                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        <a href="<?php echo e(route('account.dashboard')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i>Mon compte
+                                        </a>
+                                        <a href="<?php echo e(route('wishlist')); ?>" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-heart mr-2"></i>Ma wishlist
+                                        </a>
+                                        <hr class="my-1">
+                                        <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <!-- Wishlist -->
-                        <a href="<?php echo e(route('wishlist')); ?>" class="navbar-icon-top relative" title="Ma wishlist">
-                            <i class="fas fa-heart text-xl"></i>
-                            <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
-                        </a>
-                    <?php else: ?>
-                        <!-- Utilisateur non connecté -->
-                        <a href="<?php echo e(route('login')); ?>" class="navbar-icon-top" title="Se connecter">
-                            <i class="fas fa-sign-in-alt text-xl"></i>
-                        </a>
-                        
-                        <a href="<?php echo e(route('register')); ?>" class="navbar-icon-top" title="S'inscrire">
-                            <i class="fas fa-user-plus text-xl"></i>
-                        </a>
-                    <?php endif; ?>
+                            
+                            <!-- Wishlist -->
+                            <a href="<?php echo e(route('wishlist')); ?>" class="navbar-icon-top relative" title="Ma wishlist">
+                                <i class="fas fa-heart text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                            </a>
+                        <?php else: ?>
+                            <!-- Utilisateur non connecté -->
+                            <a href="<?php echo e(route('login')); ?>" class="navbar-icon-top" title="Se connecter">
+                                <i class="fas fa-sign-in-alt text-xl"></i>
+                            </a>
+                            
+                            <a href="<?php echo e(route('register')); ?>" class="navbar-icon-top" title="S'inscrire">
+                                <i class="fas fa-user-plus text-xl"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
                     
-                    <!-- Panier -->
+                    <!-- Panier - Toujours visible -->
                     <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
                         <i class="fas fa-shopping-bag text-xl"></i>
                         <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
                     </button>
                     
-                    <!-- Menu mobile toggle -->
-                    <button type="button" class="navbar-icon-top md:hidden" id="mobile-menu-button" aria-label="Menu">
+                    <!-- Menu mobile toggle - MASQUÉ sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-menu-button" aria-label="Menu">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -132,8 +139,8 @@
             </nav>
             
             <!-- Menu mobile -->
-            <div class="md:hidden hidden bg-white border-t border-gray-200 shadow-lg" id="mobile-menu">
-                <nav class="flex flex-col space-y-1 p-4">
+            <div class="hidden" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4 bg-white border-t border-gray-200 shadow-lg">
                     <a href="<?php echo e(route('home')); ?>" class="nav-link-gold <?php echo e(request()->routeIs('home') ? 'active-gold' : ''); ?> flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-home mr-3 w-5"></i>Accueil
                     </a>
@@ -152,11 +159,61 @@
                     <a href="<?php echo e(route('about')); ?>" class="nav-link-gold <?php echo e(request()->routeIs('about') ? 'active-gold' : ''); ?> flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-info-circle mr-3 w-5"></i>À propos
                     </a>
+                    
+                    <!-- Séparateur -->
+                    <hr class="my-3 border-gray-200">
+                    
+                    <!-- Liens d'authentification mobile -->
+                    <?php if(auth()->guard()->check()): ?>
+                        <a href="<?php echo e(route('account.dashboard')); ?>" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-user mr-3 w-5"></i>Mon compte
+                        </a>
+                        <a href="<?php echo e(route('wishlist')); ?>" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-heart mr-3 w-5"></i>Ma wishlist
+                        </a>
+                        <form method="POST" action="<?php echo e(route('logout')); ?>" class="block">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50 w-full text-left">
+                                <i class="fas fa-sign-out-alt mr-3 w-5"></i>Déconnexion
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <a href="<?php echo e(route('login')); ?>" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Se connecter
+                        </a>
+                        <a href="<?php echo e(route('register')); ?>" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-user-plus mr-3 w-5"></i>S'inscrire
+                        </a>
+                    <?php endif; ?>
                 </nav>
             </div>
         </div>
     </div>
 </header>
+
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des produits..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -312,63 +369,6 @@ header {
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Gestion du menu mobile
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-            
-            // Changer l'icône du bouton
-            const icon = mobileMenuButton.querySelector('i');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.className = 'fas fa-bars text-xl';
-            } else {
-                icon.className = 'fas fa-times text-xl';
-            }
-        });
-
-        // Fermer le menu mobile quand on clique sur un lien
-        const mobileLinks = mobileMenu.querySelectorAll('a');
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
-            });
-        });
-
-        // Fermer le menu mobile quand on clique en dehors
-        document.addEventListener('click', function(event) {
-            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-                mobileMenuButton.querySelector('i').className = 'fas fa-bars text-xl';
-            }
-        });
-    }
-
-    // Effet de scroll pour la navbar
-    let lastScrollTop = 0;
-    window.addEventListener('scroll', function() {
-        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const header = document.querySelector('header');
-        
-        if (scrollTop > 100) {
-            header.style.background = 'transparent';
-            header.style.backdropFilter = 'blur(12px)';
-            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.15)';
-        } else {
-            header.style.background = 'transparent';
-            header.style.backdropFilter = 'blur(8px)';
-            header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.10)';
-        }
-        
-        lastScrollTop = scrollTop;
-    });
-});
-</script>
 
 <!-- Bannière USP -->
 <section class="bg-noorea-dark text-white py-8 relative overflow-hidden">

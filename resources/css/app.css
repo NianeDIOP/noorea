@@ -19,79 +19,57 @@
     --color-noorea-light: #FCFAFA;
 }
 
-/* Classes CSS pour améliorer la responsivité mobile du navbar existant */
+/* ==== STYLES RESPONSIFS NAVBAR ==== */
 .navbar-icon-top {
-    @apply text-noorea-dark hover:text-noorea-gold transition-colors duration-300 p-2 rounded-lg hover:bg-noorea-cream/30 flex items-center justify-center;
+    @apply flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/80 text-white hover:bg-white/20 hover:border-noorea-gold hover:text-noorea-gold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105;
 }
 
-/* S'assurer que les éléments mobiles sont masqués sur desktop */
-@media (min-width: 768px) {
-    #mobile-search-button,
-    #mobile-menu-button {
+/* Affichage des icônes selon la taille d'écran */
+.desktop-search {
+    display: block !important;
+}
+
+.desktop-auth {
+    display: flex !important;
+}
+
+/* Icônes mobiles cachées par défaut sur desktop */
+.mobile-only {
+    display: none !important;
+}
+
+/* Media queries pour mobile */
+@media (max-width: 767px) {
+    /* Sur mobile : cacher la barre de recherche desktop */
+    .desktop-search {
         display: none !important;
     }
-}
-
-/* S'assurer que les éléments mobiles sont bien cliquables sur mobile */
-@media (max-width: 767px) {
-    #mobile-search-button,
-    #mobile-menu-button {
+    
+    /* Sur mobile : cacher les icônes d'auth desktop */  
+    .desktop-auth {
+        display: none !important;
+    }
+    
+    /* Sur mobile : afficher les icônes mobiles */
+    .mobile-only {
         display: flex !important;
-        pointer-events: auto !important;
-        position: relative !important;
-        z-index: 10 !important;
     }
 }
 
-/* Améliorations responsives pour mobile */
-@media (max-width: 768px) {
-    /* S'assurer que le menu mobile s'affiche correctement */
-    #mobile-menu {
-        @apply fixed top-full left-0 right-0 bg-white shadow-2xl border-t border-gray-200 max-h-screen overflow-y-auto z-50;
-        animation: slideDown 0.3s ease-out;
-    }
-    
-    /* Animation pour l'ouverture du menu */
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* Assurer que le navbar principal ne déborde pas */
-    .navbar-container {
-        @apply px-3 py-2;
-    }
-    
-    /* Améliorer l'espacement des icônes sur mobile */
-    .navbar-icon-top {
-        @apply p-2.5 text-lg;
-    }
-    
-    /* Améliorer la taille des badges sur mobile */
-    .mobile-badge {
-        @apply w-5 h-5 text-xs;
-    }
+/* Barre de recherche mobile */
+.mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #D4AF37;
 }
 
-/* Classes pour les petits écrans */
-@media (max-width: 640px) {
-    .navbar-icon-top {
-        @apply p-1.5 text-base;
-    }
-    
-    /* Réduire l'espacement sur très petits écrans */
-    .navbar-container {
-        @apply px-2 py-2;
-    }
-    
-    /* Améliorer la taille du logo sur mobile */
-    .mobile-logo {
-        @apply h-8 md:h-14 lg:h-16;
-    }
+.mobile-search-bar.show {
+    transform: translateY(0);
 }

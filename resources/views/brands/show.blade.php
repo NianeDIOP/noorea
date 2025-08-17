@@ -105,7 +105,7 @@
             <!-- Logo de la marque -->
             @if($brand->logo)
                 <div class="w-32 h-32 mx-auto mb-6 rounded-2xl overflow-hidden border-4 border-noorea-gold/20 bg-white p-4">
-                    <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="w-full h-full object-contain">
+                    <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-full h-full object-contain">
                 </div>
             @else
                 <div class="w-32 h-32 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-noorea-gold to-noorea-rose-gold flex items-center justify-center border-4 border-noorea-gold/20">
@@ -268,7 +268,7 @@
                         <div class="relative h-64 overflow-hidden">
                             <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="block h-full">
                                 @if($product->main_image)
-                                    <img src="{{ $product->main_image_url }}" 
+                                    <img src="{{ asset('storage/' . $product->main_image) }}" 
                                          alt="{{ $product->name }}" 
                                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else
