@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Traits\HandlesImageUploads;
+use App\Traits\SimpleImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-    use HandlesImageUploads;
+    use SimpleImageUpload;
     /**
      * Display a listing of the resource.
      */
@@ -73,7 +73,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url', 'image_type', true);
+        $imageRules = $this->getSimpleImageValidationRules($request, 'image', 'image_url', 'image_type', true);
         
         $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:categories,name',
@@ -107,14 +107,13 @@ class CategoryController extends Controller
             }
         }
 
-        // Gérer l'image avec le trait
+        // Gérer l'image avec la nouvelle approche simple
         try {
-            $data['image'] = $this->handleImageUpload(
+            $data['image'] = $this->handleImageOrUrl(
                 $request, 
                 'image', 
                 'image_url', 
-                'image_type', 
-                'categories'
+                'image_type'
             );
         } catch (\Exception $e) {
             return redirect()->back()
@@ -188,7 +187,7 @@ class CategoryController extends Controller
         ]);
 
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url', 'image_type', false, $category->image);
+        $imageRules = $this->getSimpleImageValidationRules($request, 'image', 'image_url', 'image_type', false, $category->image);
         
         $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
@@ -233,14 +232,13 @@ class CategoryController extends Controller
             }
         }
 
-        // Gérer l'image avec le trait
+        // Gérer l'image avec la nouvelle approche simple
         try {
-            $data['image'] = $this->handleImageUpload(
+            $data['image'] = $this->handleImageOrUrl(
                 $request, 
                 'image', 
                 'image_url', 
-                'image_type', 
-                'categories', 
+                'image_type',
                 $category->image
             );
         } catch (\Exception $e) {
@@ -288,7 +286,7 @@ class CategoryController extends Controller
 
             // Supprimer l'image si elle existe et n'est pas une URL
             if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
-                Storage::disk('public')->delete($category->image);
+                $this->deleteSimpleImage($category->image);
             }
 
             $category->delete();

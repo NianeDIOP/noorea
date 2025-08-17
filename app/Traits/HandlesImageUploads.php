@@ -47,6 +47,9 @@ trait HandlesImageUploads
                     $file = $request->file($imageField);
                     $path = $file->store($folder, 'public');
                     
+                    // Synchroniser avec public/storage pour les hébergeurs sans liens symboliques
+                    $this->syncToPublicStorage($path);
+                    
                     Log::info("Image uploaded successfully", [
                         'path' => $path,
                         'url' => Storage::disk('public')->url($path)
@@ -144,5 +147,80 @@ trait HandlesImageUploads
         }
 
         return $rules;
+    }
+
+    /**
+     * Synchronise un fichier vers public/storage (pour les hébergeurs sans support des liens symboliques)
+     * 
+     * @param string $path - chemin relatif dans storage/app/public
+     * @return void
+     */
+    protected function syncToPublicStorage($path)
+    {
+        $sourcePath = storage_path('app/public/' . $path);
+        $destPath = public_path('storage/' . $path);
+        
+        // Créer le dossier de destination si nécessaire
+        $destDir = dirname($destPath);
+        if (!is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+        
+        // Copier le fichier
+        if (file_exists($sourcePath)) {
+            copy($sourcePath, $destPath);
+            chmod($destPath, 0644);
+            
+            Log::info("File synced to public storage", [
+                'source' => $sourcePath,
+                'destination' => $destPath
+            ]);
+        }
+    }
+
+    /**
+     * Synchronise tout le contenu de storage/app/public vers public/storage
+     * 
+     * @return void
+     */
+    public static function syncAllToPublicStorage()
+    {
+        $sourceDir = storage_path('app/public');
+        $destDir = public_path('storage');
+        
+        if (!is_dir($destDir)) {
+            mkdir($destDir, 0755, true);
+        }
+        
+        // Utiliser rsync si disponible, sinon copie récursive
+        if (function_exists('shell_exec') && shell_exec('which rsync')) {
+            shell_exec("rsync -av --delete $sourceDir/ $destDir/");
+        } else {
+            self::recursiveCopy($sourceDir, $destDir);
+        }
+        
+        Log::info("All files synced to public storage");
+    }
+
+    /**
+     * Copie récursive de fichiers
+     */
+    private static function recursiveCopy($src, $dst)
+    {
+        $dir = opendir($src);
+        @mkdir($dst);
+        
+        while (($file = readdir($dir)) !== false) {
+            if ($file != '.' && $file != '..') {
+                if (is_dir($src . '/' . $file)) {
+                    self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
+                } else {
+                    copy($src . '/' . $file, $dst . '/' . $file);
+                    chmod($dst . '/' . $file, 0644);
+                }
+            }
+        }
+        
+        closedir($dir);
     }
 }

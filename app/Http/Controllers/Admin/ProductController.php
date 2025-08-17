@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Traits\HandlesImageUploads;
+use App\Traits\SimpleImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -14,7 +14,7 @@ use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
-    use HandlesImageUploads;
+    use SimpleImageUpload;
     /**
      * Display a listing of the resource.
      */
@@ -95,7 +95,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url_input', 'image_type', false);
+        $imageRules = $this->getSimpleImageValidationRules($request, 'image', 'image_url_input', 'image_type', false);
         
         $validated = $request->validate(array_merge([
             'name' => 'required|string|max:255',
@@ -128,15 +128,12 @@ class ProductController extends Controller
         // Gestion de l'image avec le trait
         $images = [];
         try {
-            $imagePath = $this->handleImageUpload(
-                $request, 
-                'image', 
-                'image_url_input', 
-                'image_type', 
-                'products'
-            );
-            
-            if ($imagePath) {
+            $imagePath = $this->handleImageOrUrl(
+                $request,
+                'image',
+                'image_url_input',
+                'image_type'
+            );            if ($imagePath) {
                 // Pour les produits, on stocke l'URL complète dans le tableau images
                 if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
                     $images[] = $imagePath; // URL externe
@@ -192,7 +189,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'image', 'image_url_input', 'image_type', false, !empty($product->images));
+        $imageRules = $this->getSimpleImageValidationRules($request, 'image', 'image_url_input', 'image_type', false, !empty($product->images));
         
         $validated = $request->validate(array_merge([
             'name' => 'required|string|max:255',
@@ -242,12 +239,11 @@ class ProductController extends Controller
                     }
                 }
                 
-                $newImagePath = $this->handleImageUpload(
+                $newImagePath = $this->handleImageOrUrl(
                     $request, 
                     'image', 
                     'image_url_input', 
-                    'image_type', 
-                    'products',
+                    'image_type',
                     $currentImagePath
                 );
                 

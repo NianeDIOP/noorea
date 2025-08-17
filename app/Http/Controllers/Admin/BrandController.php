@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
-use App\Traits\HandlesImageUploads;
+use App\Traits\SimpleImageUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class BrandController extends Controller
 {
-    use HandlesImageUploads;
+    use SimpleImageUpload;
     /**
      * Display a listing of the resource.
      */
@@ -68,7 +68,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false);
+        $imageRules = $this->getSimpleImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false);
         
         $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:brands,name',
@@ -105,12 +105,11 @@ class BrandController extends Controller
 
         // Gérer le logo avec le trait
         try {
-            $data['logo'] = $this->handleImageUpload(
+            $data['logo'] = $this->handleImageOrUrl(
                 $request, 
                 'logo', 
                 'logo_url', 
-                'logo_type', 
-                'brands'
+                'logo_type'
             );
         } catch (\Exception $e) {
             return redirect()->back()
@@ -164,7 +163,7 @@ class BrandController extends Controller
     public function update(Request $request, Brand $brand)
     {
         // Validation avec règles d'images
-        $imageRules = $this->getImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false, $brand->logo);
+        $imageRules = $this->getSimpleImageValidationRules($request, 'logo', 'logo_url', 'logo_type', false, $brand->logo);
         
         $validator = Validator::make($request->all(), array_merge([
             'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
@@ -201,12 +200,11 @@ class BrandController extends Controller
 
         // Gérer le logo avec le trait
         try {
-            $data['logo'] = $this->handleImageUpload(
+            $data['logo'] = $this->handleImageOrUrl(
                 $request, 
                 'logo', 
                 'logo_url', 
-                'logo_type', 
-                'brands', 
+                'logo_type',
                 $brand->logo
             );
         } catch (\Exception $e) {
