@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -10,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\TestUploadController;
 
 // Inclure les routes admin
 require __DIR__.'/admin.php';
@@ -28,6 +31,10 @@ Route::get('/produit/{slug}', [ProductController::class, 'show'])->name('product
 
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
 Route::get('/categorie/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Routes de test pour l'upload d'images
+Route::get('/test-upload', [TestUploadController::class, 'index']);
+Route::post('/test-upload', [TestUploadController::class, 'store']);
 
 Route::get('/marques', [BrandController::class, 'index'])->name('brands');
 Route::get('/marque/{slug}', [BrandController::class, 'show'])->name('brands.show');

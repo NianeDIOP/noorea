@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <img src="<?php echo e($category->image); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <?php else: ?>
                                 
-                                <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <img src="<?php echo e($category->image_url); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <?php endif; ?>
                         <?php else: ?>
                             
@@ -515,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <img src="<?php echo e($product->main_image); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <?php else: ?>
                                 
-                                <img src="<?php echo e(asset('storage/' . $product->main_image)); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <img src="<?php echo e($product->main_image_url); ?>" alt="<?php echo e($product->name); ?>" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <?php endif; ?>
                         <?php else: ?>
                             
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 <img src="<?php echo e($brand->logo); ?>" alt="<?php echo e($brand->name); ?>" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
                                             <?php else: ?>
                                                 
-                                                <img src="<?php echo e(asset('storage/' . $brand->logo)); ?>" alt="<?php echo e($brand->name); ?>" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                                                <img src="<?php echo e($brand->logo_url); ?>" alt="<?php echo e($brand->name); ?>" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
                                             <?php endif; ?>
                                         <?php else: ?>
                                             

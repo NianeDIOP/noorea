@@ -53,13 +53,25 @@ class Brand extends Model
             return null;
         }
 
-        // Si c'est déjà une URL complète, on la retourne telle quelle
+        // Si c'est déjà une URL complète, la retourner telle quelle
         if (filter_var($this->logo, FILTER_VALIDATE_URL)) {
             return $this->logo;
         }
 
-        // Sinon, c'est un fichier local
-        return Storage::url($this->logo);
+        // Si le chemin commence par 'images/', c'est le nouveau système
+        if (str_starts_with($this->logo, 'images/')) {
+            return asset($this->logo);
+        }
+        
+        // Ancien système - essayer les deux possibilités
+        if (file_exists(public_path($this->logo))) {
+            return asset($this->logo);
+        } elseif (file_exists(public_path('storage/' . $this->logo))) {
+            return asset('storage/' . $this->logo);
+        }
+        
+        // Par défaut, retourner avec asset
+        return asset($this->logo);
     }
 
     public function getIsLocalAttribute(): bool

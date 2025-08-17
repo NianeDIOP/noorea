@@ -195,7 +195,7 @@
                                 <?php if(filter_var($category->image, FILTER_VALIDATE_URL)): ?>
                                     <img src="<?php echo e($category->image); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover">
                                 <?php else: ?>
-                                    <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover">
+                                    <img src="<?php echo e($category->image_url); ?>" alt="<?php echo e($category->name); ?>" class="w-full h-full object-cover">
                                 <?php endif; ?>
                             <?php else: ?>
                                 <i class="fas fa-image text-gray-400"></i>

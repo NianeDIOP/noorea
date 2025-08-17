@@ -194,7 +194,7 @@
                                 @if(filter_var($category->image, FILTER_VALIDATE_URL))
                                     <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                                 @endif
                             @else
                                 <i class="fas fa-image text-gray-400"></i>

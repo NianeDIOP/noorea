@@ -70,4 +70,31 @@ class Category extends Model
     {
         return $this->products()->active()->count();
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->image) {
+            return null;
+        }
+        
+        // Si c'est déjà une URL complète, la retourner telle quelle
+        if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+            return $this->image;
+        }
+        
+        // Si le chemin commence par 'images/', c'est le nouveau système
+        if (str_starts_with($this->image, 'images/')) {
+            return asset($this->image);
+        }
+        
+        // Ancien système - essayer les deux possibilités
+        if (file_exists(public_path($this->image))) {
+            return asset($this->image);
+        } elseif (file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+        
+        // Par défaut, retourner avec asset
+        return asset($this->image);
+    }
 }

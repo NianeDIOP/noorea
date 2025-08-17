@@ -9,6 +9,26 @@ use Illuminate\Support\Str;
 trait SimpleImageUpload
 {
     /**
+     * Gère l'uplo    /**
+     * Détermine le type de modèle (categories, products, brands) à partir du contrôleur
+     */
+    public function getModelType()
+    {
+        $className = class_basename($this);
+        
+        if (str_contains(strtolower($className), 'category')) {
+            return 'categories';
+        } elseif (str_contains(strtolower($className), 'product')) {
+            return 'products';
+        } elseif (str_contains(strtolower($className), 'brand')) {
+            return 'brands';
+        }
+        
+        // Par défaut
+        return 'images';
+    }
+
+    /**
      * Gère l'upload d'image directement dans public/images
      * Cette approche évite complètement les problèmes de liens symboliques
      */
@@ -183,24 +203,5 @@ trait SimpleImageUpload
         }
         
         return 0;
-    }
-
-    /**
-     * Détermine le type de modèle (categories, products, brands) à partir du contrôleur
-     */
-    private function getModelType()
-    {
-        $className = class_basename($this);
-        
-        if (str_contains(strtolower($className), 'category')) {
-            return 'categories';
-        } elseif (str_contains(strtolower($className), 'product')) {
-            return 'products';
-        } elseif (str_contains(strtolower($className), 'brand')) {
-            return 'brands';
-        }
-        
-        // Par défaut
-        return 'images';
     }
 }

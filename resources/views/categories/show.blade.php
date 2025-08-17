@@ -105,7 +105,7 @@
             <!-- Icône de la catégorie -->
             @if($category->image)
                 <div class="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden border-4 border-noorea-gold/20">
-                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                 </div>
             @else
                 <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br from-noorea-gold to-noorea-rose-gold flex items-center justify-center">
@@ -150,7 +150,7 @@
                         <div class="relative h-64 overflow-hidden">
                             <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="block h-full">
                                 @if($product->main_image)
-                                    <img src="{{ asset('storage/' . $product->main_image) }}" 
+                                    <img src="{{ $product->main_image_url }}" 
                                          alt="{{ $product->name }}" 
                                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 @else

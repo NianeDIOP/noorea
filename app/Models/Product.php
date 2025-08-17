@@ -68,6 +68,63 @@ class Product extends Model
         return $this->images ? $this->images[0] ?? null : null;
     }
 
+    public function getMainImageUrlAttribute(): ?string
+    {
+        $mainImage = $this->main_image;
+        if (!$mainImage) {
+            return null;
+        }
+        
+        // Si c'est déjà une URL complète, la retourner telle quelle
+        if (filter_var($mainImage, FILTER_VALIDATE_URL)) {
+            return $mainImage;
+        }
+        
+        // Si le chemin commence par 'images/', c'est le nouveau système
+        if (str_starts_with($mainImage, 'images/')) {
+            return asset($mainImage);
+        }
+        
+        // Ancien système - essayer les deux possibilités
+        if (file_exists(public_path($mainImage))) {
+            return asset($mainImage);
+        } elseif (file_exists(public_path('storage/' . $mainImage))) {
+            return asset('storage/' . $mainImage);
+        }
+        
+        // Par défaut, retourner avec asset
+        return asset($mainImage);
+    }
+
+    public function getImagesUrlsAttribute(): array
+    {
+        if (!$this->images || !is_array($this->images)) {
+            return [];
+        }
+        
+        return array_map(function($image) {
+            // Si c'est déjà une URL complète, la retourner telle quelle
+            if (filter_var($image, FILTER_VALIDATE_URL)) {
+                return $image;
+            }
+            
+            // Si le chemin commence par 'images/', c'est le nouveau système
+            if (str_starts_with($image, 'images/')) {
+                return asset($image);
+            }
+            
+            // Ancien système - essayer les deux possibilités
+            if (file_exists(public_path($image))) {
+                return asset($image);
+            } elseif (file_exists(public_path('storage/' . $image))) {
+                return asset('storage/' . $image);
+            }
+            
+            // Par défaut, retourner avec asset
+            return asset($image);
+        }, $this->images);
+    }
+
     public function getIsOnSaleAttribute(): bool
     {
         return $this->sale_price && $this->sale_price < $this->price;

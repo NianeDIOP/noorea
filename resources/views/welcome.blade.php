@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @else
                                 {{-- Fichier local --}}
-                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @endif
                         @else
                             {{-- Image par défaut --}}
@@ -514,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <img src="{{ $product->main_image }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @else
                                 {{-- Fichier local --}}
-                                <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <img src="{{ $product->main_image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             @endif
                         @else
                             {{-- Image par défaut --}}
@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
                                             @else
                                                 {{-- Logo avec chemin relatif --}}
-                                                <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                                                <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
                                             @endif
                                         @else
                                             {{-- Icône par défaut --}}

@@ -40,7 +40,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     @if($brand->logo)
-                        <img src="{{ asset('storage/' . $brand->logo) }}" 
+                        <img src="{{ $brand->logo_url }}" 
                              alt="Logo {{ $brand->name }}" 
                              class="h-24 w-24 object-contain bg-gray-50 rounded-lg border shadow-sm">
                     @else
@@ -147,7 +147,7 @@
                             <td>
                                 <div class="flex items-center space-x-3">
                                     @if($product->main_image)
-                                        <img src="{{ asset('storage/' . $product->main_image) }}" 
+                                        <img src="{{ $product->main_image_url }}" 
                                              alt="{{ $product->name }}" 
                                              class="h-10 w-10 object-cover rounded">
                                     @else
