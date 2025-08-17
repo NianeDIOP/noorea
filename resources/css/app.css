@@ -18,3 +18,80 @@
     --color-noorea-dark: #2C3E50;
     --color-noorea-light: #FCFAFA;
 }
+
+/* Classes CSS pour améliorer la responsivité mobile du navbar existant */
+.navbar-icon-top {
+    @apply text-noorea-dark hover:text-noorea-gold transition-colors duration-300 p-2 rounded-lg hover:bg-noorea-cream/30 flex items-center justify-center;
+}
+
+/* S'assurer que les éléments mobiles sont masqués sur desktop */
+@media (min-width: 768px) {
+    #mobile-search-button,
+    #mobile-menu-button {
+        display: none !important;
+    }
+}
+
+/* S'assurer que les éléments mobiles sont bien cliquables sur mobile */
+@media (max-width: 767px) {
+    #mobile-search-button,
+    #mobile-menu-button {
+        display: flex !important;
+        pointer-events: auto !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+}
+
+/* Améliorations responsives pour mobile */
+@media (max-width: 768px) {
+    /* S'assurer que le menu mobile s'affiche correctement */
+    #mobile-menu {
+        @apply fixed top-full left-0 right-0 bg-white shadow-2xl border-t border-gray-200 max-h-screen overflow-y-auto z-50;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    /* Animation pour l'ouverture du menu */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Assurer que le navbar principal ne déborde pas */
+    .navbar-container {
+        @apply px-3 py-2;
+    }
+    
+    /* Améliorer l'espacement des icônes sur mobile */
+    .navbar-icon-top {
+        @apply p-2.5 text-lg;
+    }
+    
+    /* Améliorer la taille des badges sur mobile */
+    .mobile-badge {
+        @apply w-5 h-5 text-xs;
+    }
+}
+
+/* Classes pour les petits écrans */
+@media (max-width: 640px) {
+    .navbar-icon-top {
+        @apply p-1.5 text-base;
+    }
+    
+    /* Réduire l'espacement sur très petits écrans */
+    .navbar-container {
+        @apply px-2 py-2;
+    }
+    
+    /* Améliorer la taille du logo sur mobile */
+    .mobile-logo {
+        @apply h-8 md:h-14 lg:h-16;
+    }
+}
