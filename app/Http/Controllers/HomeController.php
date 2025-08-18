@@ -23,12 +23,22 @@ class HomeController extends Controller
             $brand->short_description = Str::limit($brand->description, 80);
         });
         
-        // Récupérer les 8 produits tendance (produits featured + les plus vus)
+        // Récupérer les 4 produits tendance (produits featured + les plus vus)
         $featuredProducts = Product::where('is_featured', true)
             ->where('status', 'active')
             ->orderBy('views', 'desc')
             ->take(4)
             ->get();
+            
+        // Si on n'a pas assez de produits featured, compléter avec d'autres produits
+        if ($featuredProducts->count() < 4) {
+            $additionalProducts = Product::where('status', 'active')
+                ->whereNotIn('id', $featuredProducts->pluck('id'))
+                ->orderBy('created_at', 'desc')
+                ->take(4 - $featuredProducts->count())
+                ->get();
+            $featuredProducts = $featuredProducts->merge($additionalProducts);
+        }
             
         $trendingProducts = Product::where('status', 'active')
             ->orderBy('views', 'desc')

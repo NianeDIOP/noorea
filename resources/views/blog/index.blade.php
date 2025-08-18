@@ -9,7 +9,7 @@
                 <div class="relative">
                     <!-- Logo principal -->
                     <div class="relative p-2 group-hover:scale-110 transition-all duration-300 rounded-xl">
-                        <img src="{{ asset('images/logo.png') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto drop-shadow-sm transition-all duration-300">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto drop-shadow-sm transition-all duration-300">
                     </div>
                     <!-- Particules décoratives -->
                     <div class="absolute -top-1 -right-1 w-3 h-3 bg-noorea-gold rounded-full animate-pulse opacity-80"></div>

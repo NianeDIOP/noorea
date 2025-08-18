@@ -6,7 +6,7 @@
             <div class="flex items-center justify-between">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center group">
-                    <img src="{{ asset('images/logo.svg') }}" alt="Noorea Beauty" class="h-8 w-auto">
+                    <img src="{{ asset('images/logo.jpg') }}" alt="Noorea Beauty" class="h-8 w-auto">
                     <span class="ml-2 text-noorea-dark font-serif text-xl font-semibold group-hover:text-noorea-gold transition-colors duration-300">
                         Noorea
                     </span>

@@ -103,7 +103,7 @@
                 <!-- Logo et à propos -->
                 <div>
                     <div class="flex items-center mb-4">
-                        <img src="<?php echo e(asset('images/logo.png')); ?>" alt="Noorea" class="h-12 w-auto">
+                        <img src="<?php echo e(asset('images/logo.jpg')); ?>" alt="Noorea" class="h-12 w-auto">
                         <div class="ml-3">
                             <div class="text-2xl font-serif font-semibold text-noorea-gold">Noorea</div>
                             <div class="text-sm text-noorea-gold/80 italic font-light">Révélez votre lumière</div>
@@ -156,7 +156,7 @@
                     <ul class="space-y-2">
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-2 text-noorea-gold"></i>
-                            <span class="text-gray-300">123 Avenue de la Beauté, Dakar, Sénégal</span>
+                            <span class="text-gray-300">Mermoz Sacré-Cœur, Dakar, Sénégal</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-2 text-noorea-gold"></i>
@@ -164,7 +164,7 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-2 text-noorea-gold"></i>
-                            <span class="text-gray-300">contact@noorea.sn</span>
+                            <span class="text-gray-300">nooreadakar@gmail.com</span>
                         </li>
                     </ul>
                 </div>

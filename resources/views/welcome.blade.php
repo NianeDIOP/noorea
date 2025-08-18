@@ -502,9 +502,9 @@ header {
             </p>
         </div>
 
-        <!-- Grille des produits coups de cœur -->
+        <!-- Grille des produits coups de cœur - 1 ligne de 4 produits -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-            @foreach($featuredProducts as $product)
+            @foreach($featuredProducts->take(4) as $product)
             <article class="bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
                 <a href="{{ route('products.show', $product->slug ?? $product->id) }}" class="group block">
                     <div class="relative h-64 overflow-hidden">
@@ -535,25 +535,26 @@ header {
                         <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
                     
-                    <!-- Contenu de la carte (cliquable) -->
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight text-center">
+                    <!-- Contenu de la carte compact avec fond navbar -->
+                    <div class="p-4" style="background-color: #F7EAD5;">
+                        <h3 class="text-base font-semibold text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300 leading-tight text-center">
                             {{ $product->name }}
                         </h3>
                         
-                        <!-- Prix -->
-                        <div class="text-center mb-4">
-                            <div class="text-noorea-gold font-bold text-xl">
+                        <!-- Prix compact -->
+                        <div class="text-center mb-3">
+                            <div class="text-noorea-gold font-bold text-lg">
                                 {{ number_format($product->price, 0, ',', ' ') }} FCFA
                             </div>
                         </div>
                         
-                        <!-- Lien découvrir -->
+                        <!-- Bouton compact -->
                         <div class="text-center">
-                            <div class="inline-flex items-center text-noorea-rose-gold font-medium text-sm group-hover:text-noorea-gold transition-colors duration-300">
-                                Voir le produit
-                                <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                            </div>
+                            <button onclick="NooreaCart.addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->main_image_url ?? asset('images/logo.jpg') }}', 1); event.stopPropagation();" 
+                                    class="w-full bg-noorea-gold hover:bg-noorea-gold/80 text-white py-2 px-3 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg flex items-center justify-center">
+                                <i class="fas fa-shopping-cart mr-1 text-xs"></i>
+                                Ajouter
+                            </button>
                         </div>
                     </div>
                 </a>
@@ -563,9 +564,9 @@ header {
         
         <!-- Bouton voir tous les produits -->
         <div class="text-center mt-12">
-            <a href="{{ route('products') }}" class="inline-flex items-center text-noorea-rose-gold font-medium text-sm hover:text-noorea-gold transition-colors duration-300">
+            <a href="{{ route('products') }}" class="inline-flex items-center bg-noorea-rose-gold hover:bg-noorea-gold text-white font-semibold text-base px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105">
                 Voir tous les produits
-                <i class="fas fa-arrow-right ml-2 transform translate-x-0 hover:translate-x-2 transition-transform duration-300"></i>
+                <i class="fas fa-arrow-right ml-3 transform translate-x-0 hover:translate-x-2 transition-transform duration-300"></i>
             </a>
         </div>
     </div>
@@ -577,221 +578,68 @@ header {
     </div>
 </section>
 
-<!-- Section Nos Marques -->
-<section class="py-16 relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2067&q=80'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-    <!-- Overlay sombre et flou -->
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+<!-- Section Nos Partenaires d'Excellence -->
+<section class="py-20 relative overflow-hidden" style="background-color: #F7EAD5;">
+    <!-- Éléments décoratifs -->
+    <div class="absolute top-20 left-10 w-24 h-24 bg-noorea-gold/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 right-20 w-32 h-32 bg-noorea-rose-gold/10 rounded-full blur-2xl"></div>
     
     <div class="container mx-auto px-4 relative z-10">
         <!-- En-tête de section -->
-        <div class="mb-12 text-center">
-            <h2 class="text-4xl font-serif font-light text-noorea-gold mb-2 tracking-wide">
-                Nos Partenaires d'Excellence
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                Nos Partenaires d'<span class="text-noorea-gold font-medium">Excellence</span>
             </h2>
-            <div class="flex items-center justify-center mt-3">
-                <div class="h-px bg-noorea-gold/30 w-16"></div>
+            <div class="flex items-center justify-center mb-6">
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
                 <i class="fas fa-crown text-noorea-gold text-lg mx-4"></i>
-                <div class="h-px bg-noorea-gold/30 w-16"></div>
+                <div class="h-px bg-noorea-gold/30 w-20"></div>
             </div>
+            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+                Découvrez les marques de prestige qui nous font confiance pour offrir l'excellence à nos clientes
+            </p>
         </div>
 
-        <!-- Carousel des marques -->
-        <div class="relative max-w-2xl mx-auto">
-            <!-- Container du carousel -->
-            <div class="brands-carousel-container overflow-hidden relative h-96">
-                @foreach($brands as $index => $brand)
-                    <div class="brand-slide absolute inset-0 opacity-0 transition-opacity duration-500 {{ $index === 0 ? 'opacity-100' : '' }}" data-slide="{{ $index }}">
-                        <div class="flex items-center justify-center h-full px-8">
-                            <div class="group cursor-pointer w-full max-w-lg">
-                                <div class="bg-white rounded-xl p-8 shadow-lg border border-gray-100 hover:shadow-xl hover:border-noorea-gold/30 transition-all duration-300 hover:scale-105 h-80">
-                                    <div class="text-center h-full flex items-center justify-center">
-                                        @if($brand->logo)
-                                            @if(Str::startsWith($brand->logo, ['http://', 'https://']))
-                                                {{-- Logo avec URL complète --}}
-                                                <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
-                                            @else
-                                                {{-- Logo avec chemin relatif --}}
-                                                <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="max-w-full max-h-64 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
-                                            @endif
-                                        @else
-                                            {{-- Icône par défaut --}}
-                                            <div class="w-full h-64 bg-gradient-to-br from-noorea-gold to-yellow-400 rounded-lg flex items-center justify-center">
-                                                <i class="fas fa-crown text-white text-8xl"></i>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
+        <!-- Grille des marques -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            @foreach($brands->take(8) as $brand)
+            <article class="bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-4px] border border-noorea-gold/10 group">
+                <div class="p-6 h-40 flex items-center justify-center">
+                    @if($brand->logo)
+                        @if(Str::startsWith($brand->logo, ['http://', 'https://']))
+                            {{-- Logo avec URL complète --}}
+                            <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" class="max-w-full max-h-24 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110">
+                        @else
+                            {{-- Logo avec chemin relatif --}}
+                            <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="max-w-full max-h-24 object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 group-hover:scale-110">
+                        @endif
+                    @else
+                        {{-- Nom de la marque si pas de logo --}}
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-noorea-gold to-noorea-rose-gold rounded-full flex items-center justify-center mb-3 mx-auto group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-crown text-white text-xl"></i>
                             </div>
+                            <h3 class="text-sm font-semibold text-noorea-dark group-hover:text-noorea-gold transition-colors duration-300">
+                                {{ $brand->name }}
+                            </h3>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-            
-            <!-- Flèches de navigation -->
-            <button class="brands-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-noorea-dark p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10">
-                <i class="fas fa-chevron-left text-lg"></i>
-            </button>
-            <button class="brands-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-noorea-dark p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10">
-                <i class="fas fa-chevron-right text-lg"></i>
-            </button>
-            
-            <!-- Indicateurs -->
-            <div class="flex justify-center mt-8 space-x-2">
-                @foreach($brands as $index => $brand)
-                    <button class="brands-indicator w-3 h-3 rounded-full {{ $index === 0 ? 'bg-noorea-gold' : 'bg-white/50' }} transition-all duration-300" data-slide="{{ $index }}"></button>
-                @endforeach
-            </div>
+                    @endif
+                </div>
+            </article>
+            @endforeach
+        </div>
+        
+        <!-- Bouton voir toutes les marques -->
+        <div class="text-center mt-12">
+            <a href="{{ route('brands') }}" class="inline-flex items-center bg-noorea-gold hover:bg-noorea-rose-gold text-white font-semibold text-base px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg hover:scale-105">
+                Découvrir toutes nos marques
+                <i class="fas fa-arrow-right ml-3 transform translate-x-0 hover:translate-x-2 transition-transform duration-300"></i>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Script pour le carousel des marques -->
-<script>
-// Script isolé pour le carousel des marques
-(function() {
-    'use strict';
-    
-    // Attendre que tout soit chargé
-    window.addEventListener('load', function() {
-        console.log('Initialisation du carousel des marques...');
-        
-        const slides = document.querySelectorAll('.brand-slide');
-        const indicators = document.querySelectorAll('.brands-indicator');
-        const prevBtn = document.querySelector('.brands-prev');
-        const nextBtn = document.querySelector('.brands-next');
-        
-        if (slides.length === 0) {
-            console.log('Aucun slide trouvé');
-            return;
-        }
-        
-        console.log('Nombre de slides trouvés:', slides.length);
-        console.log('Bouton précédent trouvé:', !!prevBtn);
-        console.log('Bouton suivant trouvé:', !!nextBtn);
-        
-        let currentIndex = 0;
-        let intervalId = null;
-        
-        function showSlide(index) {
-            console.log('Affichage du slide', index);
-            
-            // Cacher tous les slides
-            slides.forEach(function(slide, i) {
-                if (i === index) {
-                    slide.style.opacity = '1';
-                    slide.style.zIndex = '2';
-                } else {
-                    slide.style.opacity = '0';
-                    slide.style.zIndex = '1';
-                }
-            });
-            
-            // Mettre à jour les indicateurs
-            indicators.forEach(function(indicator, i) {
-                if (i === index) {
-                    indicator.classList.remove('bg-white/50');
-                    indicator.classList.add('bg-noorea-gold');
-                } else {
-                    indicator.classList.remove('bg-noorea-gold');
-                    indicator.classList.add('bg-white/50');
-                }
-            });
-        }
-        
-        function nextSlide() {
-            currentIndex = (currentIndex + 1) % slides.length;
-            showSlide(currentIndex);
-        }
-        
-        function prevSlide() {
-            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-            showSlide(currentIndex);
-        }
-        
-        function startAutoplay() {
-            console.log('Démarrage du défilement automatique');
-            intervalId = setInterval(function() {
-                console.log('Défilement automatique - passage au slide suivant');
-                nextSlide();
-            }, 3000);
-        }
-        
-        function stopAutoplay() {
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
-                console.log('Arrêt du défilement automatique');
-            }
-        }
-        
-        // Event listeners pour les boutons
-        if (nextBtn) {
-            nextBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Clic sur bouton suivant');
-                nextSlide();
-                stopAutoplay();
-                setTimeout(function() {
-                    startAutoplay();
-                }, 5000);
-            });
-        }
-        
-        if (prevBtn) {
-            prevBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Clic sur bouton précédent');
-                prevSlide();
-                stopAutoplay();
-                setTimeout(function() {
-                    startAutoplay();
-                }, 5000);
-            });
-        }
-        
-        // Event listeners pour les indicateurs
-        indicators.forEach(function(indicator, index) {
-            indicator.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Clic sur indicateur', index);
-                currentIndex = index;
-                showSlide(currentIndex);
-                stopAutoplay();
-                setTimeout(function() {
-                    startAutoplay();
-                }, 5000);
-            });
-        });
-        
-        // Pause au survol
-        const container = document.querySelector('.brands-carousel-container');
-        if (container) {
-            container.addEventListener('mouseenter', function() {
-                stopAutoplay();
-            });
-            container.addEventListener('mouseleave', function() {
-                startAutoplay();
-            });
-        }
-        
-        // Initialisation
-        showSlide(0);
-        
-        // Démarrer le défilement automatique après 1 seconde
-        setTimeout(function() {
-            if (slides.length > 1) {
-                startAutoplay();
-            }
-        }, 1000);
-        
-        console.log('Carousel des marques initialisé avec succès');
-    });
-})();
-</script>
-    </div>
 </section>
-
-<!-- Le mini-panier est maintenant géré par le composant global -->
 
 <!-- Bannière promotionnelle -->
 <section class="py-16 text-white relative overflow-hidden">
@@ -844,7 +692,7 @@ header {
 </section>
 
 <!-- Témoignages -->
-<section class="py-20 bg-gradient-to-br from-noorea-cream/20 via-white to-noorea-cream/10 relative overflow-hidden">
+<section class="py-20 relative overflow-hidden bg-noorea-dark">
     <!-- Éléments décoratifs -->
     <div class="absolute top-10 left-10 w-20 h-20 bg-noorea-gold/10 rounded-full blur-xl"></div>
     <div class="absolute bottom-20 right-20 w-32 h-32 bg-noorea-rose-gold/10 rounded-full blur-xl"></div>
@@ -852,7 +700,7 @@ header {
     <div class="container mx-auto px-4 relative z-10">
         <!-- En-tête de section -->
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+            <h2 class="text-4xl font-serif font-light text-white mb-4 tracking-wide">
                 Témoignages de nos Clientes
             </h2>
             <div class="flex items-center justify-center mb-6">
@@ -860,7 +708,7 @@ header {
                 <i class="fas fa-heart text-noorea-gold text-lg mx-4"></i>
                 <div class="h-px bg-noorea-gold/30 w-20"></div>
             </div>
-            <p class="text-noorea-dark/70 max-w-2xl mx-auto text-lg">
+            <p class="text-white/70 max-w-2xl mx-auto text-lg">
                 Découvrez les expériences authentiques de celles qui nous font confiance
             </p>
         </div>
@@ -868,7 +716,7 @@ header {
         <!-- Grille des témoignages -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             <!-- Témoignage 1 -->
-            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
                 <!-- Citation -->
                 <div class="text-noorea-gold/30 text-4xl mb-4">
                     <i class="fas fa-quote-left"></i>
@@ -890,7 +738,7 @@ header {
                 
                 <!-- Profil client -->
                 <div class="flex items-center pt-4 border-t border-noorea-gold/10">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-gold to-noorea-rose-gold flex items-center justify-center text-white font-semibold mr-4">
+                    <div class="w-12 h-12 rounded-full bg-noorea-cream/80 border-2 border-noorea-gold/30 flex items-center justify-center text-noorea-dark font-semibold mr-4">
                         S
                     </div>
                     <div>
@@ -901,7 +749,7 @@ header {
             </div>
             
             <!-- Témoignage 2 -->
-            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
                 <!-- Citation -->
                 <div class="text-noorea-gold/30 text-4xl mb-4">
                     <i class="fas fa-quote-left"></i>
@@ -923,7 +771,7 @@ header {
                 
                 <!-- Profil client -->
                 <div class="flex items-center pt-4 border-t border-noorea-gold/10">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-emerald to-noorea-gold flex items-center justify-center text-white font-semibold mr-4">
+                    <div class="w-12 h-12 rounded-full bg-noorea-cream/80 border-2 border-noorea-gold/30 flex items-center justify-center text-noorea-dark font-semibold mr-4">
                         A
                     </div>
                     <div>
@@ -934,7 +782,7 @@ header {
             </div>
             
             <!-- Témoignage 3 -->
-            <div class="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+            <div class="group bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
                 <!-- Citation -->
                 <div class="text-noorea-gold/30 text-4xl mb-4">
                     <i class="fas fa-quote-left"></i>
@@ -956,7 +804,7 @@ header {
                 
                 <!-- Profil client -->
                 <div class="flex items-center pt-4 border-t border-noorea-gold/10">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-noorea-rose-gold to-noorea-emerald flex items-center justify-center text-white font-semibold mr-4">
+                    <div class="w-12 h-12 rounded-full bg-noorea-cream/80 border-2 border-noorea-gold/30 flex items-center justify-center text-noorea-dark font-semibold mr-4">
                         F
                     </div>
                     <div>
@@ -1181,3 +1029,14 @@ header {
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser NooreaCart si pas déjà fait
+    if (typeof NooreaCart !== 'undefined') {
+        console.log('NooreaCart disponible pour la page welcome');
+    }
+});
+</script>
+@endpush
