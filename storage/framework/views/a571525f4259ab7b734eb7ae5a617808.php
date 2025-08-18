@@ -505,6 +505,7 @@ header {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             <?php $__currentLoopData = $featuredProducts->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <article class="bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                <!-- Image et badge dans un lien -->
                 <a href="<?php echo e(route('products.show', $product->slug ?? $product->id)); ?>" class="group block">
                     <div class="relative h-64 overflow-hidden">
                         <?php if($product->main_image): ?>
@@ -534,31 +535,36 @@ header {
                         
                         <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-                    
-                    <!-- Contenu de la carte compact avec fond navbar -->
-                    <div class="p-4" style="background-color: #F7EAD5;">
-                        <h3 class="text-base font-semibold text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300 leading-tight text-center">
+                </a>
+                
+                <!-- Contenu de la carte compact avec fond navbar - en dehors du lien -->
+                <div class="p-4" style="background-color: #F7EAD5;">
+                    <a href="<?php echo e(route('products.show', $product->slug ?? $product->id)); ?>" class="block mb-3">
+                        <h3 class="text-base font-semibold text-noorea-dark hover:text-noorea-gold transition-colors duration-300 leading-tight text-center">
                             <?php echo e($product->name); ?>
 
                         </h3>
-                        
-                        <!-- Prix compact -->
-                        <div class="text-center mb-3">
-                            <div class="text-noorea-gold font-bold text-lg">
-                                <?php echo e(number_format($product->price, 0, ',', ' ')); ?> FCFA
-                            </div>
-                        </div>
-                        
-                        <!-- Bouton compact -->
-                        <div class="text-center">
-                            <button onclick="NooreaCart.addToCart(<?php echo e($product->id); ?>, '<?php echo e(addslashes($product->name)); ?>', <?php echo e($product->price); ?>, '<?php echo e($product->main_image_url ?? asset('images/logo.jpg')); ?>', 1); event.stopPropagation();" 
-                                    class="w-full bg-noorea-gold hover:bg-noorea-gold/80 text-white py-2 px-3 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg flex items-center justify-center">
-                                <i class="fas fa-shopping-cart mr-1 text-xs"></i>
-                                Ajouter
-                            </button>
+                    </a>
+                    
+                    <!-- Prix compact -->
+                    <div class="text-center mb-3">
+                        <div class="text-noorea-gold font-bold text-lg">
+                            <?php echo e(number_format($product->price, 0, ',', ' ')); ?> FCFA
                         </div>
                     </div>
-                </a>
+                    
+                    <!-- Bouton compact -->
+                    <div class="text-center">
+                        <button class="add-to-cart-btn w-full bg-noorea-gold hover:bg-noorea-gold/80 text-white py-2 px-3 rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg flex items-center justify-center"
+                                data-product-id="<?php echo e($product->id); ?>"
+                                data-product-name="<?php echo e(addslashes($product->name)); ?>"
+                                data-product-price="<?php echo e($product->price); ?>"
+                                data-product-image="<?php echo e($product->main_image_url ?? asset('images/logo.jpg')); ?>">
+                            <i class="fas fa-shopping-cart mr-1 text-xs"></i>
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
             </article>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
