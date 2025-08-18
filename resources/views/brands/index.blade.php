@@ -113,7 +113,7 @@
 </section>
 
 <!-- Section marques principales -->
-<div class="bg-noorea-cream/30 py-16">
+<div class="bg-noorea-cream/30 py-10">
     <div class="container mx-auto px-4">
         <!-- Filtres par région -->
         <div class="flex flex-wrap justify-center gap-4 mb-12">

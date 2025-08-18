@@ -112,7 +112,7 @@
     </div>
 </section>
 
-<div class="container mx-auto px-4 py-12">
+<div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-serif font-semibold text-noorea-dark mb-8">À propos de Noorea</h1>
     
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">

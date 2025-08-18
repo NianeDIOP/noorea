@@ -209,7 +209,7 @@ noorea/
 ## 📱 Contact & Support
 
 - **Email** : dev@noorea.sn
-- **WhatsApp Business** : +221 76 123 45 67
+- **WhatsApp Business** : +221 78 102 98 18
 - **Adresse** : 123 Avenue de la Beauté, Dakar, Sénégal
 
 ## 📄 Licence

@@ -170,49 +170,38 @@
 </header>
 @endsection
 
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des produits..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section('content')
 <!-- Espacement après navbar pour desktop -->
 <div class="hidden md:block h-8"></div>
 
-<!-- Hero Section avec HAUTEUR RÉDUITE -->
-<section class="relative h-[70vh] md:h-[75vh] overflow-hidden pt-0">
-    <!-- Image hero2 en arrière-plan -->
-    <div class="absolute inset-0 z-0">
-        @forelse($heroImages as $index => $image)
-            @if($index === 1)
-                <img src="{{ asset($image) }}" alt="Noorea Beauty - Boutique" 
-                     class="w-full h-full object-cover object-center" 
-                     style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"
-                     onerror="this.style.display='none';">
-            @endif
-        @empty
-            <!-- Utiliser hero2 par défaut -->
-            <img src="{{ asset('images/hero/hero2.jpg') }}" alt="Noorea Beauty - Boutique" 
-                 class="w-full h-full object-cover object-center" 
-                 style="image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;"
-                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-full bg-gradient-to-br from-noorea-cream to-noorea-gold flex items-center justify-center\'><div class=\'text-center text-noorea-dark\'><i class=\'fas fa-crown text-6xl mb-4\'></i><h2 class=\'text-3xl font-bold\'>Noorea Beauty</h2></div></div>';">
-        @endforelse
-        
-        <!-- Overlay léger pour la lisibilité du texte -->
-        <div class="absolute inset-0 bg-black/20"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10"></div>
-    </div>
-    
-    <!-- Contenu principal centré - LARGEUR RÉDUITE -->
-    <div class="relative z-30 flex items-center md:items-end justify-center h-full pt-28 md:pt-32 md:pb-32">
-        <div class="text-center max-w-3xl mx-auto px-6 md:px-8">
-            <!-- Hero sans texte -->
-        </div>
-    </div>
-    
-    <!-- Filtres Mobile-First responsive SUPPRIMÉS - utilisez la navbar uniquement -->
-</section>
-
-<!-- Espacement supplémentaire avant la section produits pour desktop -->
-<div class="hidden md:block h-24"></div>
+<!-- Hero Section SUPPRIMÉ - Transition directe vers contenu -->
 
 <!-- Section des résultats organisée par catégories -->
-<section class="py-8 md:py-16 md:pt-28 relative overflow-hidden" style="background-color: #F7EAD5;">
+<section class="pt-32 md:pt-36 py-6 md:py-12 relative overflow-hidden" style="background-color: #F7EAD5;">
     <!-- Éléments décoratifs comme welcome -->
     <div class="absolute top-20 right-10 w-24 h-24 bg-noorea-rose-gold/10 rounded-full blur-2xl"></div>
     <div class="absolute bottom-10 left-20 w-32 h-32 bg-noorea-gold/10 rounded-full blur-2xl"></div>

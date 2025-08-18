@@ -108,7 +108,7 @@
 </section>
 
 <!-- Options de contact -->
-<div class="bg-noorea-cream/30 py-16">
+<div class="bg-noorea-cream/30 py-10">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             
@@ -123,19 +123,19 @@
                     <h4 class="font-semibold text-lg mb-2">Messagerie instantanée</h4>
                     <p class="text-gray-600 mb-4">Discutez avec notre équipe en temps réel. Partagez des photos, posez vos questions, passez commande.</p>
                     <div class="space-y-3">
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20J'aimerais%20obtenir%20des%20conseils%20beauté%20personnalisés." 
+                        <a href="https://wa.me/221781029818?text=Bonjour%20Noorea%21%20J'aimerais%20obtenir%20des%20conseils%20beauté%20personnalisés." 
                            target="_blank"
                            class="block w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium text-center transition-colors">
                             <i class="fab fa-whatsapp mr-2"></i>
                             Conseils beauté
                         </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20Je%20souhaite%20passer%20une%20commande." 
+                        <a href="https://wa.me/221781029818?text=Bonjour%20Noorea%21%20Je%20souhaite%20passer%20une%20commande." 
                            target="_blank"
                            class="block w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium text-center transition-colors">
                             <i class="fas fa-shopping-cart mr-2"></i>
                             Passer commande
                         </a>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20J'ai%20une%20question%20sur%20un%20produit." 
+                        <a href="https://wa.me/221781029818?text=Bonjour%20Noorea%21%20J'ai%20une%20question%20sur%20un%20produit." 
                            target="_blank"
                            class="block w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium text-center transition-colors">
                             <i class="fas fa-question-circle mr-2"></i>
@@ -157,10 +157,10 @@
                     <p class="text-gray-600 mb-4">Parlez directement avec nos conseillers beauté pour un service personnalisé.</p>
                     <div class="space-y-3">
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-noorea-dark mb-2">+221 77 555 12 34</div>
+                            <div class="text-2xl font-bold text-noorea-dark mb-2">+221 78 102 98 18</div>
                             <p class="text-sm text-gray-500 mb-4">Lun-Sam : 8h-20h | Dim : 10h-18h</p>
                         </div>
-                        <a href="tel:+221775551234" 
+                        <a href="tel:+221781029818" 
                            class="block w-full bg-noorea-gold hover:bg-yellow-600 text-white py-3 rounded-lg font-medium text-center transition-colors">
                             <i class="fas fa-phone mr-2"></i>
                             Appeler maintenant
@@ -187,7 +187,7 @@
                             <p class="font-medium">123 Avenue Léopold Sédar Senghor</p>
                             <p class="text-gray-600">Dakar, Sénégal</p>
                         </div>
-                        <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20J'aimerais%20prendre%20rendez-vous%20pour%20visiter%20votre%20boutique." 
+                        <a href="https://wa.me/221781029818?text=Bonjour%20Noorea%21%20J'aimerais%20prendre%20rendez-vous%20pour%20visiter%20votre%20boutique." 
                            target="_blank"
                            class="block w-full bg-noorea-emerald hover:bg-emerald-600 text-white py-3 rounded-lg font-medium text-center transition-colors">
                             <i class="fas fa-calendar-alt mr-2"></i>

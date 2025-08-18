@@ -67,7 +67,7 @@
                         type="tel" 
                         name="phone" 
                         id="phone" 
-                        value="+221 77 123 45 67" 
+                        value="+221 78 102 98 18" 
                         class="admin-form-input"
                         placeholder="+221 XX XXX XX XX"
                     >
@@ -138,10 +138,10 @@
                         type="tel" 
                         name="whatsapp_number" 
                         id="whatsapp_number" 
-                        value="+221771234567" 
+                        value="+221781029818" 
                         required 
                         class="admin-form-input"
-                        placeholder="+221XXXXXXXXX (sans espaces)"
+                        placeholder="+221781029818 (sans espaces)"
                     >
                     <p class="text-sm text-gray-500 mt-1">Format international sans espaces ni tirets</p>
                 </div>

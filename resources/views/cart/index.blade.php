@@ -3,8 +3,207 @@
 @section('title', 'Mon Panier')
 
 @section('navbar')
-    @include('components.navbar')
+<!-- Navbar Supérieur -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <!-- Barre supérieure avec logo, recherche et icônes -->
+    <div class="backdrop-blur-sm bg-white border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo à gauche -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-14 md:h-16 w-auto">
+                    </a>
+                </div>
+                
+                <!-- Barre de recherche centrale - Desktop uniquement -->
+                <div class="desktop-search flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher des produits, marques, catégories..." 
+                            class="w-full px-5 py-3 pl-12 pr-14 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold focus:border-noorea-gold transition-all duration-300 shadow-sm text-gray-800 placeholder-gray-500 font-medium"
+                        >
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-600 text-xl"></i>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-noorea-gold hover:bg-yellow-600 text-white p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Icônes à droite -->
+                <div class="flex items-center space-x-4">
+                    <!-- Recherche mobile uniquement - MASQUÉE sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-search-button" title="Rechercher">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Compte utilisateur / Connexion - Desktop uniquement -->
+                    <div class="desktop-auth items-center space-x-4">
+                        @auth
+                            <!-- Utilisateur connecté -->
+                            <div class="relative group">
+                                <a href="{{ route('account.dashboard') }}" class="navbar-icon-top" title="Mon compte">
+                                    <i class="fas fa-user text-xl"></i>
+                                </a>
+                                <!-- Menu déroulant -->
+                                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i>Mon compte
+                                        </a>
+                                        <a href="{{ route('wishlist') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-heart mr-2"></i>Ma wishlist
+                                        </a>
+                                        <hr class="my-1">
+                                        <form method="POST" action="{{ route('logout') }}" class="block">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Wishlist -->
+                            <a href="{{ route('wishlist') }}" class="navbar-icon-top relative" title="Ma wishlist">
+                                <i class="fas fa-heart text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                            </a>
+                        @else
+                            <!-- Utilisateur non connecté -->
+                            <a href="{{ route('login') }}" class="navbar-icon-top" title="Se connecter">
+                                <i class="fas fa-sign-in-alt text-xl"></i>
+                            </a>
+                            
+                            <a href="{{ route('register') }}" class="navbar-icon-top" title="S'inscrire">
+                                <i class="fas fa-user-plus text-xl"></i>
+                            </a>
+                        @endauth
+                    </div>
+                    
+                    <!-- Panier - Toujours visible -->
+                    <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">{{ $itemCount ?? 0 }}</span>
+                    </button>
+                    
+                    <!-- Menu mobile toggle - MASQUÉ sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barre de navigation inférieure -->
+    <div class="backdrop-blur-sm border-t border-gray-200" style="background-color: #F7EAD5;">
+        <div class="container mx-auto px-4">
+            <!-- Navigation principale - desktop -->
+            <nav class="hidden md:flex items-center justify-center py-3">
+                <div class="flex space-x-8">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-th-large mr-2"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-crown mr-2"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-globe mr-2"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>À propos
+                    </a>
+                </div>
+            </nav>
+            
+            <!-- Menu mobile -->
+            <div class="hidden" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4 bg-white border-t border-gray-200 shadow-lg">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-home mr-3 w-5"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-th-large mr-3 w-5"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-crown mr-3 w-5"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-3 w-5"></i>À propos
+                    </a>
+                    
+                    <!-- Séparateur -->
+                    <hr class="my-3 border-gray-200">
+                    
+                    <!-- Actions utilisateur mobiles -->
+                    @auth
+                        <a href="{{ route('account.dashboard') }}" class="flex items-center py-3 px-2 text-noorea-gold hover:bg-gray-50 rounded-lg">
+                            <i class="fas fa-user mr-3 w-5"></i>Mon compte
+                        </a>
+                        <a href="{{ route('wishlist') }}" class="flex items-center py-3 px-2 text-noorea-gold hover:bg-gray-50 rounded-lg">
+                            <i class="fas fa-heart mr-3 w-5"></i>Ma wishlist
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="block">
+                            @csrf
+                            <button type="submit" class="w-full flex items-center py-3 px-2 text-red-600 hover:bg-gray-50 rounded-lg">
+                                <i class="fas fa-sign-out-alt mr-3 w-5"></i>Déconnexion
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="flex items-center py-3 px-2 text-noorea-gold hover:bg-gray-50 rounded-lg">
+                            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Se connecter
+                        </a>
+                        <a href="{{ route('register') }}" class="flex items-center py-3 px-2 text-noorea-gold hover:bg-gray-50 rounded-lg">
+                            <i class="fas fa-user-plus mr-3 w-5"></i>S'inscrire
+                        </a>
+                    @endauth
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
 @endsection
+
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des produits..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section('content')
 <div class="min-h-screen bg-gray-50 pt-24 md:pt-32 pb-12">
@@ -232,13 +431,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // CSRF Token
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     
-    // Menu mobile toggle
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
+    // Synchronisation du mini panier avec la page panier
+    function syncMiniCartWithCartPage() {
+        // Attendre que NooreaCart soit disponible
+        if (window.NooreaCart) {
+            console.log('Synchronisation du mini panier avec la page panier');
+            // Charger le panier depuis le serveur pour s'assurer que tout est à jour
+            window.NooreaCart.loadExistingCart();
+        } else {
+            // Retry si NooreaCart n'est pas encore chargé
+            setTimeout(syncMiniCartWithCartPage, 100);
+        }
+    }
     
-    mobileMenuButton?.addEventListener('click', function() {
-        mobileMenu.classList.toggle('hidden');
-    });
+    // Démarrer la synchronisation
+    syncMiniCartWithCartPage();
     
     // Fonction pour formater le prix
     function formatPrice(price) {
@@ -320,6 +527,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     syncQuantity(productId, newQty);
                     updateTotals();
+                    // Synchroniser le mini panier
+                    if (window.NooreaCart) {
+                        window.NooreaCart.loadExistingCart();
+                    }
                 }
             } catch (error) {
                 console.error('Erreur:', error);
@@ -358,6 +569,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     syncQuantity(productId, newQty);
                     updateTotals();
+                    // Synchroniser le mini panier
+                    if (window.NooreaCart) {
+                        window.NooreaCart.loadExistingCart();
+                    }
                 }
             } catch (error) {
                 console.error('Erreur:', error);
@@ -377,6 +592,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (response.ok) {
+                // Synchroniser le mini panier avant de recharger la page
+                if (window.NooreaCart) {
+                    window.NooreaCart.loadExistingCart();
+                }
                 location.reload();
             }
         } catch (error) {
@@ -407,6 +626,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (response.ok) {
+                    // Synchroniser le mini panier avant de recharger la page
+                    if (window.NooreaCart) {
+                        window.NooreaCart.loadExistingCart();
+                    }
                     location.reload();
                 }
             } catch (error) {
@@ -436,13 +659,142 @@ document.addEventListener('DOMContentLoaded', function() {
         
         message += "\\n\\n✨ *Merci de choisir Noorea Beauty !*";
         
-        // Numéro WhatsApp de Noorea (à remplacer par le vrai numéro)
-        const whatsappNumber = "221123456789"; // Format : code pays + numéro
+        // Numéro WhatsApp de Noorea
+        const whatsappNumber = "221781029818"; // Format : code pays + numéro (+221 78 102 98 18)
         const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
         
         window.open(whatsappUrl, '_blank');
     });
 });
 </script>
+@endpush
+
+@push('head')
+<style>
+/* Styles pour la navbar supérieure - pages intérieures */
+.navbar-icon-top {
+    color: #d4af37;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+}
+
+.navbar-icon-top:hover {
+    color: #d4af37;
+    background-color: rgba(212, 175, 55, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Masquer recherche mobile sur desktop */
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none !important;
+    }
+    .desktop-auth {
+        display: flex !important;
+    }
+    .desktop-search {
+        display: flex !important;
+    }
+}
+
+/* Masquer éléments desktop sur mobile */
+@media (max-width: 767px) {
+    .desktop-auth {
+        display: none !important;
+    }
+    .desktop-search {
+        display: none !important;
+    }
+}
+
+/* Mobile search bar - CENTRÉ comme le menu */
+.mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    background: transparent;
+    z-index: 100;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    padding-top: 140px; /* Espace pour les deux navbars */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mobile-search-bar.show {
+    transform: translateY(0);
+}
+
+.mobile-search-bar .container {
+    background: white;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 2px solid #d4af37;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Styles pour la navbar inférieure */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+
+/* Styles pour le header */
+header {
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+}
+</style>
 @endpush
 @endsection

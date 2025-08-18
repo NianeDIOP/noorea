@@ -1,6 +1,105 @@
 @extends('layouts.app')
 
-@section('title', $product->name ?? 'Produit')
+@push('head')
+<!-- Meta tags et polices d'origine -->
+@endpush
+
+@push('styles')
+<style>
+/* Styles pour navbar-icon-top sur pages intérieures - couleurs proches de welcome */
+.navbar-icon-top {
+    color: #d4af37;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.navbar-icon-top:hover {
+    color: #b8941f;
+    background-color: rgba(212, 175, 55, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Responsive design */
+.desktop-auth { display: flex; }
+.mobile-only { display: block; }
+.desktop-search { display: block; }
+
+@media (max-width: 768px) {
+    .desktop-auth { display: none; }
+    .desktop-search { display: none; }
+}
+
+@media (min-width: 769px) {
+    .mobile-only { display: none; }
+}
+
+/* Styles pour nav-link-gold et active-gold - EXACTEMENT comme welcome */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    background-color: rgba(212, 175, 55, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    background-color: rgba(212, 175, 55, 0.15);
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Mobile search bar */
+.mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    background: transparent;
+    z-index: 100;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    padding-top: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mobile-search-bar.show {
+    transform: translateY(0);
+}
+
+.mobile-search-bar .container {
+    background: white;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 2px solid #d4af37;
+    width: 90%;
+    max-width: 400px;
+}
+</style>
+@endpush
 
 @section('navbar')
 <!-- Navbar Supérieur -->
@@ -168,456 +267,296 @@
 </header>
 @endsection
 
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des produits..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section('content')
 <!-- Espacement après navbar pour desktop -->
 <div class="hidden md:block h-8"></div>
 
-<!-- Breadcrumbs Mobile-Friendly -->
-<nav class="bg-white border-b pt-36 md:pt-40 py-4">
-    <div class="container mx-auto px-4">
-        <div class="flex items-center text-sm text-gray-600 overflow-x-auto scrollbar-hide">
-            <a href="{{ route('home') }}" class="hover:text-noorea-gold whitespace-nowrap">
-                <i class="fas fa-home mr-1"></i>Accueil
-            </a>
-            <i class="fas fa-chevron-right mx-2 text-gray-400"></i>
-            <a href="{{ route('products') }}" class="hover:text-noorea-gold whitespace-nowrap">Boutique</a>
-            <i class="fas fa-chevron-right mx-2 text-gray-400"></i>
-            <span class="text-noorea-gold font-medium truncate">{{ $product->name }}</span>
-        </div>
-    </div>
-</nav>
+<!-- Contenu compact -->
+<div class="pt-32 md:pt-36 pb-8">
+    <div class="container mx-auto px-4 py-4">
+        
+        <!-- Fil d'Ariane -->
+        <nav class="text-sm mb-6 text-gray-500">
+            <a href="{{ route('home') }}" class="hover:text-noorea-gold">Accueil</a>
+            <span class="mx-2">›</span>
+            <a href="{{ route('products') }}" class="hover:text-noorea-gold">Boutique</a>
+            <span class="mx-2">›</span>
+            <span class="text-noorea-gold">{{ $product->name }}</span>
+        </nav>
 
-<!-- Espacement supplémentaire avant les détails produit pour desktop -->
-<div class="hidden md:block h-24"></div>
-
-<!-- Détails produit responsive -->
-<section class="py-8 md:py-16 md:pt-28 bg-gradient-to-b from-pink-50 via-white to-amber-50">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <!-- Section produit principale -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <!-- Galerie d'images - Mobile optimisée -->
-                <div class="space-y-4 mb-8 lg:mb-0">
-                    <!-- Image principale -->
-                    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-                        <div class="aspect-square relative group">
-                            @if($product->main_image)
-                                @php
-                                    $imageUrl = Str::startsWith($product->main_image, ['http://', 'https://']) 
-                                        ? $product->main_image 
-                                        : asset('storage/' . $product->main_image);
-                                @endphp
-                                <img src="{{ $imageUrl }}" 
-                                     alt="{{ $product->name }}" 
-                                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
-                                
-                                <!-- Bouton zoom mobile -->
-                                <button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-all duration-200 md:opacity-0 group-hover:opacity-100">
-                                    <i class="fas fa-expand text-gray-600"></i>
-                                </button>
-                            @else
-                                <div class="w-full h-full bg-gray-100 flex items-center justify-center">
-                                    <div class="text-center text-gray-400">
-                                        <i class="fas fa-image text-6xl mb-4"></i>
-                                        <p class="text-lg">Image non disponible</p>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
+                <!-- Image produit -->
+                <div>
+                    <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                        @if($product->main_image_url)
+                            <img src="{{ $product->main_image_url }}" 
+                                 alt="{{ $product->name }}" 
+                                 class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fas fa-image text-gray-400 text-6xl"></i>
+                            </div>
+                        @endif
                     </div>
-                    
-                    <!-- Badge promotion mobile -->
-                    @if($product->is_on_sale ?? false)
-                        <div class="bg-red-500 text-white px-4 py-2 rounded-lg inline-block">
-                            <i class="fas fa-tag mr-2"></i>Promotion
-                        </div>
-                    @endif
                 </div>
                 
-                <!-- Informations produit - Mobile optimisé -->
+                <!-- Informations produit -->
                 <div class="space-y-4">
-                    <!-- En-tête produit -->
-                    <div class="space-y-3">
-                        <div class="flex flex-wrap gap-1.5 mb-2">
-                            @if($product->brand)
-                                <span class="bg-noorea-gold/10 text-noorea-gold px-2 py-0.5 rounded-full text-xs font-medium">
-                                    <i class="fas fa-crown mr-1"></i>{{ $product->brand->name }}
-                                </span>
-                            @endif
-                            @if($product->category)
-                                <span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full text-xs">
-                                    {{ $product->category->name }}
-                                </span>
-                            @endif
-                            <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs">
-                                <i class="fas fa-check-circle mr-1"></i>En stock
-                            </span>
-                        </div>
-                        
-                        <h1 class="text-xl md:text-2xl lg:text-3xl font-serif text-noorea-dark leading-tight">
-                            {{ $product->name }}
-                        </h1>
-                        
-                        <!-- Évaluation mobile -->
-                        <div class="flex items-center space-x-2 flex-wrap">
-                            <div class="flex items-center space-x-1">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= 4 ? 'text-yellow-400' : 'text-gray-300' }} text-sm"></i>
-                                @endfor
-                                <span class="text-gray-600 text-xs ml-1">(4.2)</span>
-                            </div>
-                            <span class="text-gray-400">•</span>
-                            <span class="text-gray-600 text-xs">127 avis</span>
+                    
+                    <!-- Titre et marque -->
+                    <div>
+                        @if($product->brand)
+                        <p class="text-sm text-noorea-gold mb-1">{{ $product->brand->name }}</p>
+                        @endif
+                        <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ $product->name }}</h1>
+                        @if($product->category)
+                        <span class="inline-block bg-gray-100 px-3 py-1 rounded-full text-xs text-gray-600">
+                            {{ $product->category->name }}
+                        </span>
+                        @endif
+                    </div>
+                    
+                    <!-- Prix -->
+                    <div class="py-2">
+                        <div class="text-3xl font-bold text-noorea-gold">
+                            {{ number_format($product->price ?? 0, 0, ',', ' ') }} FCFA
                         </div>
                     </div>
                     
-                    <!-- Prix responsive -->
-                    <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-                        <div class="space-y-2">
-                            @if(($product->original_price ?? 0) > ($product->final_price ?? $product->price ?? 0))
-                                <div class="flex items-baseline space-x-2 flex-wrap">
-                                    <span class="text-2xl md:text-3xl font-bold text-noorea-gold">
-                                        {{ number_format($product->final_price ?? $product->price ?? 0, 0, ',', ' ') }} CFA
-                                    </span>
-                                    <span class="text-lg text-gray-500 line-through">
-                                        {{ number_format($product->original_price, 0, ',', ' ') }} CFA
-                                    </span>
-                                    <span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-xs font-medium">
-                                        -{{ round((($product->original_price - $product->final_price) / $product->original_price) * 100) }}%
-                                    </span>
-                                </div>
-                            @else
-                                <div class="text-2xl md:text-3xl font-bold text-noorea-gold">
-                                    {{ number_format($product->final_price ?? $product->price ?? 0, 0, ',', ' ') }} CFA
-                                </div>
-                            @endif
-                            
-                            <!-- Modes de paiement mobile -->
-                            <div class="flex flex-wrap gap-1.5 pt-2 border-t">
-                                <span class="text-green-600 text-xs bg-green-50 px-2 py-0.5 rounded">
-                                    <i class="fas fa-mobile-alt mr-1"></i>Mobile Money
-                                </span>
-                                <span class="text-blue-600 text-xs bg-blue-50 px-2 py-0.5 rounded">
-                                    <i class="fas fa-credit-card mr-1"></i>Carte bancaire
-                                </span>
-                                <span class="text-orange-600 text-xs bg-orange-50 px-2 py-0.5 rounded">
-                                    <i class="fas fa-money-bill-wave mr-1"></i>Paiement livraison
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Description courte mobile -->
+                    <!-- Description courte -->
                     @if($product->short_description)
-                        <div class="bg-gradient-to-r from-pink-50 to-amber-50 p-4 rounded-xl border border-pink-100">
-                            <h3 class="font-semibold text-gray-800 mb-2 text-sm">
-                                <i class="fas fa-info-circle text-noorea-gold mr-2"></i>Description rapide
-                            </h3>
-                            <p class="text-gray-700 leading-relaxed text-sm">{{ $product->short_description }}</p>
-                        </div>
+                    <div class="py-2">
+                        <p class="text-gray-600">{{ $product->short_description }}</p>
+                    </div>
                     @endif
                     
-                    <!-- Actions d'achat mobiles optimisées -->
-                    <div class="bg-white p-4 rounded-xl shadow-lg space-y-3">
-                        <!-- Quantité mobile-friendly -->
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-sort-numeric-up mr-2"></i>Quantité
-                            </label>
-                            <div class="flex items-center">
-                                <div class="flex items-center bg-gray-100 rounded-lg">
-                                    <button id="qty-decrease" class="px-3 py-2 text-gray-600 hover:text-noorea-gold hover:bg-gray-200 rounded-l-lg transition-colors">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <input type="number" 
-                                           id="product-quantity"
-                                           value="1" 
-                                           min="1" 
-                                           max="12"
-                                           class="w-12 py-2 text-center bg-transparent border-0 font-semibold focus:outline-none">
-                                    <button id="qty-increase" class="px-3 py-2 text-gray-600 hover:text-noorea-gold hover:bg-gray-200 rounded-r-lg transition-colors">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                                <span class="text-gray-500 text-xs ml-3">12 disponibles</span>
+                    <!-- Actions d'achat -->
+                    <div class="space-y-4 pt-4">
+                        
+                        <!-- Quantité -->
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-600">Quantité :</span>
+                            <div class="flex items-center border rounded">
+                                <button type="button" id="decrease-qty" class="p-2 hover:bg-gray-50">
+                                    <i class="fas fa-minus text-sm"></i>
+                                </button>
+                                <input type="number" id="quantity" value="1" min="1" max="999" class="w-12 text-center border-0 text-sm">
+                                <button type="button" id="increase-qty" class="p-2 hover:bg-gray-50">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
                             </div>
                         </div>
                         
-                        <!-- Boutons d'action empilés sur mobile -->
-                        <div class="space-y-2">
-                            <!-- Bouton principal -->
-                            <button class="add-to-cart-btn w-full bg-noorea-gold hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 hover:shadow-lg hover:-translate-y-1 group"
-                                    data-product-id="{{ $product->id }}"
-                                    data-product-name="{{ $product->name }}"
-                                    data-product-price="{{ $product->final_price ?? $product->price }}"
-                                    data-product-image="{{ $product->main_image }}">
-                                <i class="fas fa-shopping-cart mr-2 group-hover:scale-110 transition-transform"></i>
-                                <span>Ajouter au panier</span>
+                        <!-- Bouton principal -->
+                        <form action="{{ route('cart.add') }}" method="POST" id="add-to-cart-form">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" id="cart-quantity" value="1">
+                            <button type="submit" id="add-to-cart-btn" class="w-full bg-noorea-gold hover:bg-yellow-600 text-white py-3 rounded font-medium transition-colors">
+                                <i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier
                             </button>
-                            
-                            <!-- Boutons secondaires - Grid responsive -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                <button class="border-2 border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white py-2 px-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center text-sm">
-                                    <i class="fas fa-heart mr-2"></i>
-                                    <span class="hidden sm:inline">Favoris</span>
-                                    <span class="sm:hidden">♡</span>
-                                </button>
-                                
-                                <button class="border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white py-2 px-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center text-sm">
-                                    <i class="fas fa-share-alt mr-2"></i>
-                                    <span class="hidden sm:inline">Partager</span>
-                                    <span class="sm:hidden">⚡</span>
-                                </button>
-                                
-                                <a href="https://wa.me/221777777777?text=Bonjour, je suis intéressé(e) par le produit: {{ urlencode($product->name) }}" 
-                                   class="bg-green-500 hover:bg-green-600 text-white py-2 px-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center text-sm">
-                                    <i class="fab fa-whatsapp mr-2"></i>
-                                    <span class="hidden sm:inline">WhatsApp</span>
-                                    <span class="sm:hidden">📱</span>
-                                </a>
-                            </div>
+                        </form>
+                        
+                        <!-- Boutons secondaires -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="border border-gray-300 py-2 rounded text-sm hover:border-noorea-gold">
+                                <i class="fas fa-heart mr-1"></i>Favoris
+                            </button>
+                            <button class="bg-green-500 hover:bg-green-600 text-white py-2 rounded text-sm">
+                                <i class="fab fa-whatsapp mr-1"></i>WhatsApp
+                            </button>
                         </div>
                         
-                        <!-- Informations de livraison mobiles -->
-                        <div class="border-t pt-3 space-y-1.5">
-                            <div class="flex items-center text-green-600 text-xs">
-                                <i class="fas fa-truck mr-2"></i>
-                                <span>Livraison gratuite à partir de 50 000 CFA</span>
+                        <!-- Infos livraison -->
+                        <div class="bg-gray-50 rounded p-3 text-sm text-gray-600">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-truck mr-2 text-green-500"></i>
+                                Livraison gratuite dès 50 000 FCFA
                             </div>
-                            <div class="flex items-center text-blue-600 text-xs">
-                                <i class="fas fa-undo-alt mr-2"></i>
-                                <span>Retour gratuit sous 14 jours</span>
+                            <div class="flex items-center">
+                                <i class="fas fa-shield-alt mr-2 text-blue-500"></i>
+                                Garantie incluse
                             </div>
-                            <div class="flex items-center text-orange-600 text-xs">
-                                <i class="fas fa-shield-alt mr-2"></i>
-                                <span>Paiement sécurisé</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Description complète - Accordéon mobile -->
-            @if($product->description)
-                <div class="mt-12 bg-white rounded-xl shadow-lg overflow-hidden">
-                    <button class="w-full p-4 text-left border-b hover:bg-gray-50 transition-colors" onclick="toggleDescription()">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-lg md:text-xl font-serif text-noorea-dark">
-                                <i class="fas fa-file-alt mr-2"></i>Description détaillée
-                            </h2>
-                            <i class="fas fa-chevron-down transition-transform duration-200" id="description-icon"></i>
-                        </div>
-                    </button>
-                    <div class="hidden p-4 bg-gradient-to-br from-pink-50 to-amber-50" id="description-content">
-                        <div class="prose max-w-none text-gray-700 leading-relaxed text-sm">
-                            {!! nl2br(e($product->description)) !!}
-                        </div>
-                    </div>
-                </div>
-            @endif
-            
-            <!-- Caractéristiques techniques - Mobile friendly -->
-            <div class="mt-8 bg-white rounded-xl shadow-lg overflow-hidden">
-                <button class="w-full p-4 text-left border-b hover:bg-gray-50 transition-colors" onclick="toggleSpecs()">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-lg md:text-xl font-serif text-noorea-dark">
-                            <i class="fas fa-list-ul mr-2"></i>Caractéristiques
-                        </h2>
-                        <i class="fas fa-chevron-down transition-transform duration-200" id="specs-icon"></i>
-                    </div>
-                </button>
-                <div class="hidden p-4" id="specs-content">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
-                            <span class="text-gray-600">Marque:</span>
-                            <span class="font-medium">{{ $product->brand->name ?? 'Non spécifiée' }}</span>
-                        </div>
-                        <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
-                            <span class="text-gray-600">Catégorie:</span>
-                            <span class="font-medium">{{ $product->category->name ?? 'Non spécifiée' }}</span>
-                        </div>
-                        <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
-                            <span class="text-gray-600">Référence:</span>
-                            <span class="font-medium">{{ $product->sku ?? 'N/A' }}</span>
-                        </div>
-                        <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
-                            <span class="text-gray-600">Stock:</span>
-                            <span class="font-medium text-green-600">En stock</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Description détaillée -->
+        @if($product->description)
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h3 class="text-lg font-bold mb-3">Description</h3>
+            <p class="text-gray-600 leading-relaxed">{{ $product->description }}</p>
+        </div>
+        @endif        <!-- Produits similaires -->
+        @if(isset($relatedProducts) && $relatedProducts->count() > 0)
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-bold mb-4">Produits similaires</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($relatedProducts as $similar)
+                <div class="group">
+                    <a href="{{ route('products.show', $similar->slug) }}" class="block">
+                        <div class="bg-gray-100 aspect-square rounded-lg overflow-hidden mb-2">
+                            @if($similar->main_image_url)
+                                <img src="{{ $similar->main_image_url }}" 
+                                     alt="{{ $similar->name }}" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <h4 class="text-sm font-medium text-gray-800 mb-1 line-clamp-2">{{ $similar->name }}</h4>
+                        <div class="text-sm font-bold text-noorea-gold">
+                            {{ number_format($similar->price ?? 0, 0, ',', ' ') }} FCFA
+                        </div>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
     </div>
-</section>
 
-<!-- JavaScript pour les accordéons et intégration avec le système de panier global -->
-<script>
-    // Fonctions accordéons
-    function toggleDescription() {
-        const content = document.getElementById('description-content');
-        const icon = document.getElementById('description-icon');
-        
-        if (content.classList.contains('hidden')) {
-            content.classList.remove('hidden');
-            icon.style.transform = 'rotate(180deg)';
-        } else {
-            content.classList.add('hidden');
-            icon.style.transform = 'rotate(0deg)';
-        }
-    }
-    
-    function toggleSpecs() {
-        const content = document.getElementById('specs-content');
-        const icon = document.getElementById('specs-icon');
-        
-        if (content.classList.contains('hidden')) {
-            content.classList.remove('hidden');
-            icon.style.transform = 'rotate(180deg)';
-        } else {
-            content.classList.add('hidden');
-            icon.style.transform = 'rotate(0deg)';
-        }
-    }
-    
-    // Gestion des quantités et système de panier SIMPLE (comme dans la boutique)
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const quantityInput = document.getElementById('product-quantity');
-        const decreaseBtn = document.getElementById('qty-decrease');
-        const increaseBtn = document.getElementById('qty-increase');
-        
-        // Gestion des quantités
-        if (decreaseBtn) {
+        // Attendre que NooreaCart soit initialisé
+        const initializeProductDetailPage = () => {
+            // Vérifier si NooreaCart est disponible
+            if (!window.NooreaCart) {
+                console.log('NooreaCart non encore disponible, retry dans 100ms...');
+                setTimeout(initializeProductDetailPage, 100);
+                return;
+            }
+            
+            console.log('NooreaCart disponible, initialisation de la page détail produit');
+            
+            // Éléments
+            const quantityInput = document.getElementById('quantity');
+            const cartQuantityInput = document.getElementById('cart-quantity');
+            const decreaseBtn = document.getElementById('decrease-qty');
+            const increaseBtn = document.getElementById('increase-qty');
+            const addToCartForm = document.getElementById('add-to-cart-form');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            // Fonction pour mettre à jour la quantité
+            function updateQuantity(newValue) {
+                if (newValue >= 1 && newValue <= 999) {
+                    quantityInput.value = newValue;
+                    cartQuantityInput.value = newValue;
+                }
+            }
+
+            // Bouton diminuer
             decreaseBtn.addEventListener('click', function() {
-                const currentValue = parseInt(quantityInput.value);
-                if (currentValue > 1) {
-                    quantityInput.value = currentValue - 1;
-                }
+                const currentValue = parseInt(quantityInput.value) || 1;
+                updateQuantity(currentValue - 1);
             });
-        }
-        
-        if (increaseBtn) {
+
+            // Bouton augmenter  
             increaseBtn.addEventListener('click', function() {
-                const currentValue = parseInt(quantityInput.value);
-                const maxValue = parseInt(quantityInput.getAttribute('max'));
-                if (currentValue < maxValue) {
-                    quantityInput.value = currentValue + 1;
-                }
+                const currentValue = parseInt(quantityInput.value) || 1;
+                updateQuantity(currentValue + 1);
             });
-        }
-        
-        // Validation de la quantité
-        if (quantityInput) {
+
+            // Input quantité change
             quantityInput.addEventListener('input', function() {
-                const value = parseInt(this.value);
-                const max = parseInt(this.getAttribute('max'));
-                if (value < 1) this.value = 1;
-                if (value > max) this.value = max;
+                const value = parseInt(this.value) || 1;
+                updateQuantity(value);
             });
-        }
-        
-        // Système de panier SIMPLE - comme dans la boutique (index)
-        const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-        
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
+
+            // Soumission du formulaire - utiliser le système global NooreaCart
+            addToCartForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                e.stopPropagation();
                 
-                const productId = this.getAttribute('data-product-id');
-                const productName = this.getAttribute('data-product-name');
-                
-                // Animation simple - comme dans la boutique
-                const originalIcon = this.querySelector('i').className;
-                this.querySelector('i').className = 'fas fa-check mr-2 group-hover:scale-110 transition-transform';
-                this.style.backgroundColor = '#10B981';
-                
-                console.log('Produit ajouté:', productName);
-                
-                setTimeout(() => {
-                    this.querySelector('i').className = originalIcon;
-                    this.style.backgroundColor = '';
-                }, 2000);
+                // Désactiver le bouton temporairement
+                addToCartBtn.disabled = true;
+                addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Ajout en cours...';
+
+                // Données du produit
+                const productId = this.querySelector('input[name="product_id"]').value;
+                const quantity = parseInt(this.querySelector('input[name="quantity"]').value);
+                const productName = '{{ $product->name }}';
+                const productPrice = '{{ $product->final_price }}';
+                const productImage = '{{ $product->main_image_url ?? asset("images/logo.svg") }}';
+
+                console.log('Ajout au panier via NooreaCart:', { productId, quantity, productName, productPrice });
+
+                // Utiliser le système global NooreaCart
+                window.NooreaCart.addToCart(productId, productName, productPrice, productImage, quantity)
+                    .then(success => {
+                        if (success) {
+                            // Succès - changer le bouton temporairement
+                            addToCartBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Ajouté !';
+                            addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
+                            addToCartBtn.classList.add('bg-green-500');
+                            
+                            // Restaurer le bouton après 2 secondes
+                            setTimeout(() => {
+                                addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier';
+                                addToCartBtn.classList.remove('bg-green-500');
+                                addToCartBtn.classList.add('bg-noorea-gold', 'hover:bg-yellow-600');
+                                addToCartBtn.disabled = false;
+                            }, 2000);
+                            
+                        } else {
+                            throw new Error('Erreur lors de l\'ajout au panier');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        
+                        // Erreur - restaurer le bouton
+                        addToCartBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Erreur';
+                        addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
+                        addToCartBtn.classList.add('bg-red-500');
+                        
+                        // Restaurer après 3 secondes
+                        setTimeout(() => {
+                            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier';
+                            addToCartBtn.classList.remove('bg-red-500');
+                            addToCartBtn.classList.add('bg-noorea-gold', 'hover:bg-yellow-600');
+                            addToCartBtn.disabled = false;
+                        }, 3000);
+                        
+                        // Afficher l'erreur
+                        alert('Erreur lors de l\'ajout au panier. Veuillez réessayer.');
+                    });
             });
-        });
+        };
+        
+        // Démarrer l'initialisation
+        initializeProductDetailPage();
     });
-</script>
-
-@push('styles')
-<style>
-/* Styles pour navbar-icon-top sur pages intérieures - couleurs proches de welcome */
-.navbar-icon-top {
-    color: #d4af37;
-    transition: all 0.3s ease;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transform: scale(1);
-    background-color: rgba(212, 175, 55, 0.1);
-    backdrop-filter: blur(2px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-}
-
-.navbar-icon-top:hover {
-    color: #b8941f;
-    background-color: rgba(212, 175, 55, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-}
-
-/* Responsive design */
-.desktop-auth { display: flex; }
-.mobile-only { display: block; }
-.desktop-search { display: block; }
-
-@media (max-width: 768px) {
-    .desktop-auth { display: none; }
-    .desktop-search { display: none; }
-}
-
-@media (min-width: 769px) {
-    .mobile-only { display: none; }
-}
-
-/* Styles pour nav-link-gold et active-gold - EXACTEMENT comme welcome */
-.nav-link-gold {
-    color: #1f2937;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid transparent;
-}
-
-.nav-link-gold:hover {
-    color: #d4af37;
-    border-color: rgba(212, 175, 55, 0.4);
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
-}
-
-.nav-link-gold.active-gold {
-    color: #d4af37;
-    border-color: rgba(212, 175, 55, 0.5);
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
-}
-
-.nav-link-gold i {
-    color: #d4af37;
-    transition: all 0.3s ease;
-}
-
-.nav-link-gold:hover i {
-    color: #d4af37;
-    transform: scale(1.1);
-}
-
-.active-gold i {
-    color: #d4af37;
-}
-</style>
-@endpush
+    </script>
+</div>
 @endsection

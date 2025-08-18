@@ -492,7 +492,7 @@ window.NooreaCart = {
                 message += "\\n\\n✨ *Merci de choisir Noorea Beauty !*";
                 
                 // Numéro WhatsApp de Noorea (à remplacer par le vrai numéro)
-                const whatsappNumber = "221123456789";
+                const whatsappNumber = "221781029818";
                 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
                 
                 window.open(whatsappUrl, '_blank');

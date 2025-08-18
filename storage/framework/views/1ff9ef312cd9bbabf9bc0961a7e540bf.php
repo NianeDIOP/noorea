@@ -120,7 +120,7 @@
                         <a href="#" class="text-white hover:text-noorea-gold transition-colors" aria-label="TikTok">
                             <i class="fab fa-tiktok"></i>
                         </a>
-                        <a href="#" class="text-white hover:text-noorea-gold transition-colors" aria-label="WhatsApp">
+                        <a href="https://wa.me/221781029818" target="_blank" class="text-white hover:text-noorea-gold transition-colors" aria-label="WhatsApp">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
@@ -160,7 +160,7 @@
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone mr-2 text-noorea-gold"></i>
-                            <span class="text-gray-300">+221 76 123 45 67</span>
+                            <span class="text-gray-300">+221 78 102 98 18</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-envelope mr-2 text-noorea-gold"></i>

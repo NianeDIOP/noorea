@@ -1,7 +1,7 @@
 <!-- Bouton WhatsApp flottant élégant -->
 <div class="fixed bottom-6 right-6 z-50 group">
     <!-- Bouton principal avec style Noorea -->
-    <a href="https://wa.me/221775551234?text=Bonjour%20Noorea%21%20J'ai%20besoin%20d'aide%20pour%20choisir%20des%20produits%20cosmétiques.%20Pouvez-vous%20me%20conseiller%20%3F" 
+    <a href="https://wa.me/221781029818?text=Bonjour%20Noorea%21%20J'ai%20besoin%20d'aide%20pour%20choisir%20des%20produits%20cosmétiques.%20Pouvez-vous%20me%20conseiller%20%3F" 
        target="_blank"
        class="bg-noorea-dark hover:bg-gray-800 text-white w-14 h-14 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center text-lg hover:scale-110 border-2 border-noorea-gold/30 hover:border-noorea-gold">
         <i class="fab fa-whatsapp text-green-400"></i>

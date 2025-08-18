@@ -31,54 +31,13 @@ Route::get('/produit/{slug}', [ProductController::class, 'show'])->name('product
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
 Route::get('/categorie/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 
-// Route de test pour l'upload d'images
-Route::get('/test-upload', function () {
-    return view('test-upload');
-})->name('test-upload-form');
-
-Route::post('/test-upload', function (Illuminate\Http\Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'image_type' => 'required|in:upload,url',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-        'image_url' => 'nullable|url|max:500',
-    ]);
-
-    if ($validator->fails()) {
-        return redirect()->back()
-                       ->withErrors($validator)
-                       ->withInput();
-    }
-
-    // Simuler la logique de l'upload avec SimpleImageUpload
-    $trait = new class {
-        use App\Traits\SimpleImageUpload;
-        
-        public function getModelType() {
-            return 'categories';
-        }
-    };
-
-    try {
-        $imagePath = $trait->handleImageOrUrl($request, 'image', 'image_url', 'image_type');
-        
-        // Créer une catégorie de test
-        $category = App\Models\Category::create([
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'image' => $imagePath,
-            'is_active' => true,
-        ]);
-
-        return redirect()->back()->with('success', 'Catégorie créée avec succès! Image: ' . $imagePath);
-        
-    } catch (\Exception $e) {
-        return redirect()->back()->withErrors(['error' => 'Erreur: ' . $e->getMessage()]);
-    }
-})->name('test-upload');
-
 Route::get('/marques', [BrandController::class, 'index'])->name('brands');
 Route::get('/marque/{slug}', [BrandController::class, 'show'])->name('brands.show');
+
+// Page promotions
+Route::get('/promotions', function () {
+    return redirect()->route('products')->with('filter', 'promotions');
+})->name('promotions');
 
 // Routes protégées utilisateurs
 Route::middleware('auth')->group(function () {

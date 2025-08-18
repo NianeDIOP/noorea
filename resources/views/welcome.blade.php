@@ -371,7 +371,7 @@ header {
 
 
 <!-- Bannière USP -->
-<section class="bg-noorea-dark text-white py-8 relative overflow-hidden">
+<section class="bg-noorea-dark text-white py-4 relative overflow-hidden">
     <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1560204992-c55246444654?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80')] bg-no-repeat bg-cover opacity-20"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
