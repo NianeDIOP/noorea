@@ -98,6 +98,34 @@
     width: 90%;
     max-width: 400px;
 }
+
+/* Styles spécifiques au produit */
+.quantity-controls {
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.quantity-controls button {
+    background: white;
+    border: none;
+    padding: 0.75rem;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.quantity-controls button:hover {
+    background: #f9fafb;
+    color: #d4af37;
+}
+
+.quantity-controls input {
+    border: none;
+    text-align: center;
+    background: white;
+    font-weight: 600;
+    color: #374151;
+}
 </style>
 @endpush
 
@@ -208,16 +236,16 @@
                     <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
                         <i class="fas fa-home mr-2"></i>Accueil
                     </a>
-                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products*') ? 'active-gold' : '' }} flex items-center">
                         <i class="fas fa-shopping-bag mr-2"></i>Boutique
                     </a>
-                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center">
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center">
                         <i class="fas fa-th-large mr-2"></i>Catégories
                     </a>
-                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center">
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands*') ? 'active-gold' : '' }} flex items-center">
                         <i class="fas fa-crown mr-2"></i>Marques
                     </a>
-                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog*') ? 'active-gold' : '' }} flex items-center">
                         <i class="fas fa-globe mr-2"></i>Beauté du Monde
                     </a>
                     <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
@@ -232,16 +260,16 @@
                     <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-home mr-3 w-5"></i>Accueil
                     </a>
-                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
                     </a>
-                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-th-large mr-3 w-5"></i>Catégories
                     </a>
-                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-crown mr-3 w-5"></i>Marques
                     </a>
-                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
                         <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
                     </a>
                     <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
@@ -304,6 +332,10 @@
             <a href="{{ route('home') }}" class="hover:text-noorea-gold">Accueil</a>
             <span class="mx-2">›</span>
             <a href="{{ route('products') }}" class="hover:text-noorea-gold">Boutique</a>
+            @if($product->category)
+                <span class="mx-2">›</span>
+                <a href="{{ route('categories.show', $product->category->slug) }}" class="hover:text-noorea-gold">{{ $product->category->name }}</a>
+            @endif
             <span class="mx-2">›</span>
             <span class="text-noorea-gold">{{ $product->name }}</span>
         </nav>
@@ -313,12 +345,21 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
                 <!-- Image produit -->
-                <div>
+                <div class="relative">
+                    @if($product->is_on_sale)
+                        <div class="absolute top-4 left-4 z-10">
+                            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                -{{ round((($product->price - $product->sale_price) / $product->price) * 100) }}%
+                            </span>
+                        </div>
+                    @endif
+                    
                     <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                         @if($product->main_image_url)
                             <img src="{{ $product->main_image_url }}" 
                                  alt="{{ $product->name }}" 
-                                 class="w-full h-full object-cover">
+                                 class="w-full h-full object-cover"
+                                 id="main-product-image">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
                                 <i class="fas fa-image text-gray-400 text-6xl"></i>
@@ -345,8 +386,15 @@
                     
                     <!-- Prix -->
                     <div class="py-2">
-                        <div class="text-3xl font-bold text-noorea-gold">
-                            {{ number_format($product->price ?? 0, 0, ',', ' ') }} FCFA
+                        <div class="flex items-baseline space-x-3">
+                            <div class="text-3xl font-bold text-noorea-gold">
+                                {{ number_format($product->final_price, 0, ',', ' ') }} FCFA
+                            </div>
+                            @if($product->is_on_sale)
+                                <div class="text-xl text-gray-400 line-through">
+                                    {{ number_format($product->price, 0, ',', ' ') }} FCFA
+                                </div>
+                            @endif
                         </div>
                     </div>
                     
@@ -363,12 +411,12 @@
                         <!-- Quantité -->
                         <div class="flex items-center space-x-4">
                             <span class="text-sm text-gray-600">Quantité :</span>
-                            <div class="flex items-center border rounded">
-                                <button type="button" id="decrease-qty" class="p-2 hover:bg-gray-50">
+                            <div class="quantity-controls flex items-center">
+                                <button type="button" id="decrease-qty" class="w-12 h-12">
                                     <i class="fas fa-minus text-sm"></i>
                                 </button>
-                                <input type="number" id="quantity" value="1" min="1" max="999" class="w-12 text-center border-0 text-sm">
-                                <button type="button" id="increase-qty" class="p-2 hover:bg-gray-50">
+                                <input type="number" id="quantity" value="1" min="1" max="999" class="w-16 h-12 text-center text-sm focus:outline-none">
+                                <button type="button" id="increase-qty" class="w-12 h-12">
                                     <i class="fas fa-plus text-sm"></i>
                                 </button>
                             </div>
@@ -389,7 +437,7 @@
                             <button class="border border-gray-300 py-2 rounded text-sm hover:border-noorea-gold">
                                 <i class="fas fa-heart mr-1"></i>Favoris
                             </button>
-                            <button class="bg-green-500 hover:bg-green-600 text-white py-2 rounded text-sm">
+                            <button id="whatsapp-product-btn" class="bg-green-500 hover:bg-green-600 text-white py-2 rounded text-sm">
                                 <i class="fab fa-whatsapp mr-1"></i>WhatsApp
                             </button>
                         </div>
@@ -416,7 +464,9 @@
             <h3 class="text-lg font-bold mb-3">Description</h3>
             <p class="text-gray-600 leading-relaxed">{{ $product->description }}</p>
         </div>
-        @endif        <!-- Produits similaires -->
+        @endif
+
+        <!-- Produits similaires -->
         @if(isset($relatedProducts) && $relatedProducts->count() > 0)
         <div class="bg-white rounded-lg shadow-sm p-6">
             <h3 class="text-lg font-bold mb-4">Produits similaires</h3>
@@ -436,8 +486,15 @@
                             @endif
                         </div>
                         <h4 class="text-sm font-medium text-gray-800 mb-1 line-clamp-2">{{ $similar->name }}</h4>
-                        <div class="text-sm font-bold text-noorea-gold">
-                            {{ number_format($similar->price ?? 0, 0, ',', ' ') }} FCFA
+                        <div class="text-sm">
+                            <span class="font-bold text-noorea-gold">
+                                {{ number_format($similar->final_price, 0, ',', ' ') }} FCFA
+                            </span>
+                            @if($similar->is_on_sale)
+                                <span class="text-gray-400 line-through ml-2">
+                                    {{ number_format($similar->price, 0, ',', ' ') }} FCFA
+                                </span>
+                            @endif
                         </div>
                     </a>
                 </div>
@@ -477,81 +534,134 @@
             }
 
             // Bouton diminuer
-            decreaseBtn.addEventListener('click', function() {
-                const currentValue = parseInt(quantityInput.value) || 1;
-                updateQuantity(currentValue - 1);
-            });
+            if (decreaseBtn) {
+                decreaseBtn.addEventListener('click', function() {
+                    const currentValue = parseInt(quantityInput.value) || 1;
+                    updateQuantity(currentValue - 1);
+                });
+            }
 
             // Bouton augmenter  
-            increaseBtn.addEventListener('click', function() {
-                const currentValue = parseInt(quantityInput.value) || 1;
-                updateQuantity(currentValue + 1);
-            });
+            if (increaseBtn) {
+                increaseBtn.addEventListener('click', function() {
+                    const currentValue = parseInt(quantityInput.value) || 1;
+                    updateQuantity(currentValue + 1);
+                });
+            }
 
             // Input quantité change
-            quantityInput.addEventListener('input', function() {
-                const value = parseInt(this.value) || 1;
-                updateQuantity(value);
-            });
+            if (quantityInput) {
+                quantityInput.addEventListener('input', function() {
+                    const value = parseInt(this.value) || 1;
+                    updateQuantity(value);
+                });
+            }
+
+            // Galerie d'images - basculer entre miniatures (fonctionnalité future)
+            // const thumbnailBtns = document.querySelectorAll('.thumbnail-btn');
+            // const mainImage = document.getElementById('main-product-image');
+            
+            // thumbnailBtns.forEach(btn => {
+            //     btn.addEventListener('click', function() {
+            //         const newImageSrc = this.dataset.image;
+            //         if (mainImage && newImageSrc) {
+            //             mainImage.src = newImageSrc;
+            //             
+            //             // Mettre à jour les bordures des miniatures
+            //             thumbnailBtns.forEach(thumb => thumb.classList.remove('border-noorea-gold'));
+            //             thumbnailBtns.forEach(thumb => thumb.classList.add('border-gray-200'));
+            //             this.classList.remove('border-gray-200');
+            //             this.classList.add('border-noorea-gold');
+            //         }
+            //     });
+            // });
 
             // Soumission du formulaire - utiliser le système global NooreaCart
-            addToCartForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Désactiver le bouton temporairement
-                addToCartBtn.disabled = true;
-                addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Ajout en cours...';
+            if (addToCartForm) {
+                addToCartForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Désactiver le bouton temporairement
+                    addToCartBtn.disabled = true;
+                    addToCartBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Ajout en cours...';
 
-                // Données du produit
-                const productId = this.querySelector('input[name="product_id"]').value;
-                const quantity = parseInt(this.querySelector('input[name="quantity"]').value);
-                const productName = '{{ $product->name }}';
-                const productPrice = '{{ $product->final_price }}';
-                const productImage = '{{ $product->main_image_url ?? asset("images/logo.svg") }}';
+                    // Données du produit
+                    const productId = this.querySelector('input[name="product_id"]').value;
+                    const quantity = parseInt(this.querySelector('input[name="quantity"]').value);
+                    const productName = '{{ $product->name }}';
+                    const productPrice = '{{ $product->final_price }}';
+                    const productImage = '{{ $product->main_image_url ?? asset("images/logo.svg") }}';
 
-                console.log('Ajout au panier via NooreaCart:', { productId, quantity, productName, productPrice });
+                    console.log('Ajout au panier via NooreaCart:', { productId, quantity, productName, productPrice });
 
-                // Utiliser le système global NooreaCart
-                window.NooreaCart.addToCart(productId, productName, productPrice, productImage, quantity)
-                    .then(success => {
-                        if (success) {
-                            // Succès - changer le bouton temporairement
-                            addToCartBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Ajouté !';
-                            addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
-                            addToCartBtn.classList.add('bg-green-500');
+                    // Utiliser le système global NooreaCart
+                    window.NooreaCart.addToCart(productId, productName, productPrice, productImage, quantity)
+                        .then(success => {
+                            if (success) {
+                                // Succès - changer le bouton temporairement
+                                addToCartBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Ajouté !';
+                                addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
+                                addToCartBtn.classList.add('bg-green-500');
+                                
+                                // Restaurer le bouton après 2 secondes
+                                setTimeout(() => {
+                                    addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier';
+                                    addToCartBtn.classList.remove('bg-green-500');
+                                    addToCartBtn.classList.add('bg-noorea-gold', 'hover:bg-yellow-600');
+                                    addToCartBtn.disabled = false;
+                                }, 2000);
+                                
+                            } else {
+                                throw new Error('Erreur lors de l\'ajout au panier');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur:', error);
                             
-                            // Restaurer le bouton après 2 secondes
+                            // Erreur - restaurer le bouton
+                            addToCartBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Erreur';
+                            addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
+                            addToCartBtn.classList.add('bg-red-500');
+                            
+                            // Restaurer après 3 secondes
                             setTimeout(() => {
                                 addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier';
-                                addToCartBtn.classList.remove('bg-green-500');
+                                addToCartBtn.classList.remove('bg-red-500');
                                 addToCartBtn.classList.add('bg-noorea-gold', 'hover:bg-yellow-600');
                                 addToCartBtn.disabled = false;
-                            }, 2000);
+                            }, 3000);
                             
-                        } else {
-                            throw new Error('Erreur lors de l\'ajout au panier');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        
-                        // Erreur - restaurer le bouton
-                        addToCartBtn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i>Erreur';
-                        addToCartBtn.classList.remove('bg-noorea-gold', 'hover:bg-yellow-600');
-                        addToCartBtn.classList.add('bg-red-500');
-                        
-                        // Restaurer après 3 secondes
-                        setTimeout(() => {
-                            addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Ajouter au panier';
-                            addToCartBtn.classList.remove('bg-red-500');
-                            addToCartBtn.classList.add('bg-noorea-gold', 'hover:bg-yellow-600');
-                            addToCartBtn.disabled = false;
-                        }, 3000);
-                        
-                        // Afficher l'erreur
-                        alert('Erreur lors de l\'ajout au panier. Veuillez réessayer.');
-                    });
-            });
+                            // Afficher l'erreur
+                            alert('Erreur lors de l\'ajout au panier. Veuillez réessayer.');
+                        });
+                });
+            }
+            
+            // Bouton WhatsApp pour ce produit
+            const whatsappBtn = document.getElementById('whatsapp-product-btn');
+            if (whatsappBtn) {
+                whatsappBtn.addEventListener('click', function() {
+                    const quantity = parseInt(quantityInput.value) || 1;
+                    const productName = '{{ $product->name }}';
+                    const productPrice = {{ $product->final_price }};
+                    const total = productPrice * quantity;
+                    
+                    let message = "🛒 *Intérêt pour un produit Noorea Beauty*\\n\\n";
+                    message += "📋 *Détails du produit :*\\n";
+                    message += `• ${productName} (${quantity}x) - ${total.toLocaleString()} FCFA\\n`;
+                    message += `\\n💰 *Total estimé :* ${total.toLocaleString()} FCFA`;
+                    message += "\\n\\n📍 *Informations de livraison :*\\n";
+                    message += "- Nom complet : \\n";
+                    message += "- Téléphone : \\n";
+                    message += "- Adresse complète : \\n";
+                    message += "- Commune/Ville : \\n";
+                    message += "\\n\\n✨ *Merci de choisir Noorea Beauty !*";
+                    
+                    const whatsappNumber = "221781029818";
+                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                });
+            }
         };
         
         // Démarrer l'initialisation

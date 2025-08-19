@@ -135,11 +135,7 @@
                     <label class="admin-form-label">Image actuelle</label>
                     <div class="flex items-center space-x-4">
                         <div class="w-20 h-20 rounded-lg overflow-hidden bg-gray-200">
-                            @if(filter_var($category->image, FILTER_VALIDATE_URL))
-                                <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @else
-                                <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                            @endif
+                            <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                         </div>
                         <div>
                             <p class="text-sm text-gray-600">

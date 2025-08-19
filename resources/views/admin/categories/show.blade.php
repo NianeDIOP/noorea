@@ -42,12 +42,8 @@
     <div class="flex items-start space-x-6">
         <!-- Image de la catégorie -->
         <div class="w-32 h-32 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-            @if($category->image)
-                @if(filter_var($category->image, FILTER_VALIDATE_URL))
-                    <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                @else
-                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                @endif
+            @if($category->image_url)
+                <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                     <i class="fas fa-image text-4xl"></i>

@@ -126,7 +126,7 @@
                             @if(filter_var($brand->logo, FILTER_VALIDATE_URL))
                                 <img src="{{ $brand->logo }}" alt="{{ $brand->name }}" class="w-full h-full object-contain">
                             @else
-                                <img src="{{ Storage::url($brand->logo) }}" alt="{{ $brand->name }}" class="w-full h-full object-contain">
+                                <img src="{{ $brand->logo_url }}" alt="{{ $brand->name }}" class="w-full h-full object-contain">
                             @endif
                         </div>
                         <div>

@@ -40,7 +40,7 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0">
                     @if($brand->logo)
-                        <img src="{{ asset('storage/' . $brand->logo) }}" 
+                        <img src="{{ $brand->logo_url }}" 
                              alt="Logo {{ $brand->name }}" 
                              class="h-24 w-24 object-contain bg-gray-50 rounded-lg border shadow-sm">
                     @else

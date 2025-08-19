@@ -190,12 +190,8 @@
                     <!-- Image -->
                     <td>
                         <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                            @if($category->image)
-                                @if(filter_var($category->image, FILTER_VALIDATE_URL))
-                                    <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                                @else
-                                    <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
-                                @endif
+                            @if($category->image_url)
+                                <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
                             @else
                                 <i class="fas fa-image text-gray-400"></i>
                             @endif

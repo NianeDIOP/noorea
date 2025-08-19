@@ -1,377 +1,192 @@
 @extends('layouts.app')
 
+@push('head')
+<!-- Meta tags et polices d'origine -->
+@endpush
+
 @section('navbar')
-<header class="absolute top-0 left-0 w-full z-50">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex items-center justify-between bg-transparent backdrop-blur-none px-4 py-3">
-            <!-- Logo Premium -->
-            <a href="{{ route('home') }}" class="flex items-center group">
-                <div class="relative">
-                    <!-- Logo principal -->
-                    <div class="relative p-2 group-hover:scale-110 transition-all duration-300 rounded-xl">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto drop-shadow-sm transition-all duration-300">
-                    </div>
-                    <!-- Particules décoratives -->
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-noorea-gold rounded-full animate-pulse opacity-80"></div>
-                    <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-noorea-gold rounded-full animate-pulse opacity-70" style="animation-delay: 0.5s;"></div>
+<!-- Navbar Supérieur -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <!-- Barre supérieure avec logo, recherche et icônes -->
+    <div class="bg-white shadow-lg border-b border-gray-100">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo à gauche -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-14 md:h-16 w-auto">
+                    </a>
                 </div>
-            </a>
-            <!-- Navigation principale - desktop -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
-            </nav>
-            <!-- Actions utilisateur -->
-            <div class="flex items-center space-x-5">
-                <!-- Recherche -->
-                <button type="button" class="navbar-icon text-lg" aria-label="Rechercher">
-                    <i class="fas fa-search"></i>
-                </button>
-                <!-- Compte utilisateur -->
-                <a href="{{ route('account.dashboard') }}" class="navbar-icon text-lg" aria-label="Mon compte">
-                    <i class="fas fa-user"></i>
-                </a>
-                <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="navbar-icon text-lg" aria-label="Ma wishlist">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <!-- Panier -->
-                <a href="{{ route('cart') }}" class="navbar-icon text-lg relative" aria-label="Mon panier">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="absolute -top-2 -right-2 bg-noorea-rose text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
-                </a>
-                <!-- Menu mobile toggle -->
-                <button type="button" class="text-white drop-shadow-lg md:hidden transition-all duration-300 text-lg hover:scale-110" id="mobile-menu-button" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+                
+                <!-- Barre de recherche centrale - Desktop uniquement -->
+                <div class="desktop-search flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher des produits, marques, catégories..." 
+                            class="w-full px-5 py-3 pl-12 pr-14 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold focus:border-noorea-gold transition-all duration-300 shadow-lg text-gray-800 placeholder-gray-500 font-medium"
+                        >
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-600 text-xl"></i>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-noorea-gold hover:bg-yellow-600 text-white p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Icônes à droite -->
+                <div class="flex items-center space-x-4">
+                    <!-- Recherche mobile uniquement - MASQUÉE sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-search-button" title="Rechercher">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Compte utilisateur / Connexion - Desktop uniquement -->
+                    <div class="desktop-auth items-center space-x-4">
+                        @auth
+                            <!-- Utilisateur connecté -->
+                            <div class="relative group">
+                                <a href="{{ route('account.dashboard') }}" class="navbar-icon-top" title="Mon compte">
+                                    <i class="fas fa-user text-xl"></i>
+                                </a>
+                                <!-- Menu déroulant -->
+                                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i>Mon compte
+                                        </a>
+                                        <a href="{{ route('wishlist') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-heart mr-2"></i>Ma wishlist
+                                        </a>
+                                        <hr class="my-1">
+                                        <form method="POST" action="{{ route('logout') }}" class="block">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Wishlist -->
+                            <a href="{{ route('wishlist') }}" class="navbar-icon-top relative" title="Ma wishlist">
+                                <i class="fas fa-heart text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                            </a>
+                        @else
+                            <!-- Utilisateur non connecté -->
+                            <a href="{{ route('login') }}" class="navbar-icon-top" title="Se connecter">
+                                <i class="fas fa-sign-in-alt text-xl"></i>
+                            </a>
+                            
+                            <a href="{{ route('register') }}" class="navbar-icon-top" title="S'inscrire">
+                                <i class="fas fa-user-plus text-xl"></i>
+                            </a>
+                        @endauth
+                    </div>
+                    
+                    <!-- Panier - Toujours visible -->
+                    <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
+                    </button>
+                    
+                    <!-- Menu mobile toggle - MASQUÉ sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <!-- Menu mobile -->
-        <div class="md:hidden hidden bg-black/80 backdrop-blur-md rounded-lg mt-4 border border-noorea-gold/30" id="mobile-menu">
-            <nav class="flex flex-col space-y-4 p-6">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
+    </div>
+    
+    <!-- Barre de navigation inférieure -->
+    <div class="border-t border-noorea-gold/20" style="background-color: #F7EAD5;">
+        <div class="container mx-auto px-4">
+            <!-- Navigation principale - desktop -->
+            <nav class="hidden md:flex items-center justify-center py-3">
+                <div class="flex space-x-8">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-th-large mr-2"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands*') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-crown mr-2"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-globe mr-2"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>À propos
+                    </a>
+                </div>
             </nav>
+            
+            <!-- Menu mobile -->
+            <div class="hidden" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4 bg-white border-t border-gray-200 shadow-lg">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-home mr-3 w-5"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-th-large mr-3 w-5"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-crown mr-3 w-5"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-3 w-5"></i>À propos
+                    </a>
+                    
+                    <!-- Séparateur -->
+                    <hr class="my-3 border-gray-200">
+                    
+                    <!-- Liens d'authentification en mobile -->
+                    @guest
+                        <a href="{{ route('login') }}" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Se connecter
+                        </a>
+                        <a href="{{ route('register') }}" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-user-plus mr-3 w-5"></i>S'inscrire
+                        </a>
+                    @endguest
+                </nav>
+            </div>
         </div>
     </div>
 </header>
 @endsection
 
-@section('content')
-<!-- Hero Section Marques -->
-<section class="relative h-96 overflow-hidden bg-gradient-to-br from-noorea-dark via-noorea-cream to-noorea-gold/30 pt-24 md:pt-28">
-    <!-- Images de fond cosmétiques -->
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop')] bg-cover bg-center opacity-30"></div>
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop')] bg-cover bg-right opacity-20"></div>
-    
-    <!-- Overlay gradient -->
-    <div class="absolute inset-0 bg-gradient-to-r from-noorea-dark/85 via-noorea-dark/50 to-transparent"></div>
-    
-    <!-- Contenu centré -->
-    <div class="relative z-30 flex items-center h-full">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl">
-                <nav class="text-noorea-gold mb-6 text-sm">
-                    <a href="{{ route('home') }}" class="hover:text-yellow-300 transition-colors"></a>
-                    <span class="mx-2 text-white"></span>
-                    <span class="text-white font-medium"></span>
-                </nav>
-                <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 leading-tight">
-                    Nos Marques
-                </h1>
-                <p class="text-xl text-gray-200 leading-relaxed">
-                    Découvrez nos marques partenaires sélectionnées avec passion pour leur qualité, 
-                    leur authenticité et leur respect des traditions cosmétiques du monde entier.
-                </p>
-                <div class="flex items-center gap-6 mt-6">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-noorea-gold">25+</div>
-                        <div class="text-sm text-gray-300">Marques</div>
-                    </div>
-                    <div class="w-px h-12 bg-gray-400"></div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-noorea-gold">12</div>
-                        <div class="text-sm text-gray-300">Pays</div>
-                    </div>
-                    <div class="w-px h-12 bg-gray-400"></div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-noorea-gold">100%</div>
-                        <div class="text-sm text-gray-300">Authentique</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Section marques principales -->
-<div class="bg-noorea-cream/30 py-10">
-    <div class="container mx-auto px-4">
-        <!-- Filtres par région -->
-        <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <button class="px-6 py-3 bg-noorea-gold text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 active">Toutes</button>
-            <button class="px-6 py-3 border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white rounded-full font-medium transition-colors duration-300">Afrique</button>
-            <button class="px-6 py-3 border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white rounded-full font-medium transition-colors duration-300">Maghreb</button>
-            <button class="px-6 py-3 border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white rounded-full font-medium transition-colors duration-300">Asie</button>
-            <button class="px-6 py-3 border border-noorea-gold text-noorea-gold hover:bg-noorea-gold hover:text-white rounded-full font-medium transition-colors duration-300">Europe</button>
-        </div>
-        
-        <!-- Grille des marques -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Marque 1 - Noorea (Maison) -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3785147/pexels-photo-3785147.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="Noorea - Marque Maison" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-noorea-gold text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Notre Marque
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-200 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-noorea-gold/20 rounded-full flex items-center justify-center">
-                            <span class="text-noorea-gold font-bold text-lg">N</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">Noorea</h3>
-                            <p class="text-sm text-gray-600">Sénégal • Marque Maison</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Notre marque exclusive qui célèbre la beauté multiculturelle à travers des formulations naturelles 
-                        inspirées des traditions cosmétiques africaines.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">28 produits</span>
-                        </div>
-                        <button class="bg-noorea-gold hover:bg-noorea-gold/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marque 2 - Afro Naturel -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/4465124/pexels-photo-4465124.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="Afro Naturel" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-noorea-emerald text-white px-3 py-1 rounded-full text-sm font-medium">
-                        100% Bio
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-noorea-emerald/20 rounded-full flex items-center justify-center">
-                            <span class="text-noorea-emerald font-bold text-lg">AN</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">Afro Naturel</h3>
-                            <p class="text-sm text-gray-600">Ghana • Soins Capillaires</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Spécialiste des soins pour cheveux afro et texturés, Afro Naturel utilise exclusivement 
-                        des ingrédients naturels d'Afrique de l'Ouest.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">15 produits</span>
-                        </div>
-                        <button class="bg-noorea-emerald hover:bg-noorea-emerald/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marque 3 - Argan d'Or -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3622517/pexels-photo-3622517.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="Argan d'Or" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Premium
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center">
-                            <span class="text-yellow-600 font-bold text-lg">AO</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">Argan d'Or</h3>
-                            <p class="text-sm text-gray-600">Maroc • Huiles Précieuses</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Producteur traditionnel d'huile d'argan pure, Argan d'Or travaille directement avec 
-                        les coopératives de femmes berbères du sud du Maroc.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">8 produits</span>
-                        </div>
-                        <button class="bg-yellow-600 hover:bg-yellow-600/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marque 4 - Sahel Beauty -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="Sahel Beauty" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-noorea-rose text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Tendance
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-noorea-rose/20 rounded-full flex items-center justify-center">
-                            <span class="text-noorea-rose font-bold text-lg">SB</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">Sahel Beauty</h3>
-                            <p class="text-sm text-gray-600">Mali • Maquillage</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Marque de maquillage moderne qui met en valeur la beauté des peaux noires et métissées 
-                        avec des teintes inspirées des paysages du Sahel.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">22 produits</span>
-                        </div>
-                        <button class="bg-noorea-rose hover:bg-noorea-rose/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marque 5 - Oriental Essence -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="Oriental Essence" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Luxe
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-purple-600/20 rounded-full flex items-center justify-center">
-                            <span class="text-purple-600 font-bold text-lg">OE</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">Oriental Essence</h3>
-                            <p class="text-sm text-gray-600">Tunisie • Parfums</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Maison de parfumerie artisanale qui crée des fragrances uniques à base d'essences 
-                        traditionnelles du Maghreb et du Moyen-Orient.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">12 produits</span>
-                        </div>
-                        <button class="bg-purple-600 hover:bg-purple-600/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Marque 6 - K-Glow Seoul -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div class="relative h-48 overflow-hidden">
-                    <img src="https://images.pexels.com/photos/4465659/pexels-photo-4465659.jpeg?auto=compress&cs=tinysrgb&w=500&h=300&fit=crop" 
-                         alt="K-Glow Seoul" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-4 left-4 bg-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        K-Beauty
-                    </div>
-                </div>
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center">
-                            <span class="text-pink-500 font-bold text-lg">KG</span>
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold text-noorea-dark">K-Glow Seoul</h3>
-                            <p class="text-sm text-gray-600">Corée du Sud • Soins</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        Marque coréenne innovante spécialisée dans les soins hydratants et anti-âge, 
-                        adaptés aux besoins spécifiques des peaux africaines et méditerranéennes.
-                    </p>
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm text-gray-600">
-                            <span class="font-medium">18 produits</span>
-                        </div>
-                        <button class="bg-pink-500 hover:bg-pink-500/90 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105">
-                            Découvrir
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section marques partenaires -->
-        <div class="mt-16">
-            <h2 class="text-3xl font-serif font-bold text-noorea-dark text-center mb-8">Nos Autres Partenaires</h2>
-            <div class="bg-white rounded-2xl shadow-lg p-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 items-center opacity-60 hover:opacity-80 transition-opacity duration-300">
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">BK</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Burkina Karité</p>
-                    </div>
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">IV</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Ivory Nature</p>
-                    </div>
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">ML</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Marrakech Luxe</p>
-                    </div>
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">EB</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Ethiopian Beauty</p>
-                    </div>
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">TP</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Tokyo Pure</p>
-                    </div>
-                    <div class="text-center p-4 hover:bg-gray-50 rounded-lg transition-colors">
-                        <div class="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-                            <span class="text-gray-600 font-bold">MD</span>
-                        </div>
-                        <p class="text-xs text-gray-600">Méditerranée</p>
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des marques..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
                     </div>
                 </div>
             </div>
@@ -379,48 +194,319 @@
     </div>
 </div>
 
-<!-- Section CTA devenir partenaire -->
-<section class="py-16 bg-gradient-to-r from-noorea-dark to-noorea-emerald">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">
-            Vous êtes une marque ?
-        </h2>
-        <p class="text-xl text-gray-200 mb-8 max-w-2xl mx-auto">
-            Rejoignez notre sélection de marques d'exception et partagez votre vision de la beauté multiculturelle avec notre communauté.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-noorea-gold hover:bg-noorea-gold/90 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg">
-                Devenir Partenaire
-            </button>
-            <button class="border-2 border-white text-white hover:bg-white hover:text-noorea-dark px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300">
-                En savoir plus
-            </button>
+@section('content')
+<!-- Espacement après navbar pour desktop -->
+<div class="hidden md:block h-8"></div>
+
+<!-- Section des marques -->
+<section class="pt-32 md:pt-36 py-6 md:py-12 relative overflow-hidden" style="background-color: #F7EAD5;">
+    <!-- Éléments décoratifs comme welcome -->
+    <div class="absolute top-20 right-10 w-24 h-24 bg-noorea-rose-gold/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 left-20 w-32 h-32 bg-noorea-gold/10 rounded-full blur-2xl"></div>
+    
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+        <!-- Fil d'Ariane -->
+        <nav class="text-sm mb-8">
+            <ol class="flex items-center space-x-2 text-noorea-dark/70">
+                <li><a href="{{ route('home') }}" class="hover:text-noorea-gold transition-colors">Accueil</a></li>
+                <li><i class="fas fa-chevron-right text-noorea-gold/50 text-xs"></i></li>
+                <li class="text-noorea-dark font-medium">Nos Marques</li>
+            </ol>
+        </nav>
+
+        <!-- En-tête -->
+        <div class="mb-8 md:mb-12">
+            <div class="text-center lg:text-left">
+                <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                    Nos <span class="text-noorea-rose-gold font-medium">Marques</span>
+                </h2>
+                <div class="flex items-center justify-center lg:justify-start mb-4">
+                    <div class="h-px bg-noorea-gold/30 w-20"></div>
+                    <i class="fas fa-crown text-noorea-rose-gold text-lg mx-4"></i>
+                    <div class="h-px bg-noorea-gold/30 w-20"></div>
+                </div>
+                
+                <p class="text-lg text-noorea-dark/70 leading-relaxed mb-6 max-w-3xl">
+                    Découvrez nos marques partenaires sélectionnées avec passion pour leur qualité, 
+                    leur authenticité et leur respect des traditions cosmétiques du monde entier.
+                </p>
+                
+                <p class="text-noorea-dark/70 text-lg">
+                    <span id="count-number" class="font-medium text-noorea-gold">{{ $brands->count() }}</span> 
+                    {{ $brands->count() > 1 ? 'marques partenaires' : 'marque partenaire' }}
+                </p>
+            </div>
         </div>
+
+        <!-- Grille des marques -->
+        @if($brands->count() > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                @foreach($brands as $brand)
+                    <div class="brand-card bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 group border border-noorea-gold/5">
+                        <a href="{{ route('brands.show', $brand->slug ?? $brand->id) }}" class="block">
+                            <!-- Logo/Image de la marque -->
+                            <div class="relative overflow-hidden rounded-t-xl">
+                                @if($brand->logo_url)
+                                    <div class="w-full h-48 bg-white flex items-center justify-center p-6">
+                                        <img src="{{ $brand->logo_url }}" 
+                                             alt="{{ $brand->name }}" 
+                                             class="max-w-full max-h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                                             loading="lazy">
+                                    </div>
+                                @else
+                                    <div class="w-full h-48 bg-gradient-to-br from-noorea-cream to-noorea-rose-gold flex items-center justify-center">
+                                        <div class="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-crown text-2xl text-white"></i>
+                                        </div>
+                                    </div>
+                                @endif
+                                
+                                <!-- Badge pays -->
+                                @if($brand->country)
+                                    <div class="absolute top-2 left-2">
+                                        <div class="bg-noorea-gold text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+                                            <i class="fas fa-map-marker-alt mr-1"></i> {{ $brand->country }}
+                                        </div>
+                                    </div>
+                                @endif
+                                
+                                <!-- Badge featured -->
+                                @if($brand->is_featured)
+                                    <div class="absolute top-2 right-2">
+                                        <div class="bg-noorea-rose-gold text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+                                            <i class="fas fa-star mr-1"></i> Premium
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <!-- Contenu -->
+                            <div class="p-4 md:p-6">
+                                <!-- Nom de la marque -->
+                                <h3 class="text-xl font-bold text-noorea-brown mb-2 group-hover:text-noorea-gold transition-colors duration-200">
+                                    {{ $brand->name }}
+                                </h3>
+                                
+                                <!-- Description -->
+                                @if($brand->description)
+                                    <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                                        {{ $brand->description }}
+                                    </p>
+                                @endif
+                                
+                                <!-- Statistiques -->
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm text-gray-500">
+                                        <span class="font-medium text-noorea-gold">{{ $brand->products_count }}</span> 
+                                        {{ $brand->products_count > 1 ? 'produits' : 'produit' }}
+                                    </div>
+                                    
+                                    @if($brand->website)
+                                        <div class="text-xs text-gray-400">
+                                            <i class="fas fa-external-link-alt"></i> Site web
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <!-- Lien Découvrir -->
+                        <div class="px-4 pb-4 md:px-6 md:pb-6 pt-2">
+                            <a href="{{ route('brands.show', $brand->slug ?? $brand->id) }}" 
+                               class="text-noorea-gold hover:text-noorea-gold/80 font-medium text-sm transition-colors duration-300 flex items-center">
+                                <span>Découvrir</span>
+                                <i class="fas fa-arrow-right ml-2 text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <!-- Aucune marque -->
+            <div class="text-center py-20">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-noorea-cream to-noorea-rose-gold rounded-full mb-6">
+                    <i class="fas fa-crown text-4xl text-white/70"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-medium text-noorea-dark mb-4">Aucune marque disponible</h3>
+                <p class="text-noorea-dark/70 mb-8 max-w-md mx-auto">
+                    Nous travaillons actuellement à enrichir notre catalogue de marques partenaires.
+                </p>
+                <a href="{{ route('products') }}" 
+                   class="inline-flex items-center bg-noorea-gold hover:bg-noorea-gold/80 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 hover:shadow-lg">
+                    <i class="fas fa-shopping-bag mr-2"></i>
+                    Découvrir nos produits
+                </a>
+            </div>
+        @endif
     </div>
 </section>
+@endsection
 
+@push('scripts')
 <script>
-// Mobile menu toggle
-document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
-});
-
-// Filtres par région
-document.querySelectorAll('button[class*="px-6 py-3"]').forEach(button => {
-    button.addEventListener('click', function() {
-        // Retirer la classe active de tous les boutons
-        document.querySelectorAll('button[class*="px-6 py-3"]').forEach(btn => {
-            btn.classList.remove('bg-noorea-gold', 'text-white');
-            btn.classList.add('border', 'border-noorea-gold', 'text-noorea-gold', 'hover:bg-noorea-gold', 'hover:text-white');
+// JavaScript SIMPLE pour les marques
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Marques chargées - Version SIMPLE');
+    
+    // Comptage des marques
+    const brandCards = document.querySelectorAll('.brand-card');
+    console.log(`${brandCards.length} marques affichées`);
+    
+    // Animation au hover pour les cartes
+    brandCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px)';
         });
         
-        // Ajouter la classe active au bouton cliqué
-        this.classList.remove('border', 'border-noorea-gold', 'text-noorea-gold', 'hover:bg-noorea-gold', 'hover:text-white');
-        this.classList.add('bg-noorea-gold', 'text-white');
-        
-        // Ici vous pouvez ajouter la logique de filtrage
-        console.log('Filtre région:', this.textContent);
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
     });
 });
 </script>
-@endsection
+@endpush
+
+@push('styles')
+<style>
+/* === STYLES EXACTEMENT COMME PRODUCTS ET CATEGORIES === */
+.navbar-icon-top {
+    color: #d4af37;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.navbar-icon-top:hover {
+    color: #b8941f;
+    background-color: rgba(212, 175, 55, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Responsive classes EXACTLY LIKE PRODUCTS */
+.desktop-search {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .desktop-search {
+        display: block;
+    }
+    
+    .mobile-only {
+        display: none !important;
+    }
+    
+    .desktop-auth {
+        display: flex;
+    }
+}
+
+@media (max-width: 767px) {
+    .desktop-search {
+        display: none !important;
+    }
+    
+    .desktop-auth {
+        display: none !important;
+    }
+}
+
+/* Mobile search bar - CENTRÉ comme le menu */
+.mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    background: transparent;
+    z-index: 100;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    padding-top: 140px; /* Espace pour les deux navbars */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mobile-search-bar.show {
+    transform: translateY(0);
+}
+
+.mobile-search-bar .container {
+    background: white;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 2px solid #d4af37;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Styles pour les cartes de marques */
+.brand-card {
+    border: 1px solid rgba(0,0,0,0.05);
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.brand-card:hover {
+    border-color: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Styles pour nav-link-gold et active-gold - EXACTEMENT comme products */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+</style>
+@endpush

@@ -1,216 +1,450 @@
 @extends('layouts.app')
 
+@push('head')
+<!-- Meta tags et polices d'origine -->
+@endpush
+
 @section('navbar')
-<header class="absolute top-0 left-0 w-full z-50">
-    <div class="container mx-auto px-4 py-3">
-        <div class="flex items-center justify-between bg-transparent backdrop-blur-none px-4 py-3">
-            <!-- Logo Premium -->
-            <a href="{{ route('home') }}" class="flex items-center group navbar-logo">
-                <div class="relative">
-                    <!-- Logo principal -->
-                    <div class="relative p-2 transition-all duration-300 rounded-xl">
-                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-12 md:h-16 lg:h-20 w-auto transition-all duration-300">
-                    </div>
-                    <!-- Particules décoratives -->
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-noorea-gold rounded-full animate-pulse opacity-30"></div>
-                    <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-noorea-gold rounded-full animate-pulse opacity-20" style="animation-delay: 0.5s;"></div>
+<!-- Navbar Supérieur -->
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <!-- Barre supérieure avec logo, recherche et icônes -->
+    <div class="bg-white shadow-lg border-b border-gray-100">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo à gauche -->
+                <div class="flex-shrink-0">
+                    <a href="{{ route('home') }}" class="flex items-center">
+                        <img src="{{ asset('images/logo.jpg') }}" alt="Noorea - L'élégance multiculturelle" class="h-14 md:h-16 w-auto">
+                    </a>
                 </div>
-            </a>
-            <!-- Navigation principale - desktop -->
-            <nav class="hidden md:flex space-x-8">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
-            </nav>
-            <!-- Actions utilisateur -->
-            <div class="flex items-center space-x-5">
-                <!-- Recherche -->
-                <button type="button" class="navbar-icon text-lg" aria-label="Rechercher">
-                    <i class="fas fa-search"></i>
-                </button>
-                <!-- Compte utilisateur -->
-                <a href="{{ route('account.dashboard') }}" class="navbar-icon text-lg" aria-label="Mon compte">
-                    <i class="fas fa-user"></i>
-                </a>
-                <!-- Wishlist -->
-                <a href="{{ route('wishlist') }}" class="navbar-icon text-lg" aria-label="Ma wishlist">
-                    <i class="fas fa-heart"></i>
-                </a>
-                <!-- Panier -->
-                <a href="{{ route('cart') }}" class="navbar-icon text-lg relative" aria-label="Mon panier">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="absolute -top-2 -right-2 bg-noorea-rose text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg opacity-80">0</span>
-                </a>
-                <!-- Menu mobile toggle -->
-                <button type="button" class="navbar-mobile-icon md:hidden text-lg" id="mobile-menu-button" aria-label="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
+                
+                <!-- Barre de recherche centrale - Desktop uniquement -->
+                <div class="desktop-search flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher des produits, marques, catégories..." 
+                            class="w-full px-5 py-3 pl-12 pr-14 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold focus:border-noorea-gold transition-all duration-300 shadow-lg text-gray-800 placeholder-gray-500 font-medium"
+                        >
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                            <i class="fas fa-search text-gray-600 text-xl"></i>
+                        </div>
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-noorea-gold hover:bg-yellow-600 text-white p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-search text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Icônes à droite -->
+                <div class="flex items-center space-x-4">
+                    <!-- Recherche mobile uniquement - MASQUÉE sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-search-button" title="Rechercher">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Compte utilisateur / Connexion - Desktop uniquement -->
+                    <div class="desktop-auth items-center space-x-4">
+                        @auth
+                            <!-- Utilisateur connecté -->
+                            <div class="relative group">
+                                <a href="{{ route('account.dashboard') }}" class="navbar-icon-top" title="Mon compte">
+                                    <i class="fas fa-user text-xl"></i>
+                                </a>
+                                <!-- Menu déroulant -->
+                                <div class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                                    <div class="py-2">
+                                        <a href="{{ route('account.dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i>Mon compte
+                                        </a>
+                                        <a href="{{ route('wishlist') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                            <i class="fas fa-heart mr-2"></i>Ma wishlist
+                                        </a>
+                                        <hr class="my-1">
+                                        <form method="POST" action="{{ route('logout') }}" class="block">
+                                            @csrf
+                                            <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                                <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Wishlist -->
+                            <a href="{{ route('wishlist') }}" class="navbar-icon-top relative" title="Ma wishlist">
+                                <i class="fas fa-heart text-xl"></i>
+                                <span class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">3</span>
+                            </a>
+                        @else
+                            <!-- Utilisateur non connecté -->
+                            <a href="{{ route('login') }}" class="navbar-icon-top" title="Se connecter">
+                                <i class="fas fa-sign-in-alt text-xl"></i>
+                            </a>
+                            
+                            <a href="{{ route('register') }}" class="navbar-icon-top" title="S'inscrire">
+                                <i class="fas fa-user-plus text-xl"></i>
+                            </a>
+                        @endauth
+                    </div>
+                    
+                    <!-- Panier - Toujours visible -->
+                    <button id="navbar-cart-button" type="button" class="navbar-icon-top relative" title="Mon panier">
+                        <i class="fas fa-shopping-bag text-xl"></i>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-noorea-gold text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg">0</span>
+                    </button>
+                    
+                    <!-- Menu mobile toggle - MASQUÉ sur desktop -->
+                    <button type="button" class="navbar-icon-top mobile-only" id="mobile-menu-button" aria-label="Menu">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <!-- Menu mobile -->
-        <div class="md:hidden hidden bg-black/80 backdrop-blur-md rounded-lg mt-4 border border-noorea-gold/30" id="mobile-menu">
-            <nav class="flex flex-col space-y-4 p-6">
-                <a href="{{ route('home') }}" class="nav-link-dark {{ request()->routeIs('home') ? 'active-dark' : '' }}">Accueil</a>
-                <a href="{{ route('products') }}" class="nav-link-dark {{ request()->routeIs('products') ? 'active-dark' : '' }}">Boutique</a>
-                <a href="{{ route('categories') }}" class="nav-link-dark {{ request()->routeIs('categories') ? 'active-dark' : '' }}">Catégories</a>
-                <a href="{{ route('brands') }}" class="nav-link-dark {{ request()->routeIs('brands') ? 'active-dark' : '' }}">Marques</a>
-                <a href="{{ route('blog') }}" class="nav-link-dark {{ request()->routeIs('blog') ? 'active-dark' : '' }}">Beauté du Monde</a>
-                <a href="{{ route('about') }}" class="nav-link-dark {{ request()->routeIs('about') ? 'active-dark' : '' }}">À propos</a>
+    </div>
+    
+    <!-- Barre de navigation inférieure -->
+    <div class="border-t border-noorea-gold/20" style="background-color: #F7EAD5;">
+        <div class="container mx-auto px-4">
+            <!-- Navigation principale - desktop -->
+            <nav class="hidden md:flex items-center justify-center py-3">
+                <div class="flex space-x-8">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-home mr-2"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-shopping-bag mr-2"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-th-large mr-2"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-crown mr-2"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-globe mr-2"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>À propos
+                    </a>
+                </div>
             </nav>
+            
+            <!-- Menu mobile -->
+            <div class="hidden" id="mobile-menu">
+                <nav class="flex flex-col space-y-1 p-4 bg-white border-t border-gray-200 shadow-lg">
+                    <a href="{{ route('home') }}" class="nav-link-gold {{ request()->routeIs('home') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-home mr-3 w-5"></i>Accueil
+                    </a>
+                    <a href="{{ route('products') }}" class="nav-link-gold {{ request()->routeIs('products') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-shopping-bag mr-3 w-5"></i>Boutique
+                    </a>
+                    <a href="{{ route('categories') }}" class="nav-link-gold {{ request()->routeIs('categories*') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-th-large mr-3 w-5"></i>Catégories
+                    </a>
+                    <a href="{{ route('brands') }}" class="nav-link-gold {{ request()->routeIs('brands') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-crown mr-3 w-5"></i>Marques
+                    </a>
+                    <a href="{{ route('blog') }}" class="nav-link-gold {{ request()->routeIs('blog') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-globe mr-3 w-5"></i>Beauté du Monde
+                    </a>
+                    <a href="{{ route('about') }}" class="nav-link-gold {{ request()->routeIs('about') ? 'active-gold' : '' }} flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                        <i class="fas fa-info-circle mr-3 w-5"></i>À propos
+                    </a>
+                    
+                    <!-- Séparateur -->
+                    <hr class="my-3 border-gray-200">
+                    
+                    <!-- Liens d'authentification en mobile -->
+                    @guest
+                        <a href="{{ route('login') }}" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Se connecter
+                        </a>
+                        <a href="{{ route('register') }}" class="nav-link-gold flex items-center py-3 px-2 rounded-lg hover:bg-gray-50">
+                            <i class="fas fa-user-plus mr-3 w-5"></i>S'inscrire
+                        </a>
+                    @endguest
+                </nav>
+            </div>
         </div>
     </div>
 </header>
 @endsection
 
-@section('content')
-<!-- Hero Section Categories -->
-<section class="relative h-96 overflow-hidden bg-gradient-to-br from-noorea-dark via-noorea-cream to-noorea-gold/30 pt-24 md:pt-28">
-    <!-- Images de fond cosmétiques -->
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/3373736/pexels-photo-3373736.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop')] bg-cover bg-center opacity-40"></div>
-    <div class="absolute inset-0 bg-[url('https://images.pexels.com/photos/2533266/pexels-photo-2533266.jpeg?auto=compress&cs=tinysrgb&w=1920&h=600&fit=crop')] bg-cover bg-right opacity-30"></div>
-    
-    <!-- Overlay gradient -->
-    <div class="absolute inset-0 bg-gradient-to-r from-noorea-dark/80 via-noorea-dark/50 to-transparent"></div>
-    
-    <!-- Contenu centré -->
-    <div class="relative z-30 flex items-center h-full">
-        <div class="container mx-auto px-4">
-            <div class="max-w-3xl">
-                <nav class="text-noorea-gold mb-6 text-sm">
-                    <a href="{{ route('home') }}" class="hover:text-yellow-300 transition-colors"></a>
-                    <span class="mx-2 text-white"></span>
-                    <span class="text-white font-medium"></span>
-                </nav>
-                <h1 class="text-4xl md:text-6xl font-serif font-bold text-white mb-4 leading-tight">
-                    Nos Catégories
-                </h1>
-                <p class="text-xl text-gray-200 leading-relaxed mb-6">
-                    Explorez notre sélection organisée de produits cosmétiques par catégorie. 
-                    De la beauté du visage aux soins capillaires, trouvez exactement ce qu'il vous faut.
-                </p>
-                <div class="flex items-center gap-8 mt-8">
-                    <div class="text-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                        <div class="text-3xl font-bold text-noorea-gold">6</div>
-                        <div class="text-sm text-gray-300">Catégories</div>
-                    </div>
-                    <div class="w-px h-12 bg-gray-400/50"></div>
-                    <div class="text-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                        <div class="text-3xl font-bold text-noorea-gold">85+</div>
-                        <div class="text-sm text-gray-300">Produits</div>
-                    </div>
-                    <div class="w-px h-12 bg-gray-400/50"></div>
-                    <div class="text-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/20">
-                        <div class="text-3xl font-bold text-noorea-gold">100%</div>
-                        <div class="text-sm text-gray-300">Qualité</div>
+<!-- Barre de recherche mobile -->
+<div class="mobile-search-bar md:hidden" id="mobile-search-bar">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex items-center space-x-3">
+            <button type="button" id="close-mobile-search" class="flex-shrink-0">
+                <i class="fas fa-arrow-left text-2xl text-gray-700"></i>
+            </button>
+            <div class="flex-1">
+                <div class="relative">
+                    <input 
+                        type="search" 
+                        placeholder="Rechercher des catégories..." 
+                        class="w-full px-4 py-3 pl-12 pr-4 bg-white border-2 border-noorea-gold rounded-xl focus:outline-none focus:ring-2 focus:ring-noorea-gold text-gray-800 placeholder-gray-500"
+                        id="mobile-search-input"
+                    >
+                    <div class="absolute left-4 top-1/2 transform -translate-y-1/2">
+                        <i class="fas fa-search text-gray-600"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-<div class="bg-noorea-cream/30 py-10">
-<div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Catégorie 1 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Soins du visage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Soins du visage</h3>
-                    <p class="text-gray-600">Découvrez notre sélection de produits pour sublimer votre peau</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-            
-            <!-- Catégorie 2 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1599733589046-d8a49e9ec159?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Maquillage" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Maquillage</h3>
-                    <p class="text-gray-600">Des produits de qualité pour un maquillage impeccable</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-            
-            <!-- Catégorie 3 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1617384111729-bc90e50fb7d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Parfums" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Parfums</h3>
-                    <p class="text-gray-600">Des fragrances exclusives pour tous les goûts</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-        
-            <!-- Catégorie 4 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Soins des cheveux" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Soins des cheveux</h3>
-                    <p class="text-gray-600">Tout pour des cheveux sains et brillants</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-        
-            <!-- Catégorie 5 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1559831261-11c4dd18b0fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Soins du corps" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Soins du corps</h3>
-                    <p class="text-gray-600">Des produits nourrissants pour votre peau</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-        
-            <!-- Catégorie 6 -->
-            <a href="#" class="category-card bg-gradient-to-br from-noorea-cream/50 to-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 hover:translate-y-[-10px] group">
-                <div class="h-80 overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1515688594390-b649af70d282?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" alt="Accessoires" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="text-2xl font-medium text-noorea-dark mb-2 group-hover:text-noorea-gold transition-colors duration-300">Accessoires</h3>
-                    <p class="text-gray-600">Les indispensables pour compléter votre routine beauté</p>
-                    <span class="inline-block mt-4 text-noorea-gold font-medium group-hover:text-noorea-emerald transition-colors duration-300 flex items-center justify-center">
-                        Explorer
-                        <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover:translate-x-2 transition-transform duration-300"></i>
-                    </span>
-                </div>
-            </a>
-        </div>
-    </div>
 </div>
+
+@section('content')
+<!-- Espacement après navbar pour desktop -->
+<div class="hidden md:block h-8"></div>
+
+<!-- Section des catégories -->
+<section class="pt-32 md:pt-36 py-6 md:py-12 relative overflow-hidden" style="background-color: #F7EAD5;">
+    <!-- Éléments décoratifs comme welcome -->
+    <div class="absolute top-20 right-10 w-24 h-24 bg-noorea-rose-gold/10 rounded-full blur-2xl"></div>
+    <div class="absolute bottom-10 left-20 w-32 h-32 bg-noorea-gold/10 rounded-full blur-2xl"></div>
+    
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+        <!-- En-tête avec titre -->
+        <div class="mb-8 md:mb-12">
+            <div class="text-center lg:text-left">
+                <h2 class="text-4xl font-serif font-light text-noorea-dark mb-4 tracking-wide">
+                    Nos <span class="text-noorea-rose-gold font-medium">Catégories</span>
+                </h2>
+                <div class="flex items-center justify-center lg:justify-start mb-4">
+                    <div class="h-px bg-noorea-gold/30 w-20"></div>
+                    <i class="fas fa-th-large text-noorea-rose-gold text-lg mx-4"></i>
+                    <div class="h-px bg-noorea-gold/30 w-20"></div>
+                </div>
+                <p class="text-noorea-dark/70 text-lg">
+                    <span id="count-number" class="font-medium text-noorea-gold">{{ $categories->count() }}</span> 
+                    {{ $categories->count() > 1 ? 'catégories disponibles' : 'catégorie disponible' }}
+                </p>
+            </div>
+        </div>
+
+        @if($categories->count() > 0)
+            <!-- Grille des catégories -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                @foreach($categories as $category)
+                <article class="category-card group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:translate-y-[-8px] border border-noorea-gold/10">
+                    <!-- Image de la catégorie -->
+                    <div class="relative h-72 overflow-hidden">
+                        <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="block h-full">
+                            @if($category->image_url)
+                                <img src="{{ $category->image_url }}" 
+                                     alt="{{ $category->name }}" 
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                     loading="lazy">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-noorea-cream to-noorea-rose-gold flex items-center justify-center">
+                                    <i class="fas fa-th-large text-6xl text-white/70"></i>
+                                </div>
+                            @endif
+                        </a>
+                        
+                        <!-- Overlay au hover -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-noorea-dark/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        <!-- Badge nombre de produits -->
+                        <div class="absolute top-4 right-4 bg-noorea-gold text-white px-3 py-1 rounded-full text-sm font-medium flex items-center shadow-lg">
+                            <i class="fas fa-box mr-1 text-xs"></i>
+                            {{ $category->products_count }} {{ $category->products_count > 1 ? 'produits' : 'produit' }}
+                        </div>
+                    </div>
+                    
+                    <!-- Contenu -->
+                    <div class="p-6" style="background-color: #F7EAD5;">
+                        <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" class="block">
+                            <h3 class="text-xl font-serif font-medium text-noorea-dark mb-3 group-hover:text-noorea-gold transition-colors duration-300 leading-tight">
+                                {{ $category->name }}
+                            </h3>
+                        </a>
+                        
+                        @if($category->description)
+                            <p class="text-noorea-dark/70 mb-4 leading-relaxed text-sm line-clamp-2">
+                                {{ Str::limit($category->description, 100) }}
+                            </p>
+                        @else
+                            <p class="text-noorea-dark/70 mb-4 leading-relaxed text-sm">
+                                Découvrez notre sélection de produits {{ strtolower($category->name) }} de qualité premium.
+                            </p>
+                        @endif
+                        
+                        <!-- Lien Voir détails -->
+                        <div class="text-center">
+                            <a href="{{ route('categories.show', $category->slug ?? $category->id) }}" 
+                               class="text-noorea-gold hover:text-noorea-dark font-semibold transition-colors duration-300 group/link inline-flex items-center">
+                                <span>Voir détails</span>
+                                <i class="fas fa-arrow-right ml-2 transform translate-x-0 group-hover/link:translate-x-1 transition-transform duration-300 text-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+                @endforeach
+            </div>
+        @else
+            <!-- État vide -->
+            <div class="text-center py-20">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-noorea-cream to-noorea-rose-gold rounded-full mb-6">
+                    <i class="fas fa-th-large text-4xl text-white/70"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-medium text-noorea-dark mb-4">Aucune catégorie disponible</h3>
+                <p class="text-noorea-dark/70 mb-8 max-w-md mx-auto">
+                    Les catégories sont en cours de préparation. Revenez bientôt pour découvrir notre univers beauté.
+                </p>
+                <a href="{{ route('products') }}" 
+                   class="inline-flex items-center bg-noorea-gold hover:bg-noorea-gold/80 text-white font-semibold px-8 py-4 rounded-2xl transition-all duration-300 hover:shadow-lg">
+                    <i class="fas fa-shopping-bag mr-2"></i>
+                    Voir tous les produits
+                </a>
+            </div>
+        @endif
+    </div>
+</section>
 @endsection
+
+@push('styles')
+<style>
+/* === STYLES EXACTEMENT COMME PRODUCTS INDEX === */
+.navbar-icon-top {
+    color: #d4af37;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transform: scale(1);
+    background-color: rgba(212, 175, 55, 0.1);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.navbar-icon-top:hover {
+    color: #b8941f;
+    background-color: rgba(212, 175, 55, 0.2);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Responsive classes EXACTLY LIKE PRODUCTS */
+.desktop-search {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .desktop-search {
+        display: block;
+    }
+    
+    .mobile-only {
+        display: none !important;
+    }
+    
+    .desktop-auth {
+        display: flex;
+    }
+}
+
+@media (max-width: 767px) {
+    .desktop-search {
+        display: none !important;
+    }
+    
+    .desktop-auth {
+        display: none !important;
+    }
+}
+
+/* Mobile search bar - CENTRÉ comme le menu */
+.mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    background: transparent;
+    z-index: 100;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    padding-top: 140px; /* Espace pour les deux navbars */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mobile-search-bar.show {
+    transform: translateY(0);
+}
+
+.mobile-search-bar .container {
+    background: white;
+    margin: 0;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 2px solid #d4af37;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Styles pour les cartes de catégories */
+.category-card {
+    border: 1px solid rgba(0,0,0,0.05);
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    border-color: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Styles pour nav-link-gold et active-gold - EXACTEMENT comme products */
+.nav-link-gold {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+}
+
+.nav-link-gold:hover {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.4);
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold.active-gold {
+    color: #d4af37;
+    border-color: rgba(212, 175, 55, 0.5);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 2px 4px rgba(212, 175, 55, 0.2);
+}
+
+.nav-link-gold i {
+    color: #d4af37;
+    transition: all 0.3s ease;
+}
+
+.nav-link-gold:hover i {
+    color: #d4af37;
+    transform: scale(1.1);
+}
+
+.active-gold i {
+    color: #d4af37;
+}
+</style>
+@endpush
