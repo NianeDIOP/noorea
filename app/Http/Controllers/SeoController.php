@@ -46,17 +46,11 @@ class SeoController extends Controller
                 'lastmod' => Carbon::now()->format('Y-m-d'),
                 'changefreq' => 'monthly',
                 'priority' => '0.7'
-            ],
-            [
-                'url' => route('contact'),
-                'lastmod' => Carbon::now()->format('Y-m-d'),
-                'changefreq' => 'monthly',
-                'priority' => '0.7'
             ]
         ];
 
-        // Ajouter les produits
-        $products = Product::where('is_active', true)->get();
+        // Ajouter les produits actifs
+        $products = Product::where('status', 'active')->get();
         foreach ($products as $product) {
             $pages[] = [
                 'url' => route('products.show', $product->slug),
@@ -67,7 +61,7 @@ class SeoController extends Controller
         }
 
         // Ajouter les catégories
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::all();
         foreach ($categories as $category) {
             $pages[] = [
                 'url' => route('categories.show', $category->slug),
@@ -78,7 +72,7 @@ class SeoController extends Controller
         }
 
         // Ajouter les marques
-        $brands = Brand::where('is_active', true)->get();
+        $brands = Brand::all();
         foreach ($brands as $brand) {
             $pages[] = [
                 'url' => route('brands.show', $brand->slug),
@@ -88,9 +82,22 @@ class SeoController extends Controller
             ];
         }
 
-        $sitemap = view('seo.sitemap', compact('pages'));
+        // Générer le XML directement pour éviter les erreurs Blade
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        
+        foreach ($pages as $page) {
+            $xml .= '    <url>' . "\n";
+            $xml .= '        <loc>' . htmlspecialchars($page['url']) . '</loc>' . "\n";
+            $xml .= '        <lastmod>' . $page['lastmod'] . '</lastmod>' . "\n";
+            $xml .= '        <changefreq>' . $page['changefreq'] . '</changefreq>' . "\n";
+            $xml .= '        <priority>' . $page['priority'] . '</priority>' . "\n";
+            $xml .= '    </url>' . "\n";
+        }
+        
+        $xml .= '</urlset>';
 
-        return response($sitemap, 200)
+        return response($xml, 200)
             ->header('Content-Type', 'application/xml');
     }
 

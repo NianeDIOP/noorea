@@ -110,11 +110,23 @@ class UpdateSitemap extends Command
             ];
         }
 
-        // Générer le contenu XML
-        $sitemap = view('seo.sitemap', compact('pages'))->render();
+        // Générer le contenu XML directement
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        
+        foreach ($pages as $page) {
+            $xml .= '    <url>' . "\n";
+            $xml .= '        <loc>' . htmlspecialchars($page['url']) . '</loc>' . "\n";
+            $xml .= '        <lastmod>' . $page['lastmod'] . '</lastmod>' . "\n";
+            $xml .= '        <changefreq>' . $page['changefreq'] . '</changefreq>' . "\n";
+            $xml .= '        <priority>' . $page['priority'] . '</priority>' . "\n";
+            $xml .= '    </url>' . "\n";
+        }
+        
+        $xml .= '</urlset>';
 
         // Sauvegarder dans le fichier public/sitemap.xml
-        file_put_contents(public_path('sitemap.xml'), $sitemap);
+        file_put_contents(public_path('sitemap.xml'), $xml);
 
         $this->info('✅ Sitemap mis à jour avec succès dans public/sitemap.xml');
         $this->info('📊 Total des pages: ' . count($pages));
