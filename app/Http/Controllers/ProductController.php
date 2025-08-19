@@ -43,7 +43,10 @@ class ProductController extends Controller
             $heroImages = ['images/hero/hero1.jpg'];
         }
         
-        return view('products.index', compact('heroImages', 'categories', 'brands', 'products'));
+        // Ajouter les méta-tags SEO pour la boutique
+        $seoMeta = SeoHelper::shopMeta();
+        
+        return view('products.index', compact('heroImages', 'categories', 'brands', 'products', 'seoMeta'));
     }
     
     /**
@@ -67,7 +70,23 @@ class ProductController extends Controller
         $seoMeta = SeoHelper::productMeta($product);
         $productSchema = SeoHelper::productSchema($product);
         
-        return view('products.show', compact('product', 'relatedProducts', 'seoMeta', 'productSchema'));
+        // Générer le fil d'Ariane structuré
+        $breadcrumbItems = [
+            ['name' => 'Accueil', 'url' => route('home')],
+            ['name' => 'Boutique', 'url' => route('products')],
+        ];
+        
+        if ($product->category) {
+            $breadcrumbItems[] = [
+                'name' => $product->category->name,
+                'url' => route('categories.show', $product->category->slug)
+            ];
+        }
+        
+        $breadcrumbItems[] = ['name' => $product->name];
+        $breadcrumbSchema = SeoHelper::breadcrumbSchema($breadcrumbItems);
+        
+        return view('products.show', compact('product', 'relatedProducts', 'seoMeta', 'productSchema', 'breadcrumbSchema'));
     }
     
     /**

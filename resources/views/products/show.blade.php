@@ -2,6 +2,43 @@
 
 @push('head')
 <!-- Meta tags et polices d'origine -->
+@if(isset($seoMeta))
+    @foreach($seoMeta as $key => $value)
+        @if($value)
+            @php 
+                $attributes = [
+                    'seo_title' => 'title',
+                    'seo_description' => 'description', 
+                    'seo_keywords' => 'keywords',
+                    'og_title' => 'property="og:title" content',
+                    'og_description' => 'property="og:description" content',
+                    'og_image' => 'property="og:image" content'
+                ];
+            @endphp
+            @if($key === 'seo_title')
+                <title>{{ $value }}</title>
+            @elseif($key === 'seo_description')  
+                <meta name="description" content="{{ $value }}">
+            @elseif($key === 'seo_keywords')
+                <meta name="keywords" content="{{ $value }}">
+            @elseif(str_starts_with($key, 'og_'))
+                <meta property="{{ str_replace('_', ':', $key) }}" content="{{ $value }}">
+            @endif
+        @endif
+    @endforeach
+@endif
+
+@if(isset($productSchema))
+    <script type="application/ld+json">
+    {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+@endif
+
+@if(isset($breadcrumbSchema))
+    <script type="application/ld+json">
+    {!! json_encode($breadcrumbSchema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+@endif
 @endpush
 
 @push('styles')
@@ -357,12 +394,16 @@
                     <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                         @if($product->main_image_url)
                             <img src="{{ $product->main_image_url }}" 
-                                 alt="{{ $product->name }}" 
+                                 alt="{{ $product->name }} - {{ $product->brand ? $product->brand->name : 'Noorea' }} - Cosmétique multiculturelle premium au Sénégal" 
                                  class="w-full h-full object-cover"
-                                 id="main-product-image">
+                                 id="main-product-image"
+                                 loading="eager"
+                                 width="600" 
+                                 height="600">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
-                                <i class="fas fa-image text-gray-400 text-6xl"></i>
+                                <i class="fas fa-image text-gray-400 text-6xl" aria-hidden="true"></i>
+                                <span class="sr-only">Image non disponible pour {{ $product->name }}</span>
                             </div>
                         @endif
                     </div>
@@ -477,11 +518,15 @@
                         <div class="bg-gray-100 aspect-square rounded-lg overflow-hidden mb-2">
                             @if($similar->main_image_url)
                                 <img src="{{ $similar->main_image_url }}" 
-                                     alt="{{ $similar->name }}" 
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                     alt="{{ $similar->name }} - {{ $similar->brand ? $similar->brand->name : 'Noorea' }} - {{ number_format($similar->final_price, 0, ',', ' ') }} FCFA" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                                     loading="lazy"
+                                     width="300" 
+                                     height="300">
                             @else
                                 <div class="w-full h-full flex items-center justify-center">
-                                    <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                    <i class="fas fa-image text-gray-400 text-2xl" aria-hidden="true"></i>
+                                    <span class="sr-only">Image non disponible pour {{ $similar->name }}</span>
                                 </div>
                             @endif
                         </div>

@@ -2,121 +2,133 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
         <loc>http://localhost</loc>
-        <lastmod>2025-08-16</lastmod>
+        <lastmod>2025-08-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
         <url>
         <loc>http://localhost/boutique</loc>
-        <lastmod>2025-08-16</lastmod>
+        <lastmod>2025-08-19</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
     </url>
         <url>
         <loc>http://localhost/categories</loc>
-        <lastmod>2025-08-16</lastmod>
+        <lastmod>2025-08-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/marques</loc>
-        <lastmod>2025-08-16</lastmod>
+        <lastmod>2025-08-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
+        <loc>http://localhost/blog</loc>
+        <lastmod>2025-08-19</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+        <url>
+        <loc>http://localhost/a-propos</loc>
+        <lastmod>2025-08-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+        <url>
         <loc>http://localhost/produit/creme-hydratante-au-karite-pur</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/serum-reparateur-karite-baobab</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/fond-de-teint-pro-filtr-teinte-330</loc>
-        <lastmod>2025-08-16</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/rouge-a-levres-stunna-lip-paint-uncensored</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/replica-beach-walk</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/replica-lazy-sunday-morning</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/masque-reparateur-karite-manuka</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/produit/huile-capillaire-coco-hibiscus</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-17</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
         <url>
         <loc>http://localhost/categorie/soins-du-visage</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/categorie/maquillage</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/categorie/parfums</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/categorie/soins-capillaires</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/marque/karite-du-senegal</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/marque/fenty-beauty</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/marque/maison-margiela</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
         <url>
         <loc>http://localhost/marque/sheamoisture</loc>
-        <lastmod>2025-08-15</lastmod>
+        <lastmod>2025-08-18</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>
